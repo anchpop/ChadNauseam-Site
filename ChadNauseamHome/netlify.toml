@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/twitter"
+  to = "https://twitter.com/chadnauseam"
+  status = 301
+  force = false
