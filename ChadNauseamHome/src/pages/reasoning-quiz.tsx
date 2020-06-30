@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "gatsby"
 
 import Layout from "../components/layout"
@@ -78,34 +78,47 @@ const questions = [
   // This whole thing is a bit of a trap for non meta-level thinkers, because the answers to the some of the questions include meta-level principles in them (which you wouldn't believe in as an object-level thinker). 
 ]
 
+type Answer = NoAnswer | ProgAnswer | ConAnswer
 
-/*
+interface ConAnswer {
+  answer: "con"
+}
 
-    {
-      question: "",
-      con: "",
-      prog: "",
-    },
-    {
-      question: "",
-      con: "",
-      prog: "",
-    }
-*/
+interface ProgAnswer {
+  answer: "prog"
+}
+
+interface NoAnswer {
+  answer: "none"
+}
+
+
+
+const filledNone = (questionsL: { i: number }[]) => {
+  const maps = questionsL.map(({ i }) => ({ [i]: { answer: "none" } as Answer }))
+  const combined = maps.reduce((a, b) => ({ ...a, ...b }))
+  return combined
+}
 
 const SecondPage = () => {
+  const questionsL = questions.map(([q1, _], index) => ({ accociated: index, i: index, earlier: true, ...q1 })).concat(questions.map(([_, q2], index) => ({ accociated: index, i: index + questions.length, earlier: false, ...q2 })))
 
-  const questionL = questions.map(([q1, _], index) => ({ accociated: index, i: index, earlier: true, ...q1 })).concat(questions.map(([_, q2], index) => ({ accociated: index, i: index + questions.length, earlier: false, ...q2 })))
 
-  const questionsC = questionL.map(({ question, con, prog, i, earlier }) => {
+  const [userAnswers, setUserAnswers] = useState(filledNone(questionsL))
+
+
+
+
+
+
+  const questionsC = questionsL.map(({ question, con, prog, i, earlier }) => {
     const conA = (
       <>
         <label>
           <input
-            name="isGoing"
             type="radio"
-            checked={false}
-            onChange={() => { }} />
+            checked={userAnswers[i].answer == "con"}
+            onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "con" } }) }} />
           <span style={{ marginLeft: ".3rem" }}>{con}</span>
         </label>
       </>
@@ -114,10 +127,9 @@ const SecondPage = () => {
       <>
         <label>
           <input
-            name="isGoing"
             type="radio"
-            checked={false}
-            onChange={() => { }} />
+            checked={userAnswers[i].answer == "prog"}
+            onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "prog" } }) }} />
           <span style={{ marginLeft: ".3rem" }}>{prog}</span>
         </label>
       </>
