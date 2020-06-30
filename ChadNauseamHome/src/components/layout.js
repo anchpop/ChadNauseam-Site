@@ -9,10 +9,11 @@ import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
 import Helmet from "react-helmet"
-import { CSSTransitionGroup } from 'react-transition-group'
+import { Motion, spring } from 'react-motion';
 
 import Header from "./header"
-import "./layout.css"
+import "./css/water.css"
+import "./css/custom.css"
 
 const Layout = ({ subtitle, children }) => {
   const data = useStaticQuery(graphql`
@@ -27,11 +28,16 @@ const Layout = ({ subtitle, children }) => {
 
   return (
     <>
-      <Header siteTitle={data.site.siteMetadata.title} subtitle={subtitle} />
       <Helmet>
         <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&display=swap" rel="stylesheet"></link>
       </Helmet>
-      <main>{children}</main>
+      <Motion defaultStyle={{ opacity: 0 }} style={{ opacity: spring(1) }}>
+        {(style) => <>
+          <Header siteTitle={data.site.siteMetadata.title} subtitle={subtitle} style={style} />
+          <main style={style}>{children}</main>
+        </>}
+
+      </Motion>
     </>
   )
 }
