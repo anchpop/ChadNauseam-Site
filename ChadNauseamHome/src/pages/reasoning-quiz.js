@@ -2,7 +2,6 @@ import React from "react"
 import { Link } from "gatsby"
 
 import Layout from "../components/layout"
-import SEO from "../components/seo"
 
 const questions = [
   [ // Questions 1 and 11. Principle: Should you get rid of protests you don't like through legal technicalities?
@@ -10,7 +9,6 @@ const questions = [
       question: "Neo-Nazis are holding a demonstration in a small town, waving swastikas around and shouting about Hitler. They seem to be pretty peaceful so far, so the First Amendment says you probably can’t get rid of them. However, their demonstration seems to be near a main street and it could be a minor inconvenience to the traffic trying to go through.",
       con: "Allow the neo-Nazis to demonstrate unmolested",
       prog: "Break up the demonstration on the grounds of ‘blocking traffic’",
-
     }, {
       question: "A human rights group is picketing the headquarters of Exxon Mobil for abusing their workers in Third World countries. Exxon Mobil executives feel very uncomfortable entering their HQ and say that the protesters are blocking the main entrance to the building. They want the protesters to go protest in a designated free speech zone a few miles away where it will have no effect on them.",
       con: "Tell them to go protest far away",
@@ -95,10 +93,53 @@ const questions = [
     }
 */
 
-const SecondPage = () => (
-  <Layout subtitle="Political Reasoning Style Quiz">
-    <SEO title="Page two" />
-  </Layout>
-)
+const SecondPage = () => {
+
+  const questionL = questions.map(([q1, _], index) => ({ i: index, earlier: true, ...q1 })).concat(questions.map(([_, q2], index) => ({ i: index, earlier: false, ...q2 })))
+
+  const questionsC = questionL.map(({ question, con, prog, i, earlier }) => {
+    const a1 = (
+      <div style={{ marginBottom: ".5rem" }}>
+        <label><input
+          name="isGoing"
+          type="radio"
+          checked={false}
+          onChange={() => { }} />
+          <span style={{ marginLeft: ".3rem" }}>{con}</span></label>
+      </div>
+    );
+    const a2 = (
+      <div>
+        <label><input
+          name="isGoing"
+          type="radio"
+          checked={false}
+          onChange={() => { }} />
+          <span style={{ marginLeft: ".3rem" }}>{prog}</span></label>
+      </div>
+    );
+    return (
+      <li key={earlier ? i : i + questions.length} style={{ marginBottom: "3rem" }}>
+        <div style={{ marginBottom: "1rem" }}>{question}</div>
+        <div style={{ marginLeft: ".5rem" }}>
+          {con > prog ? <>
+            {a1}
+            {a2}
+          </> : <>
+              {a2}
+              {a1}
+            </>}
+        </div>
+      </li >
+    )
+  })
+  return (
+    <Layout subtitle="Political Reasoning Style Quiz">
+      <ol>
+        {questionsC}
+      </ol>
+    </Layout>
+  )
+}
 
 export default SecondPage

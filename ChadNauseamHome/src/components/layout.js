@@ -10,6 +10,7 @@ import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
 import Helmet from "react-helmet"
 import { Motion, spring } from 'react-motion';
+import SEO from "../components/seo"
 
 import Header from "./header"
 import "./css/vars.css"
@@ -29,15 +30,16 @@ const Layout = ({ subtitle, children }) => {
 
   return (
     <>
+      <SEO title={subtitle} />
       <Helmet>
         <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&display=swap" rel="stylesheet"></link>
       </Helmet>
+
       <Motion defaultStyle={{ opacity: 0 }} style={{ opacity: spring(1) }}>
         {(style) => <>
           <Header siteTitle={data.site.siteMetadata.title} subtitle={subtitle} style={style} />
           <main style={style}>{children}</main>
         </>}
-
       </Motion>
     </>
   )

@@ -3,11 +3,9 @@ import { Link } from "gatsby"
 
 import Layout from "../components/layout"
 import Image from "../components/image"
-import SEO from "../components/seo"
 
 const IndexPage = () => (
   <Layout subtitle="General Info">
-    <SEO title="Home" />
     <p>Check out my <a href="/reasoning-quiz">Policial Reasoning Style Quiz</a>!</p>
     <p>I make <a href="/youtube">YouTube videos</a>. They're mostly about politics so far but I don't know if they're going to stay that way forever.</p>
     <p>I also like programming, but only in hipster languages like Rust and Haskell.</p>
