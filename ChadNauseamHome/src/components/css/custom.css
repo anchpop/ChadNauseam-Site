@@ -1,0 +1,18 @@
+html {
+	color: #fcfcfc;
+	height: 100%;
+	background: linear-gradient(200deg, #1f3429 0%, #293e42 70%, #1c2a36 100%);
+}
+
+body {
+  background: unset;
+}
+
+
+@media (prefers-color-scheme: light) {
+  html {
+    color: #fcfcfc;
+    background: linear-gradient(200deg, #1f3429 0%, #293e42 70%, #1c2a36 100%);
+  }
+  
+}

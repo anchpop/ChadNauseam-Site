@@ -12,6 +12,7 @@ import Helmet from "react-helmet"
 import { Motion, spring } from 'react-motion';
 
 import Header from "./header"
+import "./css/vars.css"
 import "./css/water.css"
 import "./css/custom.css"
 
