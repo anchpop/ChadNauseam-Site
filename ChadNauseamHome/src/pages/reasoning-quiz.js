@@ -98,37 +98,40 @@ const SecondPage = () => {
   const questionL = questions.map(([q1, _], index) => ({ accociated: index, i: index, earlier: true, ...q1 })).concat(questions.map(([_, q2], index) => ({ accociated: index, i: index + questions.length, earlier: false, ...q2 })))
 
   const questionsC = questionL.map(({ question, con, prog, i, earlier }) => {
-    const a1 = (
-      <div style={{ marginBottom: ".5rem" }}>
-        <label><input
-          name="isGoing"
-          type="radio"
-          checked={false}
-          onChange={() => { }} />
-          <span style={{ marginLeft: ".3rem" }}>{con}</span></label>
-      </div>
+    const conA = (
+      <>
+        <label>
+          <input
+            name="isGoing"
+            type="radio"
+            checked={false}
+            onChange={() => { }} />
+          <span style={{ marginLeft: ".3rem" }}>{con}</span>
+        </label>
+      </>
     );
-    const a2 = (
-      <div>
-        <label><input
-          name="isGoing"
-          type="radio"
-          checked={false}
-          onChange={() => { }} />
-          <span style={{ marginLeft: ".3rem" }}>{prog}</span></label>
-      </div>
+    const progA = (
+      <>
+        <label>
+          <input
+            name="isGoing"
+            type="radio"
+            checked={false}
+            onChange={() => { }} />
+          <span style={{ marginLeft: ".3rem" }}>{prog}</span>
+        </label>
+      </>
     );
+
+    const [a1, a2] = prog > con ? [conA, progA] : [progA, conA];
+
     return (
       <li key={i} style={{ marginBottom: "3rem" }}>
         <div style={{ marginBottom: "1rem" }}>{question}</div>
-        <div style={{ marginLeft: ".5rem" }}>
-          {prog > con ? <>
-            {a1}
-            {a2}
-          </> : <>
-              {a2}
-              {a1}
-            </>}
+        <div style={{ marginLeft: ".5rem" }} className="checkboxes">
+          <div style={{ marginBottom: ".5rem" }}>{a1}</div>
+
+          <div>{a2}</div>
         </div>
       </li >
     )

@@ -20,6 +20,20 @@ body {
 
 
 
+
+.checkboxes label {
+  display: block;
+  padding-right: 10px;
+  padding-left: 22px;
+  text-indent: -22px;
+}
+.checkboxes input {
+  vertical-align: middle;
+}
+.checkboxes label span {
+  vertical-align: middle;
+}
+
 input, button, textarea, select {
   box-shadow: 0px 0px 3px rgba(256,256,256,.2);
 }
