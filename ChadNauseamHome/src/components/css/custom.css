@@ -1,5 +1,4 @@
 html {
-	color: #fcfcfc;
 	height: 100%;
 	background: linear-gradient(200deg, #1f3429 0%, #293e42 70%, #1c2a36 100%);
 }
@@ -8,11 +7,20 @@ body {
   background: unset;
 }
 
+.homepageHeader {
+  color: white;
+  text-shadow: 0px 0px 10px #16271f;
+  text-decoration: none;
+}
+
 
 @media (prefers-color-scheme: light) {
   html {
-    color: #fcfcfc;
-    background: linear-gradient(200deg, #1f3429 0%, #293e42 70%, #1c2a36 100%);
+    background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
   }
-  
+  .homepageHeader {
+    
+    color: var(---text-bright);
+    text-shadow: 0px 0px 10px #f8cae6;
+  }
 }

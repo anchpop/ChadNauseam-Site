@@ -15,7 +15,6 @@ const Header = ({ subtitle, siteTitle, style }) => (
         maxWidth: 960,
         textAlign: 'center',
         marginBottom: "2rem",
-        textShadow: "0px 0px 10px #16271f"
       }}
     >
       <h1 style={{
@@ -24,10 +23,7 @@ const Header = ({ subtitle, siteTitle, style }) => (
       }}>
         <Link
           to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`,
-          }}
+          className="homepageHeader"
         >
           {siteTitle}
         </Link>
@@ -35,7 +31,7 @@ const Header = ({ subtitle, siteTitle, style }) => (
       <hr />
       <h1 style={{
         fontFamily: 'Pacifico', fontWeight: 400, fontStyle: 'normal'
-      }}>
+      }} className="homepageHeader">
         {subtitle}
       </h1>
     </div>
