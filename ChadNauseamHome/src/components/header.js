@@ -2,7 +2,7 @@ import { Link } from "gatsby"
 import PropTypes from "prop-types"
 import React from "react"
 
-const Header = ({ siteTitle }) => (
+const Header = ({ subtitle, siteTitle }) => (
   <header
     style={{
       marginBottom: `1.45rem`,
@@ -12,10 +12,14 @@ const Header = ({ siteTitle }) => (
       style={{
         margin: `0 auto`,
         maxWidth: 960,
+        textAlign: 'center',
+        marginBottom: "2rem",
+        textShadow: "0px 0px 10px #16271f"
       }}
     >
       <h1 style={{
-        margin: 0, fontFamily: 'Comic Neue', textTransform: 'lowercase', textAlign: 'center', marginBottom: 20
+        fontFamily: 'Comic Neue', textTransform: 'lowercase', fontSize: '2.6rem', marginBottom: "1.45rem"
+
       }}>
         <Link
           to="/"
@@ -28,8 +32,13 @@ const Header = ({ siteTitle }) => (
         </Link>
       </h1>
       <hr />
+      <h1 style={{
+        fontFamily: 'Pacifico', fontWeight: 400, fontStyle: 'normal'
+      }}>
+        {subtitle}
+      </h1>
     </div>
-  </header>
+  </header >
 )
 
 Header.propTypes = {
