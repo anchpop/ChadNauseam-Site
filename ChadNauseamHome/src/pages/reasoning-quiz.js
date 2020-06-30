@@ -95,7 +95,7 @@ const questions = [
 
 const SecondPage = () => {
 
-  const questionL = questions.map(([q1, _], index) => ({ i: index, earlier: true, ...q1 })).concat(questions.map(([_, q2], index) => ({ i: index, earlier: false, ...q2 })))
+  const questionL = questions.map(([q1, _], index) => ({ accociated: index, i: index, earlier: true, ...q1 })).concat(questions.map(([_, q2], index) => ({ accociated: index, i: index + questions.length, earlier: false, ...q2 })))
 
   const questionsC = questionL.map(({ question, con, prog, i, earlier }) => {
     const a1 = (
@@ -119,10 +119,10 @@ const SecondPage = () => {
       </div>
     );
     return (
-      <li key={earlier ? i : i + questions.length} style={{ marginBottom: "3rem" }}>
+      <li key={i} style={{ marginBottom: "3rem" }}>
         <div style={{ marginBottom: "1rem" }}>{question}</div>
         <div style={{ marginLeft: ".5rem" }}>
-          {con > prog ? <>
+          {prog > con ? <>
             {a1}
             {a2}
           </> : <>
@@ -135,7 +135,7 @@ const SecondPage = () => {
   })
   return (
     <Layout subtitle="Political Reasoning Style Quiz">
-      <ol>
+      <ol style={{ textAlign: 'justify' }}>
         {questionsC}
       </ol>
     </Layout>

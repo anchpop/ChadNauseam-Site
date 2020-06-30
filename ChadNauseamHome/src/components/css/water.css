@@ -79,7 +79,7 @@ input:not([type='checkbox']):not([type='radio']), select {
 }
 input, button, textarea, select {
   color: var(--form-text);
-  background-color: var(--background);
+  background-color: var(--background-input);
   font-family: inherit;
   font-size: inherit;
   margin-right: 6px;
