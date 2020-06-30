@@ -114,7 +114,7 @@ button, input[type='submit'], input[type='button'] {
   padding-right: 30px;
   padding-left: 30px;
 }
-button:hover, input[type='submit']:hover, input[type='button']:hover {
+button:hover:enabled, input[type='submit']:hover, input[type='button']:hover {
   background: var(--button-hover);
 }
 input:focus, select:focus, button:focus, textarea:focus {

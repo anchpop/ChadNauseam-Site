@@ -1,7 +1,9 @@
 import React, { useState } from "react"
 import { Link } from "gatsby"
+import { Motion, spring } from 'react-motion';
 
 import Layout from "../components/layout"
+import "../components/css/reasoning_quiz.css"
 
 const questions = [
   [ // Questions 1 and 11. Principle: Should you get rid of protests you don't like through legal technicalities?
@@ -100,11 +102,18 @@ const filledNone = (questionsL: { i: number }[]) => {
   return combined
 }
 
+
+const allFilled = (userAnswers: { [x: number]: Answer }) => {
+  const result = Object.values(userAnswers).every(({ answer }) => answer !== "none")
+  return result
+}
+
 const SecondPage = () => {
   const questionsL = questions.map(([q1, _], index) => ({ accociated: index, i: index, earlier: true, ...q1 })).concat(questions.map(([_, q2], index) => ({ accociated: index, i: index + questions.length, earlier: false, ...q2 })))
 
 
   const [userAnswers, setUserAnswers] = useState(filledNone(questionsL))
+  const [pressedView, setPressedView] = useState(false)
 
 
 
@@ -112,12 +121,14 @@ const SecondPage = () => {
 
 
   const questionsC = questionsL.map(({ question, con, prog, i, earlier }) => {
+    const enabled = (i === 0 || userAnswers[i - 1].answer !== "none") ? true : false;
     const conA = (
       <>
         <label>
           <input
+            disabled={!enabled}
             type="radio"
-            checked={userAnswers[i].answer == "con"}
+            checked={userAnswers[i].answer === "con"}
             onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "con" } }) }} />
           <span style={{ marginLeft: ".3rem" }}>{con}</span>
         </label>
@@ -127,8 +138,9 @@ const SecondPage = () => {
       <>
         <label>
           <input
+            disabled={!enabled}
             type="radio"
-            checked={userAnswers[i].answer == "prog"}
+            checked={userAnswers[i].answer === "prog"}
             onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "prog" } }) }} />
           <span style={{ marginLeft: ".3rem" }}>{prog}</span>
         </label>
@@ -138,14 +150,19 @@ const SecondPage = () => {
     const [a1, a2] = prog > con ? [conA, progA] : [progA, conA];
 
     return (
-      <li key={i} style={{ marginBottom: "3rem" }}>
-        <div style={{ marginBottom: "1rem" }}>{question}</div>
-        <div style={{ marginLeft: ".5rem" }} className="checkboxes">
-          <div style={{ marginBottom: ".5rem" }}>{a1}</div>
 
-          <div>{a2}</div>
-        </div>
-      </li >
+      <Motion defaultStyle={{ opacity: .3 }} style={{ opacity: spring(enabled ? 1 : .3) }}>
+        {style =>
+          <li key={i} style={{ marginBottom: "3rem", ...style }} className={enabled ? "enabledQuestion" : "disabledQuestion"}>
+            <div style={{ marginBottom: "1rem" }}>{question}</div>
+            <div style={{ marginLeft: ".5rem" }} className="checkboxes">
+              <div style={{ marginBottom: ".5rem" }}>{a1}</div>
+
+              <div>{a2}</div>
+            </div>
+          </li >
+        }
+      </Motion>
     )
   })
   return (
@@ -153,7 +170,10 @@ const SecondPage = () => {
       <ol style={{ textAlign: 'justify' }}>
         {questionsC}
       </ol>
-    </Layout>
+      <div>
+        <button onChange={(event) => setPressedView(true)} disabled={!allFilled(userAnswers)}>View Your Results!</button>
+      </div>
+    </Layout >
   )
 }
 
