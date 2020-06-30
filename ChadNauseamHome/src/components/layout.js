@@ -27,12 +27,7 @@ const Layout = ({ subtitle, children }) => {
 
   return (
     <>
-      <CSSTransitionGroup
-        transitionName="example"
-        transitionEnterTimeout={500}
-        transitionLeaveTimeout={300}>
-        <Header siteTitle={data.site.siteMetadata.title} subtitle={subtitle} />
-      </CSSTransitionGroup>
+      <Header siteTitle={data.site.siteMetadata.title} subtitle={subtitle} />
       <Helmet>
         <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&display=swap" rel="stylesheet"></link>
       </Helmet>
