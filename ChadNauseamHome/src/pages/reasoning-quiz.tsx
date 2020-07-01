@@ -45,13 +45,13 @@ const questions = [
       prog: "The town should consider the sensibilities of the Chinese minority and keep the Dalai Lama’s visit low-key and unofficial",
     },
     {
-      question: "The United Nations is trying to pass a resolution banning land mines and allocating some resources to clean up existing mines that pose a danger to civilians. North Korea is causing a fuss and refusing to support the resolution, and this is endangering its chances of passing. The proponents of the resolution come up with a scheme to exploit a loophole in UN procedures, holding the vote in secret at a time when the North Korean representative might not even be present.",
+      question: "A Southern town that produced a disproportionately high number of great Confederate generals and soldiers wants to erect a monument to its Civil War military heritage. The town’s small African-American community objects, saying that these generals, however impressive, were fighting to defend slavery and an evil regime.",
       con: "The town should build the monument, as desired by the majority of its citizens",
       prog: "The town should avoid building the monument to respect the wishes of its minority community",
     }
   ], [ // Questions 5 and 15. Principle: Should you use loopholes and tricks in the political process to pass or restrict legislation if you can't get your way honestly?
     {
-      question: "A Southern town that produced a disproportionately high number of great Confederate generals and soldiers wants to erect a monument to its Civil War military heritage. The town’s small African-American community objects, saying that these generals, however impressive, were fighting to defend slavery and an evil regime.",
+      question: "The United Nations is trying to pass a resolution banning land mines and allocating some resources to clean up existing mines that pose a danger to civilians. North Korea is causing a fuss and refusing to support the resolution, and this is endangering its chances of passing. The proponents of the resolution come up with a scheme to exploit a loophole in UN procedures, holding the vote in secret at a time when the North Korean representative might not even be present.",
       con: "Stick to normal procedure and try to pass the anti-mine resolution above board and through legitimate channels",
       prog: "Exploit this loophole to make sure the anti-mine resolution passes",
     },
