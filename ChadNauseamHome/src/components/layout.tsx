@@ -17,7 +17,7 @@ import "./css/vars.css"
 import "./css/water.css"
 import "./css/custom.css"
 
-const Layout = ({ subtitle, children }) => {
+const Layout = ({ subtitle, description, children }) => {
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
@@ -30,7 +30,7 @@ const Layout = ({ subtitle, children }) => {
 
   return (
     <>
-      <SEO title={subtitle} />
+      <SEO title={subtitle} description={description} />
       <Helmet>
         <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&display=swap" rel="stylesheet"></link>
       </Helmet>

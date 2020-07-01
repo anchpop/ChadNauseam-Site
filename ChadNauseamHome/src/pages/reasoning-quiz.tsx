@@ -204,7 +204,6 @@ const Quiz = () => {
     const metaThinker = usedMetaReasoningFor.length > 3
 
     return (
-
       <Motion defaultStyle={{ opacity: .3 }} style={{ opacity: spring(1, presets.gentle) }}>
         {(style) =>
           <div ref={resultsRef} style={{ marginTop: "3rem", ...style }}>
@@ -222,7 +221,7 @@ const Quiz = () => {
   })()
 
   return (
-    <Layout subtitle="Political Reasoning Style Quiz">
+    <Layout subtitle="Political Reasoning Style Quiz" description="What kind of thinker are you? How do your beliefs line up?">
       <ol id="questionList">
         {questionsC}
       </ol>
