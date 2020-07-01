@@ -12,7 +12,7 @@ const questions = [
       con: "Allow the neo-Nazis to demonstrate.",
       prog: "Break up the demonstration on the grounds of ‘blocking traffic’.",
     }, {
-      question: "A human rights group is picketing the headquarters of Exxon Mobil for abusing their workers in Third World countries. Exxon Mobil executives feel very uncomfortable entering their HQ and say that the protesters are blocking the main entrance to the building. They want the protesters to go protest in a designated free speech zone a few miles away where it will have no effect on them.",
+      question: "A human rights group is picketing the headquarters of Exxon Mobil for abusing their workers in Third World countries. Exxon Mobil executives feel uncomfortable entering their HQ and say that the protesters are blocking the main entrance to the building. They want the protesters to go protest in a designated free speech zone a few miles away where it will have no effect on them.",
       con: "Tell them to go protest far away.",
       prog: "Allow the human rights group to continue to stay near the building.",
     }
@@ -213,7 +213,7 @@ const Quiz = () => {
               <p>The purpose of this test is to help teach the distinction between meta-level thinking and object-level thinking.</p>
               <p><strong>Object-level thinkers</strong> decide difficult cases by trying to find the solution that makes the side they like win and the side they dislike lose, in that particular situation.</p>
               <p><strong>Meta-level thinkers</strong> decide difficult cases by trying to find general principles that can be applied evenhandedly regardless of which side they like or dislike.</p>
-              <p>Meta-level rules are useful because they help us do the right thing even when it feels wrong. For example, many historical atrocities have happened to groups that had been intentionally dehumanized, so we should probably never dehumanize groups of people (even if it <em>feels</em> justified to us).</p>
+              <p>Meta-level rules are useful because they help us do the right thing even when it feels wrong. For example, many historical atrocities have happened to groups that had been intentionally dehumanized, so we should probably never dehumanize groups of people (even if it <em>feels</em> justified at the time).</p>
 
               <p>That doesn't mean we should throw out object-level thinking - we can have a meta-level rule that says not to violate state's rights, but violating that rule is probably fine if it's necessary for ending slavery.</p>
             </details>
