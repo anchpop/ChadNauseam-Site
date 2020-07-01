@@ -217,7 +217,7 @@ const Quiz = () => {
 
               <p>That doesn't mean we should throw out object-level thinking - we can have a meta-level rule that says not to violate state's rights, but violating that rule is probably fine if it's necessary for ending slavery.</p>
             </details>
-            {usedObjectReasoningFor.length > 0 ? <><p>It is difficult to come up with questions that are totally fair! It's possible that for some of these you were following a meta-level rule other than the one I had in mind. <h4>But it looks like you used object-level thinking for these questions:</h4></p>
+            {usedObjectReasoningFor.length > 0 ? <><p>It's difficult to come up with questions that are totally fair! It's likely that for some of these you were following a meta-level rule other than the one I had in mind. <h4>But it looks like you used object-level thinking for these questions:</h4></p>
               {usedObjectReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
             {usedMetaReasoningFor.length > 0 ? <><h4>You used meta-level thinking for these questions:</h4>
               {usedMetaReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
