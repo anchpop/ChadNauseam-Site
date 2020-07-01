@@ -43,7 +43,7 @@ const Layout = ({ subtitle, description, children }) => {
     <>
       <SEO title={subtitle} description={description} />
       <Helmet>
-        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&display=swap" rel="stylesheet"></link>
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&family=Source+Sans+Pro&display=swap" rel="stylesheet"></link>
       </Helmet>
 
 

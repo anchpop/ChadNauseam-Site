@@ -109,6 +109,11 @@ input, button, textarea, select {
   right: 20px;
   top: 20px;
 }
+.social-button-text { 
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  margin-left: 4px;
+}
 
 
 @media only screen and (max-width: 1400px) {
