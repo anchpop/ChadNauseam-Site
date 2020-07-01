@@ -29,3 +29,10 @@
   to = "https://www.twitch.tv/chadnauseam"
   status = 301
   force = false
+
+
+[[redirects]]
+  from = "/reddit"
+  to = "https://www.reddit.com/r/chadnauseam"
+  status = 301
+  force = false
