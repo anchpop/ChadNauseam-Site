@@ -207,7 +207,8 @@ const Quiz = () => {
       <Motion defaultStyle={{ opacity: .3 }} style={{ opacity: spring(1, presets.gentle) }}>
         {(style) =>
           <div ref={resultsRef} style={{ marginTop: "3rem", ...style }}>
-            <h3>This is not meant to be a perfect diagnostic, but it seems you are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker</mark>.</h3>
+            <p>This is not meant to be a perfect diagnostic, but...</p>
+            <h3>It seems you are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker</mark>.</h3>
             <details>
               <summary>What does this mean?</summary>
               <p>The purpose of this test is to help teach the distinction between meta-level thinking and object-level thinking.</p>
