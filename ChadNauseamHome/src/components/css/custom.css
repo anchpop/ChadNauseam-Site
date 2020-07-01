@@ -1,6 +1,6 @@
 html {
 	min-height: 100%;
-  background: linear-gradient(20deg, #1a2732 0%, #3b1c25 100%);
+  background: linear-gradient(20deg, #22323f 0%, #4a2530 100%);
   /*background: linear-gradient(200deg, var(--color-shirt-dark) 0%, var(--color-skirt-dark) 100%);*/
   background-size: cover;
   background-repeat: no-repeat;
@@ -18,7 +18,9 @@ body {
   text-decoration: none;
 }
 
-
+p {
+  text-align: justify
+}
 
 
 .checkboxes label {
@@ -37,6 +39,12 @@ body {
 input, button, textarea, select {
   box-shadow: 0px 0px 3px rgba(256,256,256,.2);
 }
+
+.shadowed {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
 
 @media (prefers-color-scheme: light) {
   html {

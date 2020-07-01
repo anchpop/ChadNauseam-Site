@@ -1,0 +1,33 @@
+.resultCard {
+  border-radius: 2px;
+  padding: 7px;
+  margin-bottom: 2rem;
+  background: var(--background);
+  
+  
+  display: grid;
+  grid-template-columns: auto 1px auto;
+  
+  grid-gap: 10px;
+}
+
+#youSaid {
+  grid-column: 1 / span 3;
+}
+
+.questionResult {
+  padding: 5px;
+  text-align: justify;
+  font-size: 90%;
+}
+
+.answerResult {
+  padding: 5px;
+  text-align: justify;
+  font-size: 90%;
+}
+
+
+.divider {
+  border-left: 1px solid var(--text-main);
+}

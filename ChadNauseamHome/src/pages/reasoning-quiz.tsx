@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { Link } from "gatsby"
 import { Motion, spring } from 'react-motion';
 
@@ -51,7 +51,7 @@ const questions = [
     }
   ], [ // Questions 5 and 15. Principle: Should you use loopholes and tricks in the political process to pass or restrict legislation if you can't get your way honestly?
     {
-      question: "The United Nations is trying to pass a resolution banning land mines and allocating some resources to clean up existing mines that pose a danger to civilians. North Korea is causing a fuss and refusing to support the resolution, and this is endangering its chances of passing. The proponents of the resolution come up with a scheme to exploit a loophole in UN procedures, holding the vote in secret at a time when the North Korean representative might not even be present.",
+      question: "A Southern town that produced a disproportionately high number of great Confederate generals and soldiers wants to erect a monument to its Civil War military heritage. The town’s small African-American community objects, saying that these generals, however impressive, were fighting to defend slavery and an evil regime.",
       con: "Stick to normal procedure and try to pass the anti-mine resolution above board and through legitimate channels",
       prog: "Exploit this loophole to make sure the anti-mine resolution passes",
     },
@@ -83,11 +83,13 @@ const questions = [
 type Answer = NoAnswer | ProgAnswer | ConAnswer
 
 interface ConAnswer {
-  answer: "con"
+  answer: "con",
+  associated: number
 }
 
 interface ProgAnswer {
-  answer: "prog"
+  answer: "prog",
+  associated: number
 }
 
 interface NoAnswer {
@@ -108,19 +110,40 @@ const allFilled = (userAnswers: { [x: number]: Answer }) => {
   return result
 }
 
-const SecondPage = () => {
-  const questionsL = questions.map(([q1, _], index) => ({ accociated: index, i: index, earlier: true, ...q1 })).concat(questions.map(([_, q2], index) => ({ accociated: index, i: index + questions.length, earlier: false, ...q2 })))
+const resultsCard = (i: number, userAnswers: { [x: number]: Answer; }) => {
+  return (
+    <div className="resultCard shadowed" key={i}>
+      <div className="questionResult">{questions[i][0].question}</div>
+      <div className="divider"></div>
+      <div className="questionResult">{questions[i][1].question}</div>
+
+      <div id="youSaid"><div style={{ display: "flex", justifyContent: "center" }}><b>You said...</b></div></div>
+
+      <div className="answerResult">{questions[i][0][userAnswers[i].answer]}</div>
+      <div></div>
+      <div className="answerResult">{questions[i][1][userAnswers[i + questions.length].answer]}</div>
+    </div>
+  )
+}
+
+const Quiz = () => {
+  const questionsL = questions.map(([q1, _], index) => ({ associated: index, i: index, earlier: true, ...q1 })).concat(questions.map(([_, q2], index) => ({ associated: index, i: index + questions.length, earlier: false, ...q2 })))
 
 
   const [userAnswers, setUserAnswers] = useState(filledNone(questionsL))
-  const [pressedView, setPressedView] = useState(false)
+  const [viewingResults, setViewingResults] = useState(false)
+  const resultsRef = useRef(null)
+
+  useEffect(() => {
+    if (viewingResults) {
+      resultsRef.current.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [viewingResults])
 
 
 
 
-
-
-  const questionsC = questionsL.map(({ question, con, prog, i, earlier }) => {
+  const questionsC = questionsL.map(({ question, con, prog, i, associated }) => {
     const enabled = (i === 0 || userAnswers[i - 1].answer !== "none") ? true : false;
     const conA = (
       <>
@@ -129,7 +152,7 @@ const SecondPage = () => {
             disabled={!enabled}
             type="radio"
             checked={userAnswers[i].answer === "con"}
-            onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "con" } }) }} />
+            onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "con", associated } }) }} />
           <span style={{ marginLeft: ".3rem" }}>{con}</span>
         </label>
       </>
@@ -141,7 +164,7 @@ const SecondPage = () => {
             disabled={!enabled}
             type="radio"
             checked={userAnswers[i].answer === "prog"}
-            onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "prog" } }) }} />
+            onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "prog", associated } }) }} />
           <span style={{ marginLeft: ".3rem" }}>{prog}</span>
         </label>
       </>
@@ -151,9 +174,9 @@ const SecondPage = () => {
 
     return (
 
-      <Motion defaultStyle={{ opacity: .3 }} style={{ opacity: spring(enabled ? 1 : .3) }}>
+      <Motion key={i} defaultStyle={{ opacity: .3 }} style={{ opacity: spring(enabled ? 1 : .3) }}>
         {style =>
-          <li key={i} style={{ marginBottom: "3rem", ...style }} className={enabled ? "enabledQuestion" : "disabledQuestion"}>
+          <li style={{ marginBottom: "3rem", ...style }} className={enabled ? "enabledQuestion" : "disabledQuestion"}>
             <div style={{ marginBottom: "1rem" }}>{question}</div>
             <div style={{ marginLeft: ".5rem" }} className="checkboxes">
               <div style={{ marginBottom: ".5rem" }}>{a1}</div>
@@ -165,16 +188,50 @@ const SecondPage = () => {
       </Motion>
     )
   })
+
+
+
+  const resultsC = !viewingResults ? <></> : (() => {
+    const collatedAnswers = questions.map((_, i) => ([userAnswers[i], userAnswers[i + questions.length]]))
+    const annotatedAnswers = collatedAnswers.map(([a1, a2], i) => ({ questionNum: i, meta: a1.answer !== a2.answer }))
+
+    const usedMetaReasoningFor = annotatedAnswers.filter(({ meta }) => (meta))
+    const usedObjectReasoningFor = annotatedAnswers.filter(({ meta }) => (!meta))
+    console.log(usedObjectReasoningFor)
+
+    const metaThinker = usedMetaReasoningFor.length > 3
+
+    return (
+      <div ref={resultsRef} style={{ marginTop: "3rem" }}>
+        <h3>You are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker.</mark>.</h3>
+        <p>Object-level thinkers decide difficult cases by trying to find the solution that makes the side they like win and the side they dislike lose, in that particular situation.</p>
+        <p>Meta-level thinkers decide difficult cases by trying to find general principles that can be applied evenhandedly regardless of which side they like or dislike.</p>
+        {usedObjectReasoningFor.length > 0 ? <><h4>You used object-level thinking for these questions:</h4>
+          {usedObjectReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
+        {usedMetaReasoningFor.length > 0 ? <><h4>You used meta-level thinking for these questions:</h4>
+          {usedMetaReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
+      </div>
+    )
+  })()
+
   return (
     <Layout subtitle="Political Reasoning Style Quiz">
-      <ol style={{ textAlign: 'justify' }}>
+      <ol>
         {questionsC}
       </ol>
-      <div>
-        <button onChange={(event) => setPressedView(true)} disabled={!allFilled(userAnswers)}>View Your Results!</button>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <button onClick={(event) => setViewingResults(!viewingResults)} disabled={!allFilled(userAnswers)}>{!viewingResults ? "View" : "Hide"} Your Results!</button>
       </div>
+      {resultsC}
+
+      <p style={{ marginTop: "1em" }}>The questions from this quiz are sourced from <a href="https://web.archive.org/web/20200618074832/https://slatestarcodex.com/2014/03/08/the-slate-star-codex-political-spectrum-quiz/">Scott Alexander</a>.</p>
+
     </Layout >
   )
 }
 
-export default SecondPage
+export default Quiz
