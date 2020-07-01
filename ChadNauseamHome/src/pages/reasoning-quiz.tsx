@@ -8,8 +8,8 @@ import "../components/css/reasoning_quiz.css"
 const questions = [
   [ // Questions 1 and 11. Principle: Should you get rid of protests you don't like through legal technicalities?
     {
-      question: "Neo-Nazis are holding a demonstration in a small town, waving swastikas around and shouting about Hitler. They seem to be pretty peaceful so far, so the First Amendment says you probably can’t get rid of them. However, their demonstration seems to be near a main street and it could be a minor inconvenience to the traffic trying to go through.",
-      con: "Allow the neo-Nazis to demonstrate unmolested.",
+      question: "Neo-Nazis are holding a demonstration in a small town, waving swastikas around and shouting about Hitler. They seem to be pretty peaceful so far, so the First Amendment says you probably can’t get rid of them. However, their demonstration is near a main street and it could be a minor inconvenience to the traffic trying to go through.",
+      con: "Allow the neo-Nazis to demonstrate.",
       prog: "Break up the demonstration on the grounds of ‘blocking traffic’.",
     }, {
       question: "A human rights group is picketing the headquarters of Exxon Mobil for abusing their workers in Third World countries. Exxon Mobil executives feel very uncomfortable entering their HQ and say that the protesters are blocking the main entrance to the building. They want the protesters to go protest in a designated free speech zone a few miles away where it will have no effect on them.",
@@ -62,13 +62,13 @@ const questions = [
     }
   ], [ // Questions 6 and 16. Principle: Should groups attempt to control other's speech through deliberate public shaming?
     {
-      question: "A feminist group is annoyed at Disney for exclusively making where a dashing male hero saves a helpless princess, because these reinfoce gender norms the group would like to see changed. They publicly demand Disney stop making this kind of movie and instead make movies with strong female heroes. They will have prominent marches accusing everyone in Disney of sexism until they comply.",
-      con: "This feminist group is being obnoxious and bullying, and deserve condemnation.",
-      prog: "This feminist group is acting according to proper democratic means to change a problematic feature of the culture, and deserve praise.",
+      question: "A feminist group is annoyed at Disney for exclusively making movies where a dashing male hero saves a helpless princess, because these reinforce gender norms the group would like to see changed. They publicly demand Disney stop making this kind of movie and instead make movies with strong female heroes. They will have prominent marches accusing higher-ups at Disney of sexism until they comply.",
+      con: "If people want to watch these movies that's no business of the feminist group. It's fine to want to see change, but attempting to bully Disney staff into it isn't the way to go.",
+      prog: "This feminist group is acting according to proper democratic means to change a problematic feature of the culture.",
     },
     {
-      question: "Sometime in the 1950s, The Society Of Patriotic Americans For A More Patriotic America notices that a lot of writers seem to lean left, and worries that novels are promoting Communist ideas (perhaps by portraying businessmen in a very negative light or having rebels and political agititators as heroes). They meet with the heads of various publishing companies and ask the companies to self-monitor their books to make sure they are suitably American. SOPAFAMPA says they may tar them in the press as Commies if they refuse.",
-      con: "SOPAFAMPA did not threaten force and therefore did not violate the First Amendment - the publishers have the right to publish whatever they like, and SOPAFAMPA has the right to critisize them for it.",
+      question: "Sometime in the 1950s, The Society Of Patriotic Americans For A More Patriotic America notices that a lot of writers seem to lean left, and worries that novels are promoting Communist ideas (perhaps by portraying businessmen in a very negative light or having rebels and political agitators as heroes). They meet with the heads of various publishing companies and ask the companies to self-monitor their books to make sure they are suitably American. SOPAFAMPA says they may tar them in the press as Commies if they refuse.",
+      con: "SOPAFAMPA did not threaten force and therefore did not violate the First Amendment - the publishers have the right to publish whatever they like, and SOPAFAMPA has the right to criticize them for it.",
       prog: "SOPAFAMPA’s comments, even if not direct threats, will have a chilling effect on artistic expression and are tantamount to censorship. They should not be attempting to manipulate the public discourse in this way.",
     }
   ],
@@ -207,10 +207,12 @@ const Quiz = () => {
       <Motion defaultStyle={{ opacity: .3 }} style={{ opacity: spring(1, presets.gentle) }}>
         {(style) =>
           <div ref={resultsRef} style={{ marginTop: "3rem", ...style }}>
-            <h3>You are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker</mark>.</h3>
+            <h3>This is not meant to be a perfect diagnostic, but it seems you are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker</mark>.</h3>
+            <p>The purpose of this test is to help teach the distinction between meta-level thinking and object-level thinking.</p>
             <p><strong>Object-level thinkers</strong> decide difficult cases by trying to find the solution that makes the side they like win and the side they dislike lose, in that particular situation.</p>
             <p><strong>Meta-level thinkers</strong> decide difficult cases by trying to find general principles that can be applied evenhandedly regardless of which side they like or dislike.</p>
-            {usedObjectReasoningFor.length > 0 ? <><h4>You used object-level thinking for these questions:</h4>
+            <p>Meta-level rules are useful because they help us do the right thing even when it feels wrong. For example, many historical atrocities have happened to groups that had been intentionally dehumanized, so we should probably never dehumanize groups of people (even if it <em>feels</em> justified to us). That doesn't mean we should throw out object-level thinking - we can have a meta-level rule that says not to violate state's rights, but violating that rule is fine if it's necessary for ending slavery.</p>
+            {usedObjectReasoningFor.length > 0 ? <><h4>It is difficult to come up with questions that are totally fair! It's possible that for some of these you were following a meta-level rule other than the one I had in mind. But it looks like you used object-level thinking for these questions:</h4>
               {usedObjectReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
             {usedMetaReasoningFor.length > 0 ? <><h4>You used meta-level thinking for these questions:</h4>
               {usedMetaReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
@@ -234,7 +236,7 @@ const Quiz = () => {
       </div>
       {resultsC}
 
-      <p style={{ marginTop: "1em" }}>The questions from this quiz are sourced from <a href="https://web.archive.org/web/20200618074832/https://slatestarcodex.com/2014/03/08/the-slate-star-codex-political-spectrum-quiz/">Scott Alexander</a>.</p>
+      <p style={{ marginTop: "1em" }}>The questions from this quiz are sourced from <a href="https://web.archive.org/web/20200618074832/https://slatestarcodex.com/2014/03/08/the-slate-star-codex-political-spectrum-quiz/">Scott Alexander</a>, with some slight modifications by me.</p>
 
     </Layout >
   )
