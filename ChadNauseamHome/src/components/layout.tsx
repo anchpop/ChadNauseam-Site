@@ -11,7 +11,6 @@ import { useStaticQuery, graphql } from "gatsby"
 import Helmet from "react-helmet"
 import { Motion, spring } from 'react-motion';
 import SEO from "../components/seo"
-import favicon from '../images/favicon.ico'
 
 import Header from "./header"
 import "./css/vars.css"
@@ -33,7 +32,6 @@ const Layout = ({ subtitle, description, children }) => {
     <>
       <SEO title={subtitle} description={description} />
       <Helmet>
-        <link rel="icon" href={favicon} />
         <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&display=swap" rel="stylesheet"></link>
       </Helmet>
 
