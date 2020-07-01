@@ -87,7 +87,7 @@ input, button, textarea, select {
 }
 
 
-.socialButton { 
+.social-button { 
   user-select: none;
   padding: 5px; 
   padding-left: 10px; 
@@ -101,7 +101,7 @@ input, button, textarea, select {
   justify-content: space-between;
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
-.socialButton:hover { 
+.social-button:hover { 
   filter: brightness(110%);
 }
 .socials-container {
@@ -111,7 +111,7 @@ input, button, textarea, select {
 }
 
 
-@media only screen and (max-width: 1400px) and (min-width: 700px) {
+@media only screen and (max-width: 1400px) {
   .socials-container {
     position: unset;
     right: unset;
@@ -124,10 +124,7 @@ input, button, textarea, select {
 
 
 @media only screen and (max-width: 700px) {
-  .socials-container {
-    position: unset;
-    right: unset;
-    top: unset;
+  .social-button-text {
     display: none;
   }
 }
