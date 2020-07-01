@@ -41,8 +41,8 @@ const questions = [
   ], [ // Questions 4 and 14. Principle: Should local governments allow public commemorations when a minority of their populace disagrees with them?
     {
       question: "The Dalai Lama comes to speak at a college town, and the town wants to hold a big celebration honoring his visit, give him the key to the city, and make a small monument commemorating the event. The town’s sizeable Chinese minority population gets upset, saying they strongly believe the Dalai Lama is a bad person trying to break apart China.",
-      con: "The town should celebrate the Dalai Lama’s visit however they feel appropriate; it’s pretty cool and the Chinese are outvoted",
-      prog: "The town should consider the sensibilities of the Chinese minority and keep the Dalai Lama’s visit low-key and unofficial",
+      con: "The town should consider the sensibilities of the Chinese minority and keep the Dalai Lama’s visit low-key and unofficial",
+      prog: "The town should celebrate the Dalai Lama’s visit however they feel appropriate; it’s pretty cool and the Chinese are outvoted",
     },
     {
       question: "A Southern town that produced a disproportionately high number of great Confederate generals and soldiers wants to erect a monument to its Civil War military heritage. The town’s small African-American community objects, saying that these generals, however impressive, were fighting to defend slavery and an evil regime.",
