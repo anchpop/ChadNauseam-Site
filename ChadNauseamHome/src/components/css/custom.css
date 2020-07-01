@@ -111,16 +111,27 @@ input, button, textarea, select {
 }
 
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1400px) and (min-width: 700px) {
   .socials-container {
     position: unset;
     right: unset;
     top: unset;
-    display: flex;
+    display: flex; 
     justify-content: center;
     margin-bottom: 2rem;
   }
 }
+
+
+@media only screen and (max-width: 700px) {
+  .socials-container {
+    position: unset;
+    right: unset;
+    top: unset;
+    display: none;
+  }
+}
+
 
 
 @media (prefers-color-scheme: light) {
