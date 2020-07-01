@@ -12,8 +12,8 @@ const questions = [
       con: "Allow the neo-Nazis to demonstrate.",
       prog: "Break up the demonstration on the grounds of ‘blocking traffic’.",
     }, {
-      question: "A human rights group is picketing the headquarters of Exxon Mobil for abusing their workers in Third World countries. Exxon Mobil executives feel uncomfortable entering their HQ and say that the protesters are blocking the main entrance to the building. They want the protesters to go protest in a designated free speech zone a few miles away where it will have no effect on them.",
-      con: "Tell them to go protest far away.",
+      question: "A human rights group is picketing the headquarters of Exxon Mobil for abusing their workers in Third World countries. They're shouting at the executives from the main road through the fences of the complex, which is causing them to feel very uncomfortable. The executives want the protesters to go protest in a designated free speech zone a few miles away where it will have no effect on them.",
+      con: "Tell them to go protest elsewhere.",
       prog: "Allow the human rights group to continue to stay near the building.",
     }
   ], [ // Questions 2 and 12. Principle: Should you get fire people for political views expressed off-the-job?
