@@ -21,8 +21,18 @@
   font-size: 80%;
 }
 
-
+.questionText, .answerText {
+  text-align: justify
+}
 
 .divider {
   border-left: 1px solid var(--text-main);
+}
+
+@media only screen and (max-width: 800px) {
+  #questionList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
 }

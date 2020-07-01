@@ -153,7 +153,8 @@ const Quiz = () => {
             type="radio"
             checked={userAnswers[i].answer === "con"}
             onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "con", associated } }) }} />
-          <span style={{ marginLeft: ".3rem" }}>{con}</span>
+          <span
+            className="answerText" style={{ marginLeft: ".3rem" }}>{con}</span>
         </label>
       </>
     );
@@ -165,7 +166,8 @@ const Quiz = () => {
             type="radio"
             checked={userAnswers[i].answer === "prog"}
             onChange={(event) => { setUserAnswers({ ...userAnswers, [i]: { answer: "prog", associated } }) }} />
-          <span style={{ marginLeft: ".3rem" }}>{prog}</span>
+          <span
+            className="answerText" style={{ marginLeft: ".3rem" }}>{prog}</span>
         </label>
       </>
     );
@@ -177,7 +179,7 @@ const Quiz = () => {
       <Motion key={i} defaultStyle={{ opacity: .3 }} style={{ opacity: spring(enabled ? 1 : .3) }}>
         {style =>
           <li style={{ marginBottom: "3rem", ...style }} className={enabled ? "enabledQuestion" : "disabledQuestion"}>
-            <div style={{ marginBottom: "1rem" }}>{question}</div>
+            <div className="questionText" style={{ marginBottom: "1rem" }}>{question}</div>
             <div style={{ marginLeft: ".5rem" }} className="checkboxes">
               <div style={{ marginBottom: ".5rem" }}>{a1}</div>
 
@@ -221,7 +223,7 @@ const Quiz = () => {
 
   return (
     <Layout subtitle="Political Reasoning Style Quiz">
-      <ol>
+      <ol id="questionList">
         {questionsC}
       </ol>
       <div style={{
