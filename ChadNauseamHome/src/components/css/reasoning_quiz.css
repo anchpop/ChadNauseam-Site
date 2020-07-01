@@ -15,17 +15,12 @@
   grid-column: 1 / span 3;
 }
 
-.questionResult {
+.questionResult, .answerResult  {
   padding: 5px;
   text-align: justify;
-  font-size: 90%;
+  font-size: 80%;
 }
 
-.answerResult {
-  padding: 5px;
-  text-align: justify;
-  font-size: 90%;
-}
 
 
 .divider {

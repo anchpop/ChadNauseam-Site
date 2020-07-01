@@ -206,9 +206,9 @@ const Quiz = () => {
       <Motion defaultStyle={{ opacity: .3 }} style={{ opacity: spring(1, presets.gentle) }}>
         {(style) =>
           <div ref={resultsRef} style={{ marginTop: "3rem", ...style }}>
-            <h3>You are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker.</mark>.</h3>
-            <p>Object-level thinkers decide difficult cases by trying to find the solution that makes the side they like win and the side they dislike lose, in that particular situation.</p>
-            <p>Meta-level thinkers decide difficult cases by trying to find general principles that can be applied evenhandedly regardless of which side they like or dislike.</p>
+            <h3>You are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker</mark>.</h3>
+            <p><strong>Object-level thinkers</strong> decide difficult cases by trying to find the solution that makes the side they like win and the side they dislike lose, in that particular situation.</p>
+            <p><strong>Meta-level thinkers</strong> decide difficult cases by trying to find general principles that can be applied evenhandedly regardless of which side they like or dislike.</p>
             {usedObjectReasoningFor.length > 0 ? <><h4>You used object-level thinking for these questions:</h4>
               {usedObjectReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
             {usedMetaReasoningFor.length > 0 ? <><h4>You used meta-level thinking for these questions:</h4>
