@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import { Link } from "gatsby"
-import { Motion, spring } from 'react-motion';
+import { Motion, spring, presets } from 'react-motion';
 
 import Layout from "../components/layout"
 import "../components/css/reasoning_quiz.css"
@@ -202,15 +202,20 @@ const Quiz = () => {
     const metaThinker = usedMetaReasoningFor.length > 3
 
     return (
-      <div ref={resultsRef} style={{ marginTop: "3rem" }}>
-        <h3>You are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker.</mark>.</h3>
-        <p>Object-level thinkers decide difficult cases by trying to find the solution that makes the side they like win and the side they dislike lose, in that particular situation.</p>
-        <p>Meta-level thinkers decide difficult cases by trying to find general principles that can be applied evenhandedly regardless of which side they like or dislike.</p>
-        {usedObjectReasoningFor.length > 0 ? <><h4>You used object-level thinking for these questions:</h4>
-          {usedObjectReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
-        {usedMetaReasoningFor.length > 0 ? <><h4>You used meta-level thinking for these questions:</h4>
-          {usedMetaReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
-      </div>
+
+      <Motion defaultStyle={{ opacity: .3 }} style={{ opacity: spring(1, presets.gentle) }}>
+        {(style) =>
+          <div ref={resultsRef} style={{ marginTop: "3rem", ...style }}>
+            <h3>You are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker.</mark>.</h3>
+            <p>Object-level thinkers decide difficult cases by trying to find the solution that makes the side they like win and the side they dislike lose, in that particular situation.</p>
+            <p>Meta-level thinkers decide difficult cases by trying to find general principles that can be applied evenhandedly regardless of which side they like or dislike.</p>
+            {usedObjectReasoningFor.length > 0 ? <><h4>You used object-level thinking for these questions:</h4>
+              {usedObjectReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
+            {usedMetaReasoningFor.length > 0 ? <><h4>You used meta-level thinking for these questions:</h4>
+              {usedMetaReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
+          </div>
+        }
+      </Motion>
     )
   })()
 
