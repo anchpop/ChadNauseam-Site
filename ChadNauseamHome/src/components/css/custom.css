@@ -11,6 +11,10 @@ body {
   background: unset;
 }
 
+h3, h4 {
+  line-height: 1.4;
+}
+
 
 .homepageHeader {
   color: white;

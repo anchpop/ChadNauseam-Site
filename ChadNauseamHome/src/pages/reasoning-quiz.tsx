@@ -208,11 +208,16 @@ const Quiz = () => {
         {(style) =>
           <div ref={resultsRef} style={{ marginTop: "3rem", ...style }}>
             <h3>This is not meant to be a perfect diagnostic, but it seems you are a{metaThinker ? "" : "n"} <mark>{metaThinker ? "Meta-level" : "Object-level"} thinker</mark>.</h3>
-            <p>The purpose of this test is to help teach the distinction between meta-level thinking and object-level thinking.</p>
-            <p><strong>Object-level thinkers</strong> decide difficult cases by trying to find the solution that makes the side they like win and the side they dislike lose, in that particular situation.</p>
-            <p><strong>Meta-level thinkers</strong> decide difficult cases by trying to find general principles that can be applied evenhandedly regardless of which side they like or dislike.</p>
-            <p>Meta-level rules are useful because they help us do the right thing even when it feels wrong. For example, many historical atrocities have happened to groups that had been intentionally dehumanized, so we should probably never dehumanize groups of people (even if it <em>feels</em> justified to us). That doesn't mean we should throw out object-level thinking - we can have a meta-level rule that says not to violate state's rights, but violating that rule is fine if it's necessary for ending slavery.</p>
-            {usedObjectReasoningFor.length > 0 ? <><h4>It is difficult to come up with questions that are totally fair! It's possible that for some of these you were following a meta-level rule other than the one I had in mind. But it looks like you used object-level thinking for these questions:</h4>
+            <details>
+              <summary>What does this mean?</summary>
+              <p>The purpose of this test is to help teach the distinction between meta-level thinking and object-level thinking.</p>
+              <p><strong>Object-level thinkers</strong> decide difficult cases by trying to find the solution that makes the side they like win and the side they dislike lose, in that particular situation.</p>
+              <p><strong>Meta-level thinkers</strong> decide difficult cases by trying to find general principles that can be applied evenhandedly regardless of which side they like or dislike.</p>
+              <p>Meta-level rules are useful because they help us do the right thing even when it feels wrong. For example, many historical atrocities have happened to groups that had been intentionally dehumanized, so we should probably never dehumanize groups of people (even if it <em>feels</em> justified to us).</p>
+
+              <p>That doesn't mean we should throw out object-level thinking - we can have a meta-level rule that says not to violate state's rights, but violating that rule is probably fine if it's necessary for ending slavery.</p>
+            </details>
+            {usedObjectReasoningFor.length > 0 ? <><p>It is difficult to come up with questions that are totally fair! It's possible that for some of these you were following a meta-level rule other than the one I had in mind. <h4>But it looks like you used object-level thinking for these questions:</h4></p>
               {usedObjectReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
             {usedMetaReasoningFor.length > 0 ? <><h4>You used meta-level thinking for these questions:</h4>
               {usedMetaReasoningFor.map((i) => resultsCard(i.questionNum, userAnswers))}</> : <></>}
