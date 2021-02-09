@@ -1,6 +1,8 @@
 module.exports = {
   siteMetadata: {
     title: "Chad Nauseam Home",
+    author: "Andre Popovitch",
+    siteUrl: "https://chadnauseam.com/"
   },
   plugins: [
     "gatsby-plugin-netlify-cms",

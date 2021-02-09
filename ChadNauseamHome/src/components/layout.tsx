@@ -5,32 +5,32 @@
  * See: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-import React from "react"
-import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
-import Helmet from "react-helmet"
-import { Motion, spring } from "react-motion"
-import { useMediaQuery } from "react-responsive"
+import React from "react";
+import PropTypes from "prop-types";
+import { useStaticQuery, graphql } from "gatsby";
+import Helmet from "react-helmet";
+import { Motion, spring } from "react-motion";
+import { useMediaQuery } from "react-responsive";
 
-import SEO from "../components/seo"
-import SocialButton from "../components/social_button"
-import Header from "./header"
+import SEO from "../components/seo";
+import SocialButton from "../components/social_button";
+import Header from "./header";
 
-import ThemeContext from "../utils/themeContext"
+import ThemeContext from "../utils/themeContext";
 
-import discord from "../images/discord.svg"
-import twitter from "../images/twitter.svg"
-import reddit from "../images/reddit.svg"
+import discord from "../images/discord.svg";
+import twitter from "../images/twitter.svg";
+import reddit from "../images/reddit.svg";
 
-import "./css/vars.css"
-import "./css/water.css"
-import "./css/custom.css"
+import "./css/vars.css";
+import "./css/water.css";
+import "./css/custom.css";
 
 const Layout = ({ subtitle, description, children }) => {
   // Try to avoid using these.
   // You want to do as much in CSS as possible because these are obviously not accessible during server-side rendering
-  const smallScreen = useMediaQuery({ maxWidth: 1400 })
-  const lightTheme = useMediaQuery({ query: "(prefers-color-scheme: light)" })
+  const smallScreen = useMediaQuery({ maxWidth: 1400 });
+  const lightTheme = useMediaQuery({ query: "(prefers-color-scheme: light)" });
 
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
@@ -40,7 +40,7 @@ const Layout = ({ subtitle, description, children }) => {
         }
       }
     }
-  `)
+  `);
 
   return (
     <>
@@ -99,11 +99,11 @@ const Layout = ({ subtitle, description, children }) => {
         )}
       </Motion>
     </>
-  )
-}
+  );
+};
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
-}
+};
 
-export default Layout
+export default Layout;
