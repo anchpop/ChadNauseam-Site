@@ -1,0 +1,38 @@
+[[redirects]]
+  from = "/twitter"
+  to = "https://twitter.com/chadnauseam"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/discord"
+  to = "https://discord.gg/mpgqfsH"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/yt"
+  to = "https://www.youtube.com/channel/UCGRwctlcDV1nNRYYH0-3Nsg?view_as=subscriber"
+  status = 301
+  force = false
+
+  
+[[redirects]]
+  from = "/youtube"
+  to = "https://www.youtube.com/channel/UCGRwctlcDV1nNRYYH0-3Nsg?view_as=subscriber"
+  status = 301
+  force = false
+
+
+[[redirects]]
+  from = "/twitch"
+  to = "https://www.twitch.tv/chadnauseam"
+  status = 301
+  force = false
+
+
+[[redirects]]
+  from = "/reddit"
+  to = "https://www.reddit.com/r/chadnauseam"
+  status = 301
+  force = false
