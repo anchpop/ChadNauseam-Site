@@ -6,36 +6,42 @@ const Header = ({ subtitle, siteTitle, style }) => (
   <header
     style={{
       marginBottom: `1.45rem`,
-      ...style
+      ...style,
     }}
   >
     <div
       style={{
         margin: `0 auto`,
         maxWidth: 960,
-        textAlign: 'center',
+        textAlign: "center",
         marginBottom: "2rem",
       }}
     >
-      <h1 style={{
-        fontFamily: 'Comic Neue', textTransform: 'lowercase', fontSize: '2.6rem', marginBottom: "1.45rem"
-
-      }}>
-        <Link
-          to="/"
-          className="homepageHeader"
-        >
+      <h1
+        style={{
+          fontFamily: "Pacifico",
+          fontWeight: 400,
+          fontStyle: "normal",
+          fontSize: "2.6rem",
+          marginBottom: "1.45rem",
+        }}
+      >
+        {subtitle}
+      </h1>
+      <hr />
+      <h1
+        style={{
+          fontFamily: "Comic Neue",
+          textTransform: "lowercase",
+        }}
+        className="homepageHeader"
+      >
+        <Link to="/" className="homepageHeader">
           {siteTitle}
         </Link>
       </h1>
-      <hr />
-      <h1 style={{
-        fontFamily: 'Pacifico', fontWeight: 400, fontStyle: 'normal'
-      }} className="homepageHeader">
-        {subtitle}
-      </h1>
     </div>
-  </header >
+  </header>
 )
 
 Header.propTypes = {
