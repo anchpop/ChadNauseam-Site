@@ -25,9 +25,9 @@ const Content = ({ time }) => {
   const { smallScreen } = React.useContext(ThemeContext)
 
   const [data, setData] = React.useState([25, 30, 45, 60, 20])
-  const wrapperRef = React.useRef()
+  //const wrapperRef = React.useRef()
   const svgRef = React.useRef()
-  const dimensions = useResizeObserver(wrapperRef)
+  //const dimensions = useResizeObserver(wrapperRef)
 
   React.useEffect(() => {
     const svg = select(svgRef.current)
@@ -52,6 +52,7 @@ const Content = ({ time }) => {
       <h3>
         <InlineMath math="\int_0^\infty x^2 dx" />
       </h3>
+    
       <Sn>
         sidenotes test sidenotes test sidenotes test sidenotes test sidenotes
         test sidenotes test sidenotes test sidenotes
@@ -65,7 +66,7 @@ const Content = ({ time }) => {
         test sidenotes test sidenotes test
       </Sn>
 
-      <div ref={wrapperRef}>
+      <div key="svg-wrap" className="svg-wrap">
         <svg ref={svgRef} style={{ width: "100%" }}></svg>
       </div>
 
