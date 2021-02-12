@@ -45,10 +45,11 @@ const Content = ({ time }) => {
     <>
       <Sn>
         Music is <I>old</I>. It might be older than language. And I've always
-        found it interesting that unlike any other medium, music has a *theory*.
-        If you've ever looked into it, <MusicTheoryTip /> probably felt complex
-        and arbitrary. That's because there's a persistent teaching error in
-        almost all music theory materials - let me explain by analogy.
+        found it interesting that unlike any other medium, music has a{" "}
+        <I>theory</I>. If you've ever looked into it, <MusicTheoryTip />{" "}
+        probably felt complex and arbitrary. That's because there's a persistent
+        teaching error in almost all music theory materials - let me explain by
+        analogy.
       </Sn>
       <Sn>
         To succeed in math class, you have two routes available to you:
