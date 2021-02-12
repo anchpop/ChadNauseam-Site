@@ -54,16 +54,15 @@ const Content = ({ time }) => {
       </h3>
 
       <Sn>
-        sidenotes test sidenotes test sidenotes test sidenotes test sidenotes
-        test sidenotes test sidenotes test sidenotes
-        <Note index={1}>
+        It looks like <InlineMath math="\KaTeX" /> is working. Note:
+        <Note>
           <InlineMath math="\int_0^\infty x^2 dx" />
         </Note>{" "}
-        test sidenotes test sidenotes test sidenotes test sidenotes test
+        Okay, time for tests. test sidenotes test sidenotes test sidenotes test
         sidenotes test sidenotes test sidenotes test sidenotes test sidenotes
-        test sidenotes test <Note index={2}>mytest2</Note>sidenotes test
+        test sidenotes test sidenotes test <Note numbered>mytest2</Note>
         sidenotes test sidenotes test sidenotes test sidenotes test sidenotes
-        test sidenotes test sidenotes test
+        test sidenotes test sidenotes test sidenotes test
       </Sn>
 
       <div key="svg-wrap" className="svg-wrap">

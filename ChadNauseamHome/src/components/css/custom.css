@@ -25,7 +25,12 @@ h4 {
 
 p,
 .text-content {
-  text-align: justify;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+
+  font-size: var(--text-font-size);
+  line-height: 1.7;
 }
 
 .checkboxes label {

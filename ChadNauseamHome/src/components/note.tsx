@@ -1,11 +1,11 @@
-import * as React from "react"
+import * as React from "react";
 
-import Tippy from "@tippyjs/react"
+import Tippy from "@tippyjs/react";
 
-import ThemeContext from "../utils/themeContext"
+import ThemeContext from "../utils/themeContext";
 
-const Note = ({ index, children }) => {
-  const { smallScreen } = React.useContext(ThemeContext)
+const Note: React.FC<{ numbered?: boolean }> = ({ numbered, children }) => {
+  const { smallScreen } = React.useContext(ThemeContext);
 
   const trigger = (
     <Tippy
@@ -18,11 +18,20 @@ const Note = ({ index, children }) => {
       animation="shift-away"
       maxWidth={354}
     >
-      <button className="sn-button">{index}</button>
+      <button className="sidenote-button">
+        <span className="sidenote-button-number"></span>
+      </button>
     </Tippy>
-  )
+  );
 
-  return smallScreen ? trigger : <div className="extract">{children}</div>
-}
+  return smallScreen ? (
+    trigger
+  ) : (
+    <>
+      {numbered ? <span className="sidenote-number"></span> : <></>}
+      <span className={numbered ? "sidenote" : "marginnote"}>{children}</span>
+    </>
+  );
+};
 
-export default Note
+export default Note;
