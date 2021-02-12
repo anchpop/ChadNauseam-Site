@@ -9,7 +9,9 @@
   align-items: center;
   justify-content: center;
 
-  background: #f0f0f0;
+  transition: background-color var(--animation-duration),
+    color var(--animation-duration);
+  background-color: #f0f0f0;
   color: black;
 
   position: relative;
@@ -25,7 +27,6 @@
 .always:hover:enabled,
 .always[aria-expanded="true"] {
   background-color: steelblue;
-  background: steelblue;
   color: white;
   outline: none;
 }
