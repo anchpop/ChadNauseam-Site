@@ -4,7 +4,7 @@ import { Link } from "gatsby";
 import { select } from "d3";
 
 import "katex/dist/katex.min.css";
-import { InlineMath, BlockMath } from "react-katex";
+import { InlineMath as Im, BlockMath } from "react-katex";
 
 import Layout from "../../../components/layout";
 import Image from "../../../components/image";
@@ -85,9 +85,8 @@ const Content = ({ time }) => {
         <Tip
           content={
             <>
-              The derivative of a function <InlineMath math="f" /> is just
-              another function <InlineMath math="f\prime" /> that tells you{" "}
-              <InlineMath math="f" />
+              The derivative of a function <Im math="f" /> is just another
+              function <Im math="f\prime" /> that tells you <Im math="f" />
               's slope at any given point.
             </>
           }
@@ -127,14 +126,14 @@ const Content = ({ time }) => {
         </Tip>
       </p>
       <h3>
-        <InlineMath math="\int_0^\infty x^2 dx" />
+        <Im math="\int_0^\infty x^2 dx" />
       </h3>
 
       <Sn>
         sidenotes test sidenotes test sidenotes test sidenotes test sidenotes
         test sidenotes test sidenotes test sidenotes
         <Note numbered>
-          <InlineMath math="\int_0^\infty x^2 dx" />
+          <Im math="\int_0^\infty x^2 dx" />
         </Note>{" "}
         test side notes test side notes test side notes test side notes test
         side notes test side notes test side notes test side notes test side
@@ -142,9 +141,9 @@ const Content = ({ time }) => {
         side notes test side notes test side notes test side notes test side
         notes test side notes test side notes test
         <Note>
-          Long note <InlineMath math="\int_0^\infty x^2 dx" /> test{" "}
-          <InlineMath math="\int_0^\infty x^2 dx" /> test{" "}
-          <InlineMath math="\int_0^\infty x^2 dx" /> test
+          Long note <Im math="\int_0^\infty x^2 dx" /> test{" "}
+          <Im math="\int_0^\infty x^2 dx" /> test{" "}
+          <Im math="\int_0^\infty x^2 dx" /> test
         </Note>{" "}
       </Sn>
 
