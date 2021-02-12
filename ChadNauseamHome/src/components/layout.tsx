@@ -141,7 +141,7 @@ export const SeriesLayout: React.FC<{}> = ({ children }) => {
                 <div>
                   {previous ? (
                     <Link
-                      to={`${parentPath}/${episode - 1}`}
+                      to={`/${parentPath}/${episode - 1}`}
                       className="navigate-left"
                     >
                       {previous.title}
@@ -153,7 +153,7 @@ export const SeriesLayout: React.FC<{}> = ({ children }) => {
                 <div>
                   {next ? (
                     <Link
-                      to={`${parentPath}/${episode + 1}`}
+                      to={`/${parentPath}/${episode + 1}`}
                       className="navigate-right"
                     >
                       {next.title}
