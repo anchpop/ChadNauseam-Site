@@ -11,7 +11,7 @@ import Image from "../../components/image";
 import Tip, { MusicTheoryTip } from "../../components/tip";
 import Sn from "../../components/sn";
 import Note from "../../components/note";
-import { I } from "../../components/Typography";
+import { I } from "../../components/typography";
 
 import useResizeObserver from "../../utils/resizeObserver";
 

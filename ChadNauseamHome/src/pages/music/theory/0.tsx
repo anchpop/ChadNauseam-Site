@@ -5,7 +5,7 @@ import { InlineMath as Im, BlockMath } from "react-katex";
 import { SeriesLayout } from "../../../components/layout";
 import Tip, { MusicTheoryTip } from "../../../components/tip";
 import Sn from "../../../components/sn";
-import { I } from "../../../components/Typography";
+import { I } from "../../../components/typography";
 
 const AcousticConsonance = () => {
   // I think this section should be rewritten to talk explicitly about
