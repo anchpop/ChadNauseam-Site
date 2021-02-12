@@ -21,7 +21,7 @@ export const seriesInfo: Record<
           "It's important to understand the explanation that makes things obvious.",
       },
       {
-        title: toTitleCase("music notation"),
+        title: toTitleCase("the rules"),
         description:
           "There are good reasons to be skeptical of conventional music notation, and for learning music theory it's of limited use.",
       },
