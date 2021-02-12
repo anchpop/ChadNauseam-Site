@@ -7,82 +7,46 @@ import Tip, { MusicTheoryTip } from "../../../components/tip";
 import Sn from "../../../components/sn";
 import { I } from "../../../components/typography";
 
+import demisemihemidemisemiquaver from "../../../images/music/demisemihemidemisemiquaver.svg";
+
 const MusicNotation = () => {
   return (
     <SeriesLayout>
       <Sn>
-        Music is <I>old</I>. It might be older than language. And I've always
-        found it interesting that unlike any other medium, music has a{" "}
-        <I>theory</I>. If you've ever looked into it, <MusicTheoryTip />{" "}
-        probably felt complex and arbitrary. That's because there's a persistent
-        teaching error in almost all music theory materials - let me explain by
-        analogy.
-      </Sn>
-      <Sn>
-        To succeed in math class, you have two routes available to you:
+        There are basically 5 fundamental principles of music theory. They're
+        fundamental because there aren't any simpler rules they can be derived
+        from. They're expressed in pretty much every human culture that's
+        discovered multiple people can sing at the same time. They are:
         <ol>
-          <li>
-            You can memorize rules for finding the answer to the questions you
-            predict will be on the quiz, or
-          </li>
-          <li>You can try to understand the underlying concepts.</li>
+          <li>Acoustic consonance</li>
+          <li>Scales</li>
+          <li>Conjunct melodic motion</li>
+          <li>Harmonic consistency</li>
+          <li>Centricity</li>
         </ol>
-        In high school calc, most of my classmates took the first option. Math
-        can be an interesting subject, but without the proper understanding it
-        just seemed like an arbitrary collection of rules. So my classmates
-        complained that the class seemed boring and useless.
       </Sn>
-
       <Sn>
-        My attention span isn't long enough to pay attention in class, so I had
-        to spend twice as long watching{" "}
-        <a href="https://www.youtube.com/watch?v=54_XRjHhZzI">
-          a YouTube professor
-        </a>{" "}
-        attempt to teach the skills everyone else had already learned. But I
-        think it was for the best: he managed to teach in a way that nudged his
-        students to build a really strong understanding of the basic concepts,
-        then use that understanding to build onto the next ones, and so on.
+        If you're not familiar with these terms, blame the education system.
+        (They're not necessarily at fault, but they sure are fun to blame.) I'll
+        explain them one at a time.
       </Sn>
-
+      <h2>I Don't Like Music Notation By The Way</h2>
       <Sn>
-        Over time, this approach pays off. You can try to memorize a huge list
-        of rules for performing derivatives, but knowing the actual definition
-        of a{" "}
-        <Tip
-          content={
-            <>
-              The derivative of a function <Im math="f" /> is just another
-              function <Im math="f\prime" /> that tells you <Im math="f" />
-              's slope at any given point.
-            </>
-          }
-          fancy
-        >
-          derivative
-        </Tip>{" "}
-        allows you to compress them all into a unified structure. This approach
-        makes everything much easier to remember (in the worst-case scenario,
-        you just need to remember the basic concepts and re-derive the advanced
-        ones in your head).
+        This is a 256th note, also called the demisemihemidemisemiquaver (I wish
+        I was joking):
       </Sn>
-
       <Sn>
-        Pretty much all music theory material encourages memorization over
-        understanding. The practical rules of music theory were basically
-        discovered by rote trial and error, and only recently have the actual
-        underlying principles been discovered. This makes music theory seem much
-        more complicated and arbitrary than it has to be. But once you
-        understand those underlying principles, advanced "college-level" music
-        theory will seem simple and obvious to you. That's my promise for this
-        collection of essays.
+        <img src={demisemihemidemisemiquaver} className=" invert-if-dark " />
       </Sn>
-
       <Sn>
-        <blockquote>
-          All music is folk music. I ain’t never heard a horse sing a song.
-          <footer>― Louis Armstrong</footer>
-        </blockquote>
+        This note has{" "}
+        <a href="https://en.wikipedia.org/wiki/Two_hundred_fifty-sixth_note">
+          its own Wikipedia page
+        </a>
+        ! Music notation certainly has its place but I won't be talking about it
+        in this essay because it overcomplicates things for beginners. It has a
+        large amount of historical baggage and (in my eyes) outdated design
+        choices.
       </Sn>
     </SeriesLayout>
   );
