@@ -1,10 +1,11 @@
-html {
-  min-height: 100%;
-  background: linear-gradient(20deg, #22323f 0%, #4a2530 100%);
-  /*background: linear-gradient(200deg, var(--color-shirt-dark) 0%, var(--color-skirt-dark) 100%);*/
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+@media (prefers-color-scheme: dark) {
+  html {
+    min-height: 100%;
+    background: linear-gradient(20deg, #27313b 0%, #482630 100%);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
 }
 
 body {
@@ -22,7 +23,8 @@ h4 {
   text-decoration: none;
 }
 
-p {
+p,
+.text-content {
   text-align: justify;
 }
 
@@ -145,11 +147,11 @@ select {
 @media (prefers-color-scheme: light) {
   html {
     min-height: 100%;
-    background: linear-gradient(
+    /*background: linear-gradient(
       20deg,
       var(--color-arm-light) 0%,
       var(--color-shirt-light) 100%
-    );
+    );*/
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -166,3 +168,4 @@ select {
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
   }
 }
+/**/

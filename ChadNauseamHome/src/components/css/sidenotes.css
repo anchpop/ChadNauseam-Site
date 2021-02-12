@@ -1,3 +1,57 @@
+.always {
+  margin-right: unset;
+  padding: unset;
+  box-shadow: unset;
+  padding-left: 8px;
+  padding-right: 8px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f0f0f0;
+  color: black;
+
+  position: relative;
+  min-width: 1.5em;
+  min-height: 1.5em;
+
+  border: none;
+  border-radius: 0.75em;
+
+  font-size: 17px;
+  cursor: pointer;
+}
+.always:hover:enabled,
+.always[aria-expanded="true"] {
+  background-color: steelblue;
+  background: steelblue;
+  color: white;
+  outline: none;
+}
+
+.tippy-box[data-theme~="gradient-tip"] {
+  background: linear-gradient(130deg, #507bf4, #c8008c);
+  box-shadow: 0 8px 12px #c9a0ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .always {
+    background: var(--color-skirt-dark);
+    color: var(--text-bright);
+  }
+
+  .always:hover:enabled,
+  .always[aria-expanded="true"] {
+    background: var(--focus);
+  }
+
+  .tippy-box[data-theme~="gradient-tip"] {
+    background: linear-gradient(20deg, #1c4cb0, #b4007e);
+    box-shadow: 0 8px 12px #42006c;
+  }
+}
+
 @media only screen and (min-width: 1400px) {
   .extract {
     right: 0;
@@ -15,34 +69,6 @@
   .sn-button {
     visibility: hidden;
     position: absolute;
-  }
-
-  .always {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #f0f0f0;
-    color: black;
-
-    position: relative;
-    min-width: 1.5em;
-    min-height: 1.5em;
-
-    border: none;
-    border-radius: 0.75em;
-
-    font-size: 17px;
-    font-family: "Source Serif Pro", Iowan Old Style, Apple Garamond,
-      Palatino Linotype, Times New Roman, "Droid Serif", Times, serif,
-      Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
-    cursor: pointer;
-  }
-  .always:hover,
-  .always[aria-expanded="true"] {
-    background: steelblue;
-    color: white;
-    outline: none;
   }
 
   .tippy-content {
@@ -63,11 +89,6 @@
     font-size: 1em;
     border-radius: 0.5em;
     box-shadow: 4px 4px 14px -2px rgba(0, 8, 16, 0.15);
-  }
-
-  .tippy-box[data-theme~="gradient"] {
-    background: linear-gradient(130deg, #507bf4, #c8008c);
-    box-shadow: 0 8px 12px #c9a0ff;
   }
 }
 
@@ -123,37 +144,9 @@
     outline: none;
   }
 
-  .always {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #f0f0f0;
-    color: black;
-
-    position: relative;
-    min-width: 1.5em;
-    min-height: 1.5em;
-
-    border: none;
-    border-radius: 0.75em;
-
-    font-size: 17px;
-    font-family: "Source Serif Pro", Iowan Old Style, Apple Garamond,
-      Palatino Linotype, Times New Roman, "Droid Serif", Times, serif,
-      Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
-    cursor: pointer;
-  }
-  .always:hover,
-  .always[aria-expanded="true"] {
-    background: steelblue;
-    color: white;
-    outline: none;
-  }
-
-  .tippy-box[data-theme~="gradient"] {
-    background: linear-gradient(130deg, #507bf4, #c8008c);
-    box-shadow: 0 8px 12px #c9a0ff;
+  .tippy-box[data-theme~="gradient-tip"] {
     font-size: 1.1em;
   }
 }
+
+/**/

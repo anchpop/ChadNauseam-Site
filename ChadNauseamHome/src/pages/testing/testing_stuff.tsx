@@ -6,15 +6,18 @@ import { select } from "d3";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
 
-import Layout from "../../../components/layout";
-import Image from "../../../components/image";
-import Tip, { MusicTheoryTip } from "../../../components/tip";
-import Sn from "../../../components/sn";
-import Note from "../../../components/note";
+import Layout from "../../components/layout";
+import Image from "../../components/image";
+import Tip from "../../components/tip";
+import Sn from "../../components/sn";
+import Note from "../../components/note";
 
-import useResizeObserver from "../../../utils/resizeObserver";
+import useResizeObserver from "../../utils/resizeObserver";
 
-import ThemeContext from "../../../utils/themeContext";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css"; // optional
+
+import ThemeContext from "../../utils/themeContext";
 
 const currentTime = () => new Date().getTime() / 1000;
 
@@ -42,13 +45,6 @@ const Content = ({ time }) => {
   }, [data, time]);
   return (
     <>
-      <Sn>
-        Music is *old*. It might be older than language. And I've always found
-        it interesting that unlike any other medium, music has a *theory*. If
-        you've ever looked into it, <MusicTheoryTip /> probably felt complex and
-        arbitrary. That's because there's a persistent teaching error in almost
-        all music theory materials - let me explain by analogy.
-      </Sn>
       <p>Test</p>
       <p>
         test1 <Tip content="music">test</Tip> test2
