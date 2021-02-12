@@ -6,7 +6,11 @@ import "tippy.js/themes/light-border.css";
 import "tippy.js/animations/shift-away.css";
 import ThemeContext from "../utils/themeContext";
 
-const Tip = ({ content, children, fancy }) => {
+const Tip: React.FC<{ content: React.ReactNode; fancy?: boolean }> = ({
+  content,
+  children,
+  fancy,
+}) => {
   const { smallScreen } = React.useContext(ThemeContext);
 
   return (

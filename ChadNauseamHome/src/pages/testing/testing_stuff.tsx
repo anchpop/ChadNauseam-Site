@@ -8,14 +8,12 @@ import { InlineMath, BlockMath } from "react-katex";
 
 import Layout from "../../components/layout";
 import Image from "../../components/image";
-import Tip from "../../components/tip";
+import Tip, { MusicTheoryTip } from "../../components/tip";
 import Sn from "../../components/sn";
 import Note from "../../components/note";
+import { I } from "../../components/Typography";
 
 import useResizeObserver from "../../utils/resizeObserver";
-
-import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css"; // optional
 
 import ThemeContext from "../../utils/themeContext";
 
@@ -45,24 +43,56 @@ const Content = ({ time }) => {
   }, [data, time]);
   return (
     <>
+      <Sn>
+        Music is <I>old</I>. It might be older than language. And I've always
+        found it interesting that unlike any other medium, music has a *theory*.
+        If you've ever looked into it, <MusicTheoryTip /> probably felt complex
+        and arbitrary. That's because there's a persistent teaching error in
+        almost all music theory materials - let me explain by analogy.
+      </Sn>
+      <Sn>
+        To succeed in math class, you have two routes available to you:
+        <ol>
+          <li>
+            You can memorize rules for finding the answer to the questions you
+            predict will be on the quiz, or
+          </li>
+          <li>You can try to understand the underlying concepts.</li>
+        </ol>
+        In high school calc, most of my classmates took the first option. Math
+        can be an interesting subject, but without the proper understanding it
+        just seemed like an arbitrary collection of rules. So my classmates
+        complained that the class seemed boring and useless.
+      </Sn>
+
       <p>Test</p>
       <p>
-        test1 <Tip content="music">test</Tip> test2
+        test1{" "}
+        <Tip content="test" fancy={false}>
+          test2
+        </Tip>
+        test3
       </p>
       <h3>
         <InlineMath math="\int_0^\infty x^2 dx" />
       </h3>
 
       <Sn>
-        It looks like <InlineMath math="\KaTeX" /> is working. Note:
-        <Note>
+        sidenotes test sidenotes test sidenotes test sidenotes test sidenotes
+        test sidenotes test sidenotes test sidenotes
+        <Note numbered>
           <InlineMath math="\int_0^\infty x^2 dx" />
         </Note>{" "}
-        Okay, time for tests. test sidenotes test sidenotes test sidenotes test
-        sidenotes test sidenotes test sidenotes test sidenotes test sidenotes
-        test sidenotes test sidenotes test <Note numbered>mytest2</Note>
-        sidenotes test sidenotes test sidenotes test sidenotes test sidenotes
-        test sidenotes test sidenotes test sidenotes test
+        test side notes test side notes test side notes test side notes test
+        side notes test side notes test side notes test side notes test side
+        notes test side notes test<Note numbered>mytest2</Note> side notes test
+        side notes test side notes test side notes test side notes test side
+        notes test side notes test side notes test
+        <Note>
+          Long note <InlineMath math="\int_0^\infty x^2 dx" /> test{" "}
+          <InlineMath math="\int_0^\infty x^2 dx" /> test{" "}
+          <InlineMath math="\int_0^\infty x^2 dx" /> test
+        </Note>{" "}
       </Sn>
 
       <div key="svg-wrap" className="svg-wrap">

@@ -59,15 +59,71 @@ const Content = ({ time }) => {
           </li>
           <li>You can try to understand the underlying concepts.</li>
         </ol>
-        I saw this firsthand when I took high school calc: most of my classmates
-        took the first option. Math can be an interesting subject, but without
-        the proper understanding it just seemed like an arbitrary collection of
-        rules. So my classmates complained that the class seemed boring and
-        useless.
+        In high school calc, most of my classmates took the first option. Math
+        can be an interesting subject, but without the proper understanding it
+        just seemed like an arbitrary collection of rules. So my classmates
+        complained that the class seemed boring and useless.
       </Sn>
+
+      <Sn>
+        My attention span isn't long enough to pay attention in class, so I had
+        to spend twice as long watching{" "}
+        <a href="https://www.youtube.com/watch?v=54_XRjHhZzI">
+          a YouTube professor
+        </a>{" "}
+        attempt to teach the skills everyone else had already learned. But I
+        think it was for the best: he managed to teach in a way that nudged his
+        students to build a really strong understanding of the basic concepts,
+        then use that understanding to build onto the next ones, and so on.
+      </Sn>
+
+      <Sn>
+        Over time, this approach pays off. You can try to memorize a huge list
+        of rules for performing derivatives, but knowing the actual definition
+        of a{" "}
+        <Tip
+          content={
+            <>
+              The derivative of a function <InlineMath math="f" /> is just
+              another function <InlineMath math="f\prime" /> that tells you{" "}
+              <InlineMath math="f" />
+              's slope at any given point.
+            </>
+          }
+          fancy
+        >
+          derivative
+        </Tip>{" "}
+        allows you to compress them all into a unified structure. This approach
+        makes everything much easier to remember (in the worst-case scenario,
+        you just need to remember the basic concepts and re-derive the advanced
+        ones in your head).
+      </Sn>
+
+      <Sn>
+        Pretty much all music theory material encourages memorization over
+        understanding. The practical rules of music theory were basically
+        discovered by rote trial and error, and only recently have the actual
+        underlying principles been discovered. This makes music theory seem much
+        more complicated and arbitrary than it has to be. But once you
+        understand those underlying principles, advanced "college-level" music
+        theory will seem simple and obvious to you. That's my promise for this
+        collection of essays.
+      </Sn>
+
+      <Sn>
+        <blockquote>
+          All music is folk music. I ain’t never heard a horse sing a song.
+          <footer>― Louis Armstrong</footer>
+        </blockquote>
+      </Sn>
+
       <p>Test</p>
       <p>
-        test1 <Tip>test</Tip> test2
+        test1{" "}
+        <Tip content="test" fancy={false}>
+          test2
+        </Tip>
       </p>
       <h3>
         <InlineMath math="\int_0^\infty x^2 dx" />
