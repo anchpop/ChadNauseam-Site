@@ -132,6 +132,29 @@ select {
   align-items: stretch;
 }
 
+.page-navigation-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.navigate-left::before {
+  content: "⟵";
+  margin-right: 0.5rem;
+}
+.navigate-right::after {
+  content: "⟶";
+  margin-left: 0.5rem;
+}
+.navigate-left {
+  font-size: calc(var(--text-font-size) * 1.4);
+}
+.navigate-right {
+  font-size: calc(var(--text-font-size) * 1.4);
+}
+
 @media only screen and (max-width: 1400px) {
   .socials-container {
     position: unset;

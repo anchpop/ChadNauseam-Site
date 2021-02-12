@@ -6,8 +6,8 @@
  */
 
 import React from "react";
-import PropTypes from "prop-types";
-import { useStaticQuery, graphql } from "gatsby";
+
+import { Link, useStaticQuery, graphql } from "gatsby";
 import Helmet from "react-helmet";
 import { Motion, spring } from "react-motion";
 import { useMediaQuery } from "react-responsive";
@@ -22,11 +22,19 @@ import discord from "../images/discord.svg";
 import twitter from "../images/twitter.svg";
 import reddit from "../images/reddit.svg";
 
+import { Series, seriesInfo } from "../utils/seriesInfo";
+
+import { Location } from "@reach/router";
+
 import "./css/vars.css";
 import "./css/water.css";
 import "./css/custom.css";
 
-const Layout = ({ subtitle, description, children }) => {
+const Layout: React.FC<{ subtitle: string; description: string }> = ({
+  subtitle,
+  description,
+  children,
+}) => {
   // Try to avoid using these.
   // You want to do as much in CSS as possible because these are obviously not accessible during server-side rendering
   const smallScreen = useMediaQuery({ maxWidth: 1400 });
@@ -102,8 +110,64 @@ const Layout = ({ subtitle, description, children }) => {
   );
 };
 
-Layout.propTypes = {
-  children: PropTypes.node.isRequired,
+/** Grabs series info from src/utils/seriesInfo.tsx, matches that up to the current path (automatically grabbed with the Location api), and adds pagination stuff automatically. */
+export const SeriesLayout: React.FC<{}> = ({ children }) => {
+  return (
+    <Location>
+      {(locationProps) => {
+        const splitPath = locationProps.location.pathname.split("/");
+        const parentPath = splitPath.slice(0, splitPath.length - 1).join("/");
+        const episode = parseInt(splitPath[splitPath.length - 1]);
+
+        const info = seriesInfo[parentPath];
+        const { title, description } = info.episodes[episode];
+        const previous = episode > 0 ? info.episodes[episode - 1] : undefined;
+        const next =
+          episode < info.episodes.length - 1
+            ? info.episodes[episode + 1]
+            : undefined;
+
+        return (
+          <Layout
+            subtitle={`${info.seriesTitle} - ${title}`}
+            description={description}
+          >
+            <article>{children}</article>
+            {previous === undefined && next === undefined ? (
+              <></>
+            ) : (
+              <div className="page-navigation-footer">
+                <div>
+                  {previous ? (
+                    <Link
+                      to={`${parentPath}/${episode - 1}`}
+                      className="navigate-left"
+                    >
+                      {previous.title}
+                    </Link>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <div>
+                  {next ? (
+                    <Link
+                      to={`${parentPath}/${episode + 1}`}
+                      className="navigate-right"
+                    >
+                      {next.title}
+                    </Link>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </div>
+            )}
+          </Layout>
+        );
+      }}
+    </Location>
+  );
 };
 
 export default Layout;
