@@ -6,6 +6,7 @@
  */
 
 import React from "react";
+import { trim } from "lodash";
 
 import { Link, useStaticQuery, graphql } from "gatsby";
 import Helmet from "react-helmet";
@@ -115,7 +116,7 @@ export const SeriesLayout: React.FC<{}> = ({ children }) => {
   return (
     <Location>
       {(locationProps) => {
-        const splitPath = locationProps.location.pathname.split("/");
+        const splitPath = trim(locationProps.location.pathname, "/").split("/");
         const parentPath = splitPath.slice(0, splitPath.length - 1).join("/");
         const episode = parseInt(splitPath[splitPath.length - 1]);
 
