@@ -36,7 +36,7 @@ const MusicNotation = () => {
         I was joking):
       </Sn>
       <Sn>
-        <img src={demisemihemidemisemiquaver} className=" invert-if-dark " />
+        <img src={demisemihemidemisemiquaver} className="invert-if-dark" />
       </Sn>
       <Sn>
         This note has{" "}

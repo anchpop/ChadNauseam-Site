@@ -297,7 +297,6 @@ const Quiz = () => {
       const usedObjectReasoningFor = annotatedAnswers.filter(
         ({ meta }) => !meta
       );
-      console.log(usedObjectReasoningFor);
 
       const metaThinker = usedMetaReasoningFor.length > 3;
 

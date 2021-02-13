@@ -17,7 +17,11 @@ const IndexPage = () => (
     </p>
     <p>
       I also like programming, but only in hipster languages like Rust and
-      Haskell.
+      Haskell. I actually think there's room in the market for a Haskell 2 - a
+      language with many of the benefits of Haskell, but with modern Programming
+      Language Theory knowledge used to make it easier to learn and use. Right
+      now it looks like the language Unison is our best hope for something like
+      that.
     </p>
     <p>
       This website is a work in progress (like most things in my life). The only

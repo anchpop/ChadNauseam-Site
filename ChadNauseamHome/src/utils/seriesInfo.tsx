@@ -26,9 +26,9 @@ export const seriesInfo: Record<
           "There are good reasons to be skeptical of conventional music notation, and for learning music theory it's of limited use.",
       },
       {
-        title: toTitleCase("music notation"),
+        title: toTitleCase("acoustic consonance"),
         description:
-          "There are good reasons to be skeptical of conventional music notation, and for learning music theory it's of limited use.",
+          "Consonance is the most fundamental part of music theory. To understand it, we'll have to learn about sound waves and dive inside the ear",
       },
     ],
   },
