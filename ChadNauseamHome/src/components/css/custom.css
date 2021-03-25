@@ -1,7 +1,7 @@
 @media (prefers-color-scheme: dark) {
   html {
     min-height: 100%;
-    background: linear-gradient(20deg, #1e272f 0%, #242a34 100%);
+    background: #181A1B;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
