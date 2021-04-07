@@ -374,6 +374,7 @@ tfoot {
 tbody tr:nth-child(even) {
   background-color: var(--background-alt);
 }
+
 ::-webkit-scrollbar {
   height: 10px;
   width: 10px;

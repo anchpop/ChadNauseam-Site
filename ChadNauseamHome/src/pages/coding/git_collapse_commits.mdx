@@ -1,0 +1,43 @@
+import messy_pr from "../../images/coding/screenshots/bevy_cheatbook_pr.png";
+
+<Layout
+  subtitle="Collapse all your changes into one commit"
+  description="Just a collection of tips w.r.t. git"
+>
+
+So you want to contribute your change to your favorite open-source software.
+
+Seems pretty easy. Fork the project on github, hack hack hack, push your changes to your branch, and PR. Couldn't be simpler. Or could it?
+
+Well, if your experience with open source is anything like mine, the maintainers will have some changes they'd like you to make. You forgot to run the formatter, or they would prefer a different order of function parameters, etc. Or, you just realize additional changes you should have made. Soon, your PR looks like this:
+
+<img src={messy_pr} className="invert-if-light" />
+
+How messy! Here's how to fix it. We'll assume you have the upstream as a remote named `upstream` and want to merge your changes with the branch `main`.
+
+First, merge your branch with `main`:
+
+```python
+git fetch upstream main
+git merge upstream/main
+```
+
+This may create conflicts and stuff, if so just fix them and commit. The next step won't work until you do.
+
+Now we want to make our git repo look like we just downloaded `upstream/main' and then made our changes. This command won't affect our code, only the local commit history:
+
+```python
+git reset --soft upstream/main
+```
+
+Finally, just commit your changes:
+
+```python
+git add -A
+git commit -m "My great PR"
+git push --force # --force lets us change the commit history of a repository we control.
+```
+
+Voila! We now have collapsed all of our changes into one commit which can be merged without conflict.
+
+</Layout>

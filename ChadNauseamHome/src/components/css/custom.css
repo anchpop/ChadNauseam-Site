@@ -1,7 +1,7 @@
 @media (prefers-color-scheme: dark) {
   html {
     min-height: 100%;
-    background: #181A1B;
+    background: #181a1b;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -9,6 +9,10 @@
 
   .invert-if-dark {
     filter: invert(1);
+  }
+
+  .invert-if-light {
+    filter: invert(0);
   }
 }
 
@@ -159,6 +163,14 @@ select {
   font-size: calc(var(--text-font-size) * 1.4);
 }
 
+.Block-Code code {
+  background: unset;
+  color: unset;
+  padding: unset;
+  border-radius: unset;
+  font-size: unset;
+}
+
 @media only screen and (max-width: 1400px) {
   .socials-container {
     position: unset;
@@ -179,6 +191,9 @@ select {
 @media (prefers-color-scheme: light) {
   .invert-if-dark {
     filter: invert(0);
+  }
+  .invert-if-light {
+    filter: invert(1);
   }
 
   html {
