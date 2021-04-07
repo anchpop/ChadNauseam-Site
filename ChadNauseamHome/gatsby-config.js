@@ -23,6 +23,7 @@ module.exports = {
         icon: "src/images/smoller.png",
       },
     },
+    'gatsby-plugin-optimize-svgs',
     {
       resolve: "gatsby-plugin-mdx",
       options: {
