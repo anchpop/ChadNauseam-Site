@@ -11,6 +11,14 @@ const IndexPage = () => (
       <Link to="/reasoning-quiz">Political Reasoning Style Quiz</Link>!
     </p>
     <p>
+       Programming tips (WIP):
+      <ol>
+        <li>
+          <Link to="/coding/git_collapse_commits/">How to collapse git commits</Link>
+        </li>
+      </ol>
+    </p>
+    <p>
       I make <a href="/youtube">YouTube videos</a>. They're mostly about
       politics so far but I don't know if they're going to stay that way
       forever.
