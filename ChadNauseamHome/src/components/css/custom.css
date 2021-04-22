@@ -177,6 +177,10 @@ select {
   font-size: unset;
 }
 
+.katex {
+  font: unset;
+}
+
 @media only screen and (max-width: 1400px) {
   .socials-container {
     position: unset;

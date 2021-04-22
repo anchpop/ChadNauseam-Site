@@ -1,16 +1,4 @@
 .minisection-content {
   padding-left: 0.5em;
-}
-
-@media (prefers-color-scheme: dark) {
-  .minisection-content {
-    border-left: 1px solid #aaaaaaaa;
-    filter: brightness(0.8);
-  }
-}
-@media (prefers-color-scheme: light) {
-  .minisection-content {
-    border-left: 1px solid #55555555;
-    filter: brightness(1.4);
-  }
+  filter: opacity(75%);
 }
