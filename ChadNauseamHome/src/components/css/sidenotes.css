@@ -54,11 +54,6 @@ label.margin-toggle:not(.sidenote-number) {
   .always[aria-expanded="true"] {
     background: var(--focus);
   }
-
-  .tippy-box[data-theme~="gradient-tip"] {
-    background: linear-gradient(20deg, #1c4cb0, #b4007e);
-    box-shadow: 0 8px 12px #351f4d;
-  }
 }
 
 .text-content {
@@ -184,7 +179,29 @@ label.margin-toggle:not(.sidenote-number) {
   }
 
   .tippy-box[data-theme~="gradient-tip"] {
-    font-size: 1.1em;
+    font-size: calc(var(--text-font-size));
+  }
+
+  .tippy-box[data-theme~="default"] {
+    padding: 0.1em;
+    padding-bottom: 0.3em;
+    font-size: calc(var(--text-font-size) * 0.9);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .tippy-box[data-theme~="default"] .tippy-arrow {
+      color: #0e1214;
+    }
+    .tippy-box[data-theme~="default"] {
+      background-color: #0e1214;
+      box-shadow: 0 0px 20px #293337;
+    }
+  }
+  @media (prefers-color-scheme: light) {
+    .tippy-box[data-theme~="gradient-tip"] {
+      background: linear-gradient(20deg, #1c4cb0, #b4007e);
+      box-shadow: 0 8px 12px #351f4d;
+    }
   }
 }
 

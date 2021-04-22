@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import Tippy from "@tippyjs/react";
+import "./css/sidenotes.css";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light-border.css";
 import "tippy.js/animations/shift-away.css";
@@ -16,7 +17,7 @@ const Tip: React.FC<{ content: React.ReactNode; fancy?: boolean }> = ({
   return (
     <Tippy
       content={content}
-      theme={fancy ? "gradient-tip" : ""}
+      theme={fancy ? "gradient-tip" : "default"}
       placement="bottom"
       animation="shift-away"
       arrow={false}

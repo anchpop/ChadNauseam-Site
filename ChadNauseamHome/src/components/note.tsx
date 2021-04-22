@@ -4,6 +4,8 @@ import Tippy from "@tippyjs/react";
 
 import ThemeContext from "../utils/themeContext";
 
+import "./css/sidenotes.css";
+
 const Note: React.FC<{ numbered?: boolean }> = ({ numbered, children }) => {
   const { smallScreen } = React.useContext(ThemeContext);
 
@@ -13,7 +15,7 @@ const Note: React.FC<{ numbered?: boolean }> = ({ numbered, children }) => {
       ignoreAttributes={true}
       interactive={true}
       trigger="click"
-      theme="light-border"
+      theme="default"
       placement="bottom"
       animation="shift-away"
       maxWidth={354}
