@@ -1,0 +1,14 @@
+.minisection-content {
+  padding-left: 0.5em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .minisection-content {
+    border-left: 1px solid #aaaaaaaa;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .minisection-content {
+    border-left: 1px solid #555;
+  }
+}

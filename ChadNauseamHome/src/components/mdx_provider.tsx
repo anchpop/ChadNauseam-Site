@@ -4,6 +4,7 @@ import { CodeBlock, CopyBlock, dracula } from "react-code-blocks";
 
 import Layout from "./layout";
 import Sn from "./sn";
+import Minisection from "./minisection";
 import Note from "./note";
 import SubscribeHook from "./subscribe_hook";
 
@@ -47,6 +48,7 @@ const shortcodes = {
   Note,
   BlockMath,
   SubscribeHook,
+  Minisection,
 };
 
 export default ({ children }) => (

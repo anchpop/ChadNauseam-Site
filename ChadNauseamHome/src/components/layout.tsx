@@ -69,6 +69,17 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
               subtitle={subtitle}
               style={style}
             />
+            <ThemeContext.Provider
+              value={{
+                lightTheme,
+                smallScreen,
+              }}
+            >
+              <main style={style} className="main-content">
+                {children}
+              </main>
+            </ThemeContext.Provider>
+
             <div
               style={{
                 ...style,
@@ -94,16 +105,6 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
                 href="/twitter"
               ></SocialButton>
             </div>
-            <ThemeContext.Provider
-              value={{
-                lightTheme,
-                smallScreen,
-              }}
-            >
-              <main style={style} className="main-content">
-                {children}
-              </main>
-            </ThemeContext.Provider>
           </>
         )}
       </Motion>

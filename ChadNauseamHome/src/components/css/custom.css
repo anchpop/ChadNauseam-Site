@@ -32,13 +32,19 @@ h4 {
 }
 
 p,
-.text-content {
-  margin-block-end: 1em;
+.text-content,
+li {
   margin-inline-start: 0px;
   margin-inline-end: 0px;
 
   font-size: var(--text-font-size);
   line-height: 1.7;
+}
+
+p:not(:last-child),
+.text-content:not(:last-child),
+li:not(:last-child) {
+  margin-block-end: 1em;
 }
 
 .checkboxes label {
