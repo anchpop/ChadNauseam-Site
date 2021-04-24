@@ -11,10 +11,15 @@ const IndexPage = () => (
       <Link to="/reasoning-quiz">Political Reasoning Style Quiz</Link>!
     </p>
     <p>
-       Programming tips (WIP):
+      Or my <Link to="/dating/philosophy">Philosophy of Dating</Link>!
+    </p>
+    <p>
+      Programming tips (WIP):
       <ol>
         <li>
-          <Link to="/coding/git_collapse_commits/">How to collapse git commits</Link>
+          <Link to="/coding/git_collapse_commits/">
+            How to collapse git commits
+          </Link>
         </li>
       </ol>
     </p>
