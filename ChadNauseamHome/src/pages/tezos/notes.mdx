@@ -94,15 +94,15 @@ If you're familiar with stack-based languages, it should be pretty clear what's 
 PUSH int 2; PUSH int 2; ADD; PUSH int 4; ASSERT_CMPEQ;
 ```
 
-`PUSH int 2; PUSH int 2;`: Pushes two ints (`2` and `2`, to be specific) onto the stack. The stack now contains `2,2`
+| Instruction     | Behavior                                                                                               | Current Stack State |
+| --------------- | ------------------------------------------------------------------------------------------------------ | ------------------- |
+| `PUSH int 2;`   | Pushes the int `2` onto the stack.                                                                     | `2`                 |
+| `PUSH int 2;`   | Pushes the int `2` onto the stack.                                                                     | `2,2`               |
+| `ADD;`          | Pops the top two values off the stack, adds them together, then pushes the result back onto the stack. | `4`                 |
+| `PUSH int 4;`   | Pushes the int `4` onto the stack.                                                                     | `4,4`               |
+| `ASSERT_CMPEQ;` | Pops the top two items off the stack and crashes the contract if they are not the same.                | ` `                 |
 
-`ADD;`: Pops the top two values off the stack, adds them together, then pushes the result back onto the stack. The stack now contains `4`.
-
-`PUSH int 4;`: This pushes the int `4` onto the stack. The stack now contains `4, 4`.
-
-`ASSERT_CMPEQ;`: This pops the top two items off the stack and asserts that they are the same. If they aren't, the contract will crash.
-
-Michelson's semantics are specified [here](https://tezos.gitlab.io/008/michelson.html#language-semantics).
+Michelson's semantics are specified [here](https://tezos.gitlab.io/008/michelson.html#language-semantics) ([opcode reference](https://tezos.gitlab.io/008/michelson.html#operations-on-integers-and-natural-numbers)). Strangely a definition for `ASSERT_CMPEQ` isn't present on that page.
 
 ## Setting up your Tezos dev environment
 

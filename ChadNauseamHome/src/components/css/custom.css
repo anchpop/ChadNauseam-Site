@@ -175,12 +175,15 @@ select {
   font-size: calc(var(--text-font-size) * 1.4);
 }
 
+code {
+  font-size: calc(var(--text-font-size) * 0.8);
+}
+
 .Block-Code code {
   background: unset;
   color: unset;
   padding: unset;
   border-radius: unset;
-  font-size: unset;
 }
 
 .katex {
