@@ -1,0 +1,137 @@
+import tez from "../../images/tezos/tez.svg";
+
+<Layout
+  subtitle="Tezos Development Notes"
+  description="I just got hired at Marigold to work on Tezos, and I'm trying to write down everything I learn in case it's useful to anyone else."
+>
+
+<div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+  <img src={tez} style={{ maxWidth: 50 }} />
+</div>
+
+## What is Tezos
+
+Tezos is a cryptocurrency (units of the currency are called Tez). Tezos uses proof-of-stake for consensus and supports smart contracts.
+
+## Parts of Tezos
+
+### The Blockchain
+
+Tezo's blockchain (like all blockchains I know of) represents a sequence of operations. Each operation represents a sequence of _external operations_ and is signed by the address of the account performing the operation (called the _source address_). There are three kinds of external operations:
+
+1. **Transaction**.
+
+   These represent transfers of tokens from one account to another. If the recipient account is a smart contract, the transaction can also have associated "parameters" to be interpreted by the smart contract, or the transaction can specify a specific smart contract "entrypoint".
+
+1. **Contract creation**.
+
+   This operation creates a smart contract. This requires the source code of the smart contract, some tokens (transferred from the source address), and an initial state for the contract.
+
+   (Every contract has some storage that specifies its state. The contents of the storage evolve over time as the contract runs and help determine its behavior, so when creating a contract you have to specify the initial storage contents.)
+
+1. **Delegations**.
+
+   These assign the tokens of the source account to serve as the stake of another account. This does not transfer any tokens, and only works for "implicit accounts", not smart contracts.
+
+### Types of accounts
+
+Accounts in Tezos store tokens, and have a public and private key. Knowledge of the private key is sufficient to spend the tokens stored in the account.
+
+There are two types of accounts in Tezos:
+
+1. Implicit accounts.
+
+   These are just wallets. Tokens stored in an implicit account can be spent by anyone with access to the private key. Its address is the hash of its public key, which will start with `tz1`, `tz2` or `tz3`.
+
+1. Programmable accounts
+
+   The behavior of programmable accounts is specified by a _smart contract_ (defined as some Michelson code). Its address will start with `KT1`. A payment to this account will not necessarily succeed.
+
+   Each smart contract has some amount of storage used to keep track of its state. The contents of the storage can be read and modified from the Michelson code.
+
+### [Michelson](https://tezos.gitlab.io/008/michelson.html) - The Smart Contracts Language
+
+Smart contracts are specified in a simple programming language called Michelson. The language is low-level, so usually you actually write the contracts in [Ligo](https://ligolang.org/), then compile to Michelson.
+
+> A Michelson program is a series of instructions that are run in sequence: each instruction receives as input the stack resulting of the previous instruction, and rewrites it for the next one. The stack contains both immediate values and heap allocated structures. All values are immutable and garbage collected.
+
+> The Michelson program receives as input a stack containing a single pair whose first element is an input value and second element the content of the storage space. It must return a stack containing a single pair whose first element is the list of internal operations that it wants to emit, and second element is the new contents of the storage space. Alternatively, a Michelson program can fail, explicitly using a specific opcode, or because something went wrong that could not be caught by the type system (e.g. gas exhaustion).
+
+Here is an example of a simple Michelson program:
+
+```
+parameter unit;
+storage unit;
+code
+  {
+    CAR;
+
+    PUSH int 2; PUSH int 2; ADD; PUSH int 4; ASSERT_CMPEQ;
+    PUSH int 2; PUSH int 2; ADD; PUSH int 4; ASSERT_CMPEQ;
+    PUSH int 2; PUSH nat 2; ADD; PUSH int 4; ASSERT_CMPEQ;
+    PUSH nat 2; PUSH int 2; ADD; PUSH int 4; ASSERT_CMPEQ;
+    PUSH nat 2; PUSH nat 2; ADD; PUSH nat 4; ASSERT_CMPEQ;
+
+    # Offset a timestamp by 60 seconds
+    PUSH int 60; PUSH timestamp "2019-09-09T12:08:37Z"; ADD;
+    PUSH timestamp "2019-09-09T12:09:37Z"; ASSERT_CMPEQ;
+
+    PUSH timestamp "2019-09-09T12:08:37Z"; PUSH int 60; ADD;
+    PUSH timestamp "2019-09-09T12:09:37Z"; ASSERT_CMPEQ;
+
+    PUSH mutez 1000; PUSH mutez 1000; ADD;
+    PUSH mutez 2000; ASSERT_CMPEQ;
+
+    NIL operation;
+    PAIR;
+  }
+
+```
+
+If you're familiar with stack-based languages, it should be pretty clear what's going on here. Let's look at just this one line:
+
+```
+PUSH int 2; PUSH int 2; ADD; PUSH int 4; ASSERT_CMPEQ;
+```
+
+`PUSH int 2; PUSH int 2;`: Pushes two ints (`2` and `2`, to be specific) onto the stack. The stack now contains `2,2`
+
+`ADD;`: Pops the top two values off the stack, adds them together, then pushes the result back onto the stack. The stack now contains `4`.
+
+`PUSH int 4;`: This pushes the int `4` onto the stack. The stack now contains `4, 4`.
+
+`ASSERT_CMPEQ;`: This pops the top two items off the stack and asserts that they are the same. If they aren't, the contract will crash.
+
+Michelson's semantics are specified [here](https://tezos.gitlab.io/008/michelson.html#language-semantics).
+
+## Setting up your Tezos dev environment
+
+(Most tezos development is done in OCaml.)
+
+Tezos is mostly developed on Debian, and if that works for you, you can use the [official docs](https://tezos.gitlab.io/introduction/howtoget.html#setting-up-the-development-environment-from-scratch) which should always be up-to-date.
+
+I like Windows, so I followed [Daniel Hines](https://roamresearch.com/#/app/TezosDev/page/C2UthnLRL)'s guide to get an environment working using WSL. There's lots of good information in there.
+
+## Directory Structure
+
+At the time of this writing, the directory structure of the master branch looks something like this:
+
+```
+.
+├── devtools
+├── docs
+├── scripts
+├── src
+│   ├── [...]
+│   ├── proto_XXX_abcdefg
+│   ├── proto_alpha
+│   └── tooling
+│       └── test
+├── tests_python
+├── tezt
+└── vendors
+```
+
+I'm here to work on the protocol, so the most relevant folder is `proto_alpha`. The rest are just old versions of the protocol that you don't have to worry about.
+
+</Layout>

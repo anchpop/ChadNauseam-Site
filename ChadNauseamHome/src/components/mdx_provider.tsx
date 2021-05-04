@@ -1,6 +1,6 @@
 import React from "react";
 import { MDXProvider } from "@mdx-js/react";
-import { CodeBlock, CopyBlock, dracula } from "react-code-blocks";
+import { CodeBlock, CopyBlock, atomOneDark } from "react-code-blocks";
 
 import Layout from "./layout";
 import Sn from "./sn";
@@ -22,16 +22,18 @@ const CustomCodeBlock = (props) => {
       ? className.split("-")[1]
       : "javascript";
 
+  const theme = atomOneDark;
+
   return copy ? (
     <CopyBlock
       text={children}
       language={language}
-      theme={dracula}
+      theme={theme}
       wrapLines
       codeBlock
     />
   ) : (
-    <CodeBlock text={children} language={language} theme={dracula} wrapLines />
+    <CodeBlock text={children} language={language} theme={theme} wrapLines />
   );
 };
 
