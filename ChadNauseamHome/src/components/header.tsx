@@ -16,7 +16,7 @@ const Header = ({ subtitle, siteTitle, style }) => (
         margin: `0 auto`,
         maxWidth: 960,
         textAlign: "center",
-        marginBottom: "2rem",
+        marginBottom: "4rem",
       }}
     >
       <h1
@@ -25,12 +25,10 @@ const Header = ({ subtitle, siteTitle, style }) => (
           fontWeight: 400,
           fontStyle: "normal",
           fontSize: "2.6rem",
-          marginBottom: "1.45rem",
         }}
       >
         {subtitle}
       </h1>
-      <hr />
       <h1
         style={{
           fontFamily: "Comic Neue",

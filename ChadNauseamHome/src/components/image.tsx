@@ -1,6 +1,6 @@
-import React from "react"
-import { useStaticQuery, graphql } from "gatsby"
-import Img from "gatsby-image"
+import React from "react";
+import { useStaticQuery, graphql } from "gatsby";
+import Img from "gatsby-image";
 
 /*
  * This component is built using `gatsby-image` to automatically serve optimized
@@ -24,9 +24,26 @@ const Image = () => {
         }
       }
     }
-  `)
+  `);
 
-  return <Img fluid={data.placeholderImage.childImageSharp.fluid} />
-}
+  return <Img fluid={data.placeholderImage.childImageSharp.fluid} />;
+};
 
-export default Image
+export const CenteredImg = ({ src, to }) => {
+  const Img = (
+    <div className="img-container">
+      <img src={src} />
+    </div>
+  );
+  if (to !== undefined) {
+    return (
+      <a href={to} className="lighten-on-hover">
+        {Img}
+      </a>
+    );
+  } else {
+    return Img;
+  }
+};
+
+export default Image;

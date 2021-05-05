@@ -5,17 +5,11 @@ import tez from "../../images/tezos/tez.svg";
   description="I just got hired at Marigold to work on Tezos, and I'm trying to write down everything I learn in case it's useful to anyone else."
 >
 
-<div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-  <img src={tez} style={{ maxWidth: 50 }} />
-</div>
-
-## What is Tezos
-
 Tezos is a cryptocurrency (units of the currency are called Tez). Tezos uses proof-of-stake for consensus and supports smart contracts.
 
-## Parts of Tezos
+# Parts of Tezos
 
-### The Blockchain
+## The Blockchain
 
 Tezo's blockchain (like all blockchains I know of) represents a sequence of operations. Each operation represents a sequence of _external operations_ and is signed by the address of the account performing the operation (called the _source address_). There are three kinds of external operations:
 
@@ -49,7 +43,7 @@ There are two types of accounts in Tezos:
 
    Each smart contract has some amount of storage used to keep track of its state. The contents of the storage can be read and modified from the Michelson code.
 
-### [Michelson](https://tezos.gitlab.io/008/michelson.html) - The Smart Contracts Language
+## [Michelson](https://tezos.gitlab.io/008/michelson.html) - The Smart Contracts Language
 
 Smart contracts are specified in a simple programming language called Michelson. The language is low-level, so usually you actually write the contracts in [Ligo](https://ligolang.org/), then compile to Michelson.
 
@@ -104,7 +98,11 @@ PUSH int 2; PUSH int 2; ADD; PUSH int 4; ASSERT_CMPEQ;
 
 Michelson's semantics are specified [here](https://tezos.gitlab.io/008/michelson.html#language-semantics) ([opcode reference](https://tezos.gitlab.io/008/michelson.html#operations-on-integers-and-natural-numbers)). Strangely a definition for `ASSERT_CMPEQ` isn't present on that page.
 
-## Setting up your Tezos dev environment
+## Proof of Stake
+
+test
+
+# Setting up a Tezos dev environment
 
 (Most tezos development is done in OCaml.)
 

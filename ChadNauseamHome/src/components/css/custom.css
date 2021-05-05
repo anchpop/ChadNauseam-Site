@@ -37,16 +37,6 @@ h4 {
   text-decoration: none;
 }
 
-p,
-.text-content,
-li {
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-
-  font-size: var(--text-font-size);
-  line-height: 1.7;
-}
-
 p:not(:last-child),
 .text-content:not(:last-child),
 li:not(:last-child) {
@@ -118,6 +108,13 @@ select {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
+.lighten-on-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.lighten-on-hover:hover {
+  filter: brightness(140%);
+}
+
 .social-button {
   user-select: none;
   padding: 5px;
@@ -130,7 +127,6 @@ select {
   border-bottom-right-radius: 100px;
   display: flex;
   justify-content: space-between;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .social-button:hover {
   filter: brightness(110%);
@@ -188,6 +184,76 @@ code {
 
 .katex {
   font: unset;
+}
+
+p,
+.text-content,
+li {
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+
+  font-size: var(--text-font-size);
+  line-height: 1.7;
+}
+
+p,
+.text-content,
+.main-content .img-container {
+  padding-left: var(--body-content-padding);
+  padding-right: var(--body-content-padding);
+}
+
+table {
+  margin-left: var(--body-content-padding);
+  margin-right: var(--body-content-padding);
+}
+
+.img-container img {
+  border-radius: 2em;
+}
+
+.section-header-container {
+  padding-top: 2em;
+}
+
+h1 {
+  font-size: calc(
+    var(--text-font-size) * (1 + 1.6 * var(--header-font-size-scaling))
+  );
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+}
+
+h2 {
+  font-size: calc(
+    var(--text-font-size) * (1 + 0.7 * var(--header-font-size-scaling))
+  );
+}
+
+h3 {
+  font-size: calc(
+    var(--text-font-size) * (1 + 0.5 * var(--header-font-size-scaling))
+  );
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+h4 {
+  font-size: calc(
+    var(--text-font-size) * (1 + 0.3 * var(--header-font-size-scaling))
+  );
+}
+
+h5 {
+  font-size: calc(
+    var(--text-font-size) * (1 + 0.1 * var(--header-font-size-scaling))
+  );
+}
+
+h6 {
+  font-size: calc(
+    var(--text-font-size) * (1 + 0 * var(--header-font-size-scaling))
+  );
 }
 
 @media only screen and (max-width: 1400px) {

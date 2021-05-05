@@ -7,6 +7,8 @@ import Sn from "./sn";
 import Minisection from "./minisection";
 import Note from "./note";
 import SubscribeHook from "./subscribe_hook";
+import SectionHeader from "./section_header";
+import _, { CenteredImg } from "./image";
 
 import { Link } from "gatsby";
 
@@ -41,6 +43,7 @@ const shortcodes = {
   Link,
   Layout,
   p: Sn,
+  h1: SectionHeader,
   code: (props) => (
     <div className="Block-Code">
       <CustomCodeBlock {...props} />
@@ -51,6 +54,7 @@ const shortcodes = {
   BlockMath,
   SubscribeHook,
   Minisection,
+  CenteredImg,
 };
 
 export default ({ children }) => (
