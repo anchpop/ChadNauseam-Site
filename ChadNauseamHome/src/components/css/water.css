@@ -16,8 +16,9 @@ body {
   padding: 0 10px;
   word-wrap: break-word;
   color: var(--text-main);
-  background: var(--background-body);
   text-rendering: optimizeLegibility;
+  border-radius: 46px;
+  background: var(--background-body);
 }
 button,
 input,
@@ -324,6 +325,7 @@ a:hover {
 code,
 samp,
 time {
+  filter: opacity(100%);
   background: var(--background);
   color: var(--code);
   padding: 2.5px 5px;

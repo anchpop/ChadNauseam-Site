@@ -37,7 +37,7 @@ export const CenteredImg = ({ src, to }) => {
   );
   if (to !== undefined) {
     return (
-      <a href={to} className="lighten-on-hover">
+      <a href={to} className="shadowed">
         {Img}
       </a>
     );

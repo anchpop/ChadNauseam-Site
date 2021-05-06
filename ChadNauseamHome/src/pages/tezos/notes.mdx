@@ -1,13 +1,13 @@
 import tez from "../../images/tezos/tez.svg";
 
 <Layout
-  subtitle="Tezos Development Notes"
-  description="I just got hired at Marigold to work on Tezos, and I'm trying to write down everything I learn in case it's useful to anyone else."
+  subtitle="ꜩ Tezos Development Notes ꜩ"
+  description="I just started working on Tezos, and I'm trying to write down everything I learn in case it's useful to anyone else."
 >
 
 Tezos is a cryptocurrency (units of the currency are called Tez). Tezos uses proof-of-stake for consensus and supports smart contracts.
 
-# Parts of Tezos
+# Tezos Concepts
 
 ## The Blockchain
 
@@ -33,11 +33,11 @@ Accounts in Tezos store tokens, and have a public and private key. Knowledge of 
 
 There are two types of accounts in Tezos:
 
-1. Implicit accounts.
+1. **Implicit accounts**.
 
    These are just wallets. Tokens stored in an implicit account can be spent by anyone with access to the private key. Its address is the hash of its public key, which will start with `tz1`, `tz2` or `tz3`.
 
-1. Programmable accounts
+1. **Programmable accounts**.
 
    The behavior of programmable accounts is specified by a _smart contract_ (defined as some Michelson code). Its address will start with `KT1`. A payment to this account will not necessarily succeed.
 
@@ -98,11 +98,62 @@ PUSH int 2; PUSH int 2; ADD; PUSH int 4; ASSERT_CMPEQ;
 
 Michelson's semantics are specified [here](https://tezos.gitlab.io/008/michelson.html#language-semantics) ([opcode reference](https://tezos.gitlab.io/008/michelson.html#operations-on-integers-and-natural-numbers)). Strangely a definition for `ASSERT_CMPEQ` isn't present on that page.
 
+## What is a Blockchain
+
+A blockchain is a list of "blocks", which are just little pieces of data. A blockchain is called a "chain" because it's actually a special mathematical object. It's special because it has the property that there are only a couple operations that can be done on a chain. The only operations available are to create an empty chain, add a block to the end of an existing chain, or take a prefix of an existing chain.<Note>I mean, you can modify some data sitting on your computer however you want, but everyone would be able to tell by looking at it that you did one of those invalid things.</Note> There's no known way to "concatenate" two chains or modify just one block in the middle of a chain.
+
+## Proof of work
+
+You can store any information you want in a blockchain. For example, the Bitcoin and Tezos blockchains store a record of transactions. But on its own, a blockchain isn't useful as a currency, because you need a way to know which chain is _authoratative_. If Bob shows you a chain that says he has 2 bitcoins, and I show you a chain that says he only has 1 because he gave 1 to me, which one do you trust? What you need a way for everyone in the world to agree on a _particular_ blockchain. I can make my own blockchain and add some blocks, and someone else can make their own and add their own blocks, but how is a 3rd party supposed to know which chain is the "true" one?
+
+One way of doing this, used by Bitcoin but not by Tezos, is called _Proof of Work_. Proof of work is incredibly simple so it pays to understand it before diving into Tezos.
+
+In proof of work, we set up so generating a block takes a lot of computational work. The key is that everyone just agrees they'll use the longest chain available. Since making the chain logner takes work, the longest chain = the one with the most work behind it. If you had enough computing power, you could generate your own list of blocks completely independently from the current Bitcoin blockchain, and if it were long enough all Bitcoin nodes would immediately switch to using yours (although they would be pretty annoyed with you in real life). So even though this lets everyone agree on a particular blockchain, it doesn't give you confidence that the chain will never change. Bitcoin solves this ingeniously: they came up with a way to make people around the world try very hard to create the longest chain possible, so it will be very hard for you to make your own chain that beats them. Here's how they did that:
+
+Every bitcoin block contains information besides some transactions - it also says who created it. Participants of the network agree that the creator of each block gets a little bit of free bitcoin (just created out of thin air). So if you want to make some money, you can set up your computer to try to find the longest existing chain, generate a block at the end of the chain, and write in the block that it was you who created it. As soon as you succeed, your chain will be the longest, meaning everyone will agree it's the definitive one. And since you wrote your wallet address in the block, everyone will agree that you get a little bit of free bitcoin that you can go spend. And nobody wants to waste time generating blocks for a shorter chain nobody uses, so other people who had the same idea as you will switch to trying to generate a block on _your_ chain. This basically means everyone is working together to make the longest chain possible.
+
+Since everyone is trying to create the longest chain possible, it would be very difficult for you to make a new bitcoin blockchain from scratch. You would have to start out behind and have enough computing power to catch up to and exceed the length of the current chain. So this means there's one definitive chain everyone agrees on, and future chains that people agree on will always be extensions of the current one. (Put another way, they'll have the current chain as a prefix.) This prevents the blockchain from being retroactively changed, except to add new blocks.
+
+But how do you spend a bitcoin? As we said before, transactions are stored in blocks. Each transaction has a fee, which goes to the person who creates the block your transaction is stored in. That means people who generate blocks want to put as many transactions in their blocks as possible, to collect the fee. If you want to know if a transaction from a wallet is valid,<Note>Each wallet has an associated private key, and knowledge of the key is required to "sign" the transaction. A transaction from a wallet must also be signed by the wallet's corresponding private key to be considered valid.</Note> what you do is assume the wallet balance started at 0 and look through every transaction in the longest blockchain you know of to compute their current balance. The transaction is valid if it's for an amount less than their current balance. Other miners will check your block for invalid transactions and reject it if they find any. Since this information is stored in the blockchain, and everyone always agrees on the current blockchain state, everyone always agrees on the current balance of everyone's wallets. And since future agreed-upon chains will always have the current chain as a prefix, everyone is confident that a transaction to them won't be erased from history.
+
+[This 3blue1brown video](https://www.youtube.com/watch?v=bBC-nXj3Ng4&vl=en) explains more of the nitty-gritty of how all of this is accomplished cryptographically, so watch that to make sure you understand it.
+
+## Exerpt from the Tezos whitepaper:
+
+I'm posting this here because the formatting is broken on the [official site](https://wiki.tezosagora.org/whitepaper#mathematical):
+
+> A blockchain protocol is fundamentally a monadic implementation of concurrent mutations of a global state. This is achieved by defining "blocks" as operators acting on this global state. The free monoid of blocks acting on the genesis state forms a tree structure. A global, canonical, state is defined as the minimal leaf for a specified ordering.
+>
+> This suggests the following abstract representation:
+>
+> Let <Im math="(\mathbf{S},\leq)"/> be a totally ordered, countable, set of possible states.
+>
+> Let <Im math="\oslash \notin \mathbf{S}"/> represent a special, invalid, state.
+>
+> Let <Im math="\mathbf{B} \subset \mathbf{S}^{\mathbf{S} \cup \lbrace \oslash \rbrace}"/> be the set of blocks. The set of valid blocks is <Im math="\mathbf{B} \cap \mathbf{S}^{\mathbf{S}}"/>.
+>
+> The total order on <Im math="\mathbf{S}"/> is extended so that <Im math="\forall s \in \mathbf{S}, \oslash < s"/>. This order determines which leaf in the block tree is considered to be the canonical one. Blocks in <Im math="\mathbf{B}"/> are seen as operators acting on the state.
+> All in all, any blockchain protocol (be it Bitcoin, Litecoin, Peercoin, Ethereum, Cryptonote, etc) can be fully determined by the tuple:
+>
+> <BlockMath math="(\mathbf{S}, \leq, \oslash, \mathbf{B} \subset \mathbf{S}^{\mathbf{S} \cup \{ \oslash \}} )" />
+>
+> The networking protocol is fundamentally identical for these blockchains. "Mining" algorithms are but an emergent property of the network, given the incentives for block creation.
+>
+> In Tezos, we make a blockchain protocol introspective by letting blocks act on the protocol itself. We can then express the set of protocols recursively as:
+>
+> <BlockMath math="\mathcal{P} = \lbrace  (\mathbf{S}, \leq, \oslash, \mathbf{B} \subset \mathbf{S}^{(\mathbf{S} \times \mathcal{P}) \cup \{ \oslash \}} ) \rbrace " />
+
+It's actually pretty cool. It says: if you have some set of possible states that have a total order (e.g. the current balance of everyone's wallets),
+
 ## Proof of Stake
 
-test
+Proof of Work is an example of a consensus algorithm. It allows everyone to come to consensus about the state of the blockchain, and have confidence that even though the chain is changing all the time, it will always have the current chain as a prefix (new blocks can be added but current ones will never change or be removed). But it does that by having a huge number of people doing the computationally hard problem of generating a block.
 
-# Setting up a Tezos dev environment
+Proof of work works well enough for bitcoin, but it's fundamentally limited. Since Bitcoin was created, a better system has emerged, called _proof of stake_.
+
+It's possible you noticed that in my description of proof of work, there was no penalty for creating bad blocks. Maybe you could try to submit a block with an invalid transaction - people would check it and throw it away, but nothing bad would happen to you. This is fine because checking that a transaction is valid is really easy - you just need to keep track of the balances of everyone's wallets and make sure you don't allow any transactions that would leave someone with a negative balance.
+
+# The Tezos dev environment
 
 (Most tezos development is done in OCaml.)
 

@@ -12,7 +12,7 @@ const SubscribeHook = ({}) => (
       }}
     >
       <Sn>Like what you're reading? Subscribe to my newsletter :p</Sn>
-      <div style={{ maxWidth: "50%" }} className="lighten-on-hover">
+      <div style={{ maxWidth: "50%" }} className="subscribe-hook-image">
         <img
           src={subscribe_hook}
           className="invert-if-dark"

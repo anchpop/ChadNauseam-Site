@@ -22,21 +22,7 @@ const SectionHeader = ({ children }) => (
       }}
     >
       {FlexHr}
-      <h1
-        style={{
-          filter: "drop-shadow(0px 0px 10px)",
-          paddingLeft: "1em",
-          paddingRight: "1em",
-          display: "flex",
-          flex: 7,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-        }}
-      >
-        {children}
-      </h1>
+      <h1 className="section-header">{children}</h1>
       {FlexHr}
     </div>
   </div>
