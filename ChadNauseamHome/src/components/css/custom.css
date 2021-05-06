@@ -22,9 +22,6 @@
   }
 }
 
-::selection {
-  background: #ff7878; /* WebKit/Blink Browsers */
-}
 #d14b4b body {
   background: unset;
 }
@@ -339,6 +336,10 @@ h6 {
   textarea,
   select {
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  ::selection {
+    background: #ff7878; /* WebKit/Blink Browsers */
   }
 }
 /**/
