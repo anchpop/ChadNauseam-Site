@@ -1,6 +1,7 @@
 import React from "react";
 import { MDXProvider } from "@mdx-js/react";
 import { CodeBlock, CopyBlock, atomOneDark } from "react-code-blocks";
+import { Graphviz } from "graphviz-react";
 
 import Layout from "./layout";
 import Sn from "./sn";
@@ -55,6 +56,13 @@ const shortcodes = {
   SubscribeHook,
   Minisection,
   CenteredImg,
+  Graphviz: ({ dot, options }) => (
+    <Graphviz
+      dot={dot}
+      className="graphviz"
+      options={{ width: "100%", height: "auto", ...options }}
+    />
+  ),
 };
 
 export default ({ children }) => (

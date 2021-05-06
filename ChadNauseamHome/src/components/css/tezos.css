@@ -1,0 +1,22 @@
+.graphviz .blocktree-root-node {
+  filter: drop-shadow(0px 0px 2px var(--color-skirt-dark));
+}
+.graphviz .edge.blast-highlight path {
+  stroke: var(--blast-color);
+}
+.graphviz .edge.blast-highlight polygon,
+.graphviz .node.blast-highlight > ellipse {
+  fill: var(--blast-color);
+}
+
+.graphviz .edge.highlight path {
+  stroke: var(--highlight);
+}
+.graphviz .edge.highlight polygon,
+.graphviz .node.highlight > ellipse {
+  fill: var(--highlight);
+}
+
+.graphviz .edge text {
+  filter: opacity(0.8);
+}

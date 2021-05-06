@@ -1,4 +1,5 @@
-import tez from "../../images/tezos/tez.svg";
+import "../../components/css/tezos.css";
+import blocktree from "../../images/tezos/basic_blocktree.jpg";
 
 <Layout
   subtitle="ꜩ Tezos Development Notes ꜩ"
@@ -8,6 +9,216 @@ import tez from "../../images/tezos/tez.svg";
 Tezos is a cryptocurrency (units of the currency are called Tez). Tezos uses proof-of-stake for consensus and supports smart contracts.
 
 # Tezos Concepts
+
+(Disclaimer: I'm still learning and I'm liable to use wrong terminology or give wrong explanations.)
+
+## The Blocktree
+
+### Numbers and Number Lines
+
+You know numbers: `3`, `4`, `-1000`, `3.14`. What makes them numbers is that they can all be expressed as a point on the number line. Every number is what's called "a mathematical object", meaning just a well-defined thing we can do math on, but you can do math on other things. We could come up with a mathematical object that was defined as _two_ points on the number line. We could define rules, like saying two of these objects are equal if they represent the same two points on the number line. That would be a mathematical object called an unordered pair.
+
+What I'm here to tell you is this: a blockchain is a mathematical object. Like how a number is defined as a point on the numberline, a blockchain is defined as a node on the blocktree. More on this soon!
+
+### Conflict-Free Replicated Data Types
+
+Let's imagine a numberline.<Note>(I'm going to use the connection between a number and a numberline to make an analogy to a blockchain and the blocktree.)</Note> A number line is easy to represent on a computer: there's only one possible number line so you don't actually have to store anything!
+
+```
+<------------------- - ------------------->
+```
+
+Now, say we randomly choose some points on the line.
+
+```
+<-------- -9 ------- 0 ---- 5 ------ 13 -->
+```
+
+We can represent this selection on a computer as a set of numbers, like `{-9, 0, 5, 13}`. Sets have an interesting property: they form a special type of value called a _Conflict-Free Replicated Data Type_ (CRDT)! This is a special data type that is basically trivial to replicate on a swarm of computers, without a centralized node to send or recieve updates.
+
+Imagine computers connected in a peer-to-peer distributed network. Each computer in the network stores a set of numbers. Once in a while, one of the computers adds a number to their set, and wants to distribute the update to the rest of the computers, even ones they're not directly connected to. All it has to do is follow two simple rules:
+
+1. When you add a number to your set, "gossip" your new set to every computer you're connected to
+
+2. When a computer you're connected to sends you a set, combine it with your set, and if the combination is different from your old set, "gossip" the new set to every computer you're connected to.
+
+This simple rule is "eventually consistent", meaning that if everyone stops updating their set, all the nodes will eventually come to a consensus on the current state of the set, as long as there's some path between any two nodes. It's kind of impressive that it does this without needing any centralized system to keep track of the current state!
+
+### From the Number Line to the Block Tree
+
+The number line is kind of like a set that contains every (real) number. The blocktree is a tree that contains every possible blockchain. (Each protocol, like Tezos, Bitcoin, Etherium, etc. has their own blocktree. Their current state is a specific node on that tree.)
+
+You can actually store pretty much anything you want inside a blockchain. You just have to define it in a particular way: an initial state, and operations that act on that state. The blocktree is just the tree of every possible operation you could do on your initial state, then every operation you could do on _those_ states, etc. Like how a number line stretches infinitely far left and right, the blocktree stretches infinitely far downwards.
+
+An example. A Bitcoin blockchain stores the contents of everyone's wallet. The initial state is everyone's wallet having 0 BTC in it. The operations are transactions which move BTC between wallets and mining events which creates BTC from nothing. The Bitcoin _blocktree_ is an infinitely-large tree of every possible sequence of those transactions and mining events.
+
+Another example: Let's define our own blockchain system that stores something simpler. Instead of storing the contents of everyone's wallet, it just stores a positive integer<Note>This wouldn't be useful as a cryptocurrency (or anything else), but it could be fun.</Note>. The initial state is 1, and the operations are (just choosing randomly) to add 1 or multiply by 10.
+
+The blocktree is an infinite tree of every possible sequence of "add 1" or "multiply by 10" that you can do to the initial state of 1. Unfortunately, I can't include an image of an infinitely large tree, but here's a sample:
+
+<Graphviz
+  dot={`digraph {
+    bgcolor="transparent";
+    edge [style="none"];
+    node [style="none"];
+    1[class="blocktree-root-node"];
+    2;
+    10;
+    11;
+    1 -> 2[label="+1"];
+    1 -> 10[label="×10"];
+    2 -> 3[label="+1"];
+    2 -> 20[label="×10"];
+    10 -> 11[label="+1"];
+    10 -> 100[label="×10"];
+    3 -> 4[label="+1"];
+    3 -> 30[label="×10"];
+    11 -> 12[label="+1"];
+    11 -> 110[label="×10"];
+    20 -> 21[label="+1"];
+    20 -> 200[label="×10"];
+    100 -> 101[label="+1"];
+    100 -> 1000[label="×10"];
+}
+`}
+/>
+
+So that's the _blocktree_ of our new positive-integer-storing-system. A _blockchain_ is just a particular path on the tree. Let's highlight the blockchain that leaves the state at `11`.
+
+<Graphviz
+  dot={`digraph {
+    bgcolor="transparent";
+    edge [style="none"];
+    node [style="none"];
+    1[class="blocktree-root-node highlight"];
+    2;
+    10[class="highlight"];
+    11[class="blast-highlight"];
+    1 -> 2[label="+1"];
+    1 -> 10[label="×10",class="highlight"];
+    2 -> 3[label="+1"];
+    2 -> 20[label="×10"];
+    10 -> 11[label="+1",class="highlight"];
+    10 -> 100[label="×10"];
+    3 -> 4[label="+1"];
+    3 -> 30[label="×10"];
+    11 -> 12[label="+1"];
+    11 -> 110[label="×10"];
+    20 -> 21[label="+1"];
+    20 -> 200[label="×10"];
+    100 -> 101[label="+1"];
+    100 -> 1000[label="×10"];
+}
+`}
+/>
+
+If we wanted to write this quickly, we'd write something like `[×10, +1]`, since it's assumed that anyone we're talking to knows that our initial state is always `1`.
+
+You're within your rights to say some operations are invalid. Maybe you want to add a rule that says you can't apply `+1` to a number that's 1 below a power of 10. (That would make it so no two blockchains could describe the same number.) Blockchains that do an invalid operation just aren't in your blocktree, in the same way that the color red isn't on the number line.
+
+Satoshi Nakamoto solved two problems that allowed him to invent Bitcoin:
+
+1. Given a blocktree, how can we make everyone agree on a particular blockchain inside that blocktree?
+
+   This allows everyone to agree how the balance of everyone's Bitcoin wallets. (Remember, the Bitcoin blocktree is a tree of transactions<Note numbered>Among other things.</Note> - your balance is just all the BTC you recieved minus all the BTC you sent.)
+
+2. Once everyone agrees on a blockchain, how can we ensure that in the future they'll never change their mind and agree on a blockchain that isn't a descendent of the current one?
+
+   This lets people be confident that their bitcoin balance will never go down unless they do a transaction. If the agreed-upon blockchain could change to a blockchain that isn't a descendent of the current one, Bitcoin would be next to useless as a currency. Someone could buy something from you and pay with a Bitcoin transaction, then the agreed-upon blockchain could change to one where that transaction didn't happen, which would leave you suckered (you would no longer have the item of sale and no one would agree that you had the BTC you were supposed to be paid for it).
+
+Algorithms that do this are called _consensus algorithms_. Consensus algorithms that still work even if some people are malicious are called _byzantine consensus protocols_. Bitcoin uses a type of byzantine agreement protocol called _Proof of Work_ (POW). Tezos uses one called _Proof of Stake_ (POS). But they both have one thing in common: they operate on _cryptoeconomics_.
+
+## Cryptoeconomics
+
+POW and POS both accomplish byzantine consensus. But they can't work with a whole blocktree, any more than most algorithms can work with a whole number line. Given a _set of valid blockchains_, all a POW or a POS algorithm does<Note>POW and POS algorithms can also impose some restrictions on your blocktree, but they don't need to impose very many.</Note> is decide which blockchain your computer will feel is the "right" one.
+
+That already makes problem #1 easier. Remember, it was "Given a blocktree, how can we make everyone agree on a particular blockchain inside that blocktree?". Now all we need to do is make sure everyone:
+
+1. Agrees on a set of blockchains.
+
+2. Agrees on the same blockchain from that set.
+
+Using our toy example from earlier, a set of blockchains might look like `{[+1], [×10, +1, +1], [×10, ×10]}`. These would correspond to the states `{2, 12, 100}` Highlighting those blockchains on the blocktree we get:
+
+<Graphviz
+  dot={`digraph {
+    bgcolor="transparent";
+    edge [style="none"];
+    node [style="none"];
+    1[class="blocktree-root-node highlight"];
+    2[class="blast-highlight"];
+    10[class="highlight"];
+    11[class="highlight"];
+    100[class="blast-highlight"];
+    12[class="blast-highlight"];
+    1 -> 2[label="+1",class="highlight"];
+    1 -> 10[label="×10",class="highlight"];
+    2 -> 3[label="+1"];
+    2 -> 20[label="×10"];
+    10 -> 11[label="+1",class="highlight"];
+    10 -> 100[label="×10",class="highlight"];
+    3 -> 4[label="+1"];
+    3 -> 30[label="×10"];
+    11 -> 12[label="+1",class="highlight"];
+    11 -> 110[label="×10"];
+    20 -> 21[label="+1"];
+    20 -> 200[label="×10"];
+    100 -> 101[label="+1"];
+    100 -> 1000[label="×10"];
+}
+`}
+/>
+
+How do we agree on a set of blockchains? Simple. Anyone can add any blockchain they want to the set. As soon as they do, they send it to all the computers they're connected to. And if you recieve a set of blockchains from another computer with some new blockchains you didn't have in your own set, you combine it with your own set and share your new (expanded) set to all the computers _you're_ connected to. This is the same trick we used before to come to eventual consistency on a set of numbers! This is possible because sets of blockchains (like sets of numbers or sets of anything else) are CRDTs.
+
+How do they agree on the same blockchain from that set? Well, that depends. For Proof of Work, you just use the biggest blockchain in your set. Now, I know what you're thinking. "But that doesn't solve Satoshi's second problem! Sure, everyone will agree on which is the longest blockchain in the set, but there's no guarantee that the longest blockchain in tomorrow's set will be a descendent of the longest blockchain in today's set!"
+
+Well, that's where Satoshi's genius comes in. He realized that if you put certain constraints on the type of operations allowed in your blocktree, you can guarantee that will be the case using _cryptoeconomics_.
+
+## Proof of work
+
+In Proof of Work, we do two things.
+
+1. We make it so the only valid operations on the blockchain are very computationally expensive.
+
+   They're so expensive that only one valid operation is discovered every 10 minutes, despite millions of miners collectively using [15 Gigawatts](https://cbeci.org/)<Note numbered>At the time of this writing.</Note> of electrical power to discover valid operations as fast as possible.
+
+1. We make it so the set of valid operations is unique for every possible state.
+
+Both of these are solved with something called a _hash function_. I can't do a better job at explaining it than [this 3blue1brown video](https://www.youtube.com/watch?v=bBC-nXj3Ng4&vl=en), so I recommend you just go watch that.
+
+## Exerpt from the Tezos whitepaper:
+
+I'm posting this here because the formatting is broken on the [official site](https://wiki.tezosagora.org/whitepaper#mathematical):
+
+> A blockchain protocol is fundamentally a monadic implementation of concurrent mutations of a global state. This is achieved by defining "blocks" as operators acting on this global state. The free monoid of blocks acting on the genesis state forms a tree structure. A global, canonical, state is defined as the minimal leaf for a specified ordering.
+>
+> This suggests the following abstract representation:
+>
+> Let <Im math="(\mathbf{S},\leq)"/> be a totally ordered, countable, set of possible states.
+>
+> Let <Im math="\oslash \notin \mathbf{S}"/> represent a special, invalid, state.
+>
+> Let <Im math="\mathbf{B} \subset \mathbf{S}^{\mathbf{S} \cup \lbrace \oslash \rbrace}"/> be the set of blocks. The set of valid blocks is <Im math="\mathbf{B} \cap \mathbf{S}^{\mathbf{S}}"/>.
+>
+> The total order on <Im math="\mathbf{S}"/> is extended so that <Im math="\forall s \in \mathbf{S}, \oslash < s"/>. This order determines which leaf in the block tree is considered to be the canonical one. Blocks in <Im math="\mathbf{B}"/> are seen as operators acting on the state.
+> All in all, any blockchain protocol (be it Bitcoin, Litecoin, Peercoin, Ethereum, Cryptonote, etc) can be fully determined by the tuple:
+>
+> <BlockMath math="(\mathbf{S}, \leq, \oslash, \mathbf{B} \subset \mathbf{S}^{\mathbf{S} \cup \{ \oslash \}} )" />
+>
+> The networking protocol is fundamentally identical for these blockchains. "Mining" algorithms are but an emergent property of the network, given the incentives for block creation.
+>
+> In Tezos, we make a blockchain protocol introspective by letting blocks act on the protocol itself. We can then express the set of protocols recursively as:
+>
+> <BlockMath math="\mathcal{P} = \lbrace (\mathbf{S}, \leq, \oslash, \mathbf{B} \subset \mathbf{S}^{(\mathbf{S} \times \mathcal{P}) \cup \{ \oslash \}} ) \rbrace" />
+
+## Proof of Stake
+
+Proof of Work is an example of a consensus algorithm. It allows everyone to come to consensus about the state of the blockchain, and have confidence that even though the chain is changing all the time, it will always have the current chain as a prefix (new blocks can be added but current ones will never change or be removed). But it does that by having a huge number of people doing the computationally hard problem of generating a block.
+
+Proof of work works well enough for bitcoin, but it's fundamentally limited. Since Bitcoin was created, a better system has emerged, called _proof of stake_.
+
+It's possible you noticed that in my description of proof of work, there was no penalty for creating bad blocks. Maybe you could try to submit a block with an invalid transaction - people would check it and throw it away, but nothing bad would happen to you. This is fine because checking that a transaction is valid is really easy - you just need to keep track of the balances of everyone's wallets and make sure you don't allow any transactions that would leave someone with a negative balance (well, you have to if you want people to accept your blocks).
 
 ## The Blockchain
 
@@ -97,59 +308,6 @@ PUSH int 2; PUSH int 2; ADD; PUSH int 4; ASSERT_CMPEQ;
 | `ASSERT_CMPEQ;` | Pops the top two items off the stack and crashes the contract if they are not the same.                | ` `                 |
 
 Michelson's semantics are specified [here](https://tezos.gitlab.io/alpha/michelson.html#language-semantics) ([opcode reference](https://tezos.gitlab.io/alpha/michelson.html#operations-on-integers-and-natural-numbers)). Strangely a definition for `ASSERT_CMPEQ` isn't present on that page.
-
-## What is a Blockchain
-
-A blockchain is a list of "blocks", which are just little pieces of data. A blockchain is called a "chain" because it's actually a special mathematical object. It's special because it has the property that there are only a couple operations that can be done on a chain. The only operations available are to create an empty chain, add a block to the end of an existing chain, or take a prefix of an existing chain.<Note>I mean, you can modify some data sitting on your computer however you want, but everyone would be able to tell by looking at it that you did one of those invalid things.</Note> There's no known way to "concatenate" two chains or modify just one block in the middle of a chain.
-
-## Proof of work
-
-You can store any information you want in a blockchain. For example, the Bitcoin and Tezos blockchains store a record of transactions. But on its own, a blockchain isn't useful as a currency, because you need a way to know which chain is _authoratative_. If Bob shows you a chain that says he has 2 bitcoins, and I show you a chain that says he only has 1 because he gave 1 to me, which one do you trust? What you need a way for everyone in the world to agree on a _particular_ blockchain. I can make my own blockchain and add some blocks, and someone else can make their own and add their own blocks, but how is a 3rd party supposed to know which chain is the "true" one?
-
-One way of doing this, used by Bitcoin but not by Tezos, is called _Proof of Work_. Proof of work is incredibly simple so it pays to understand it before diving into Tezos.
-
-In proof of work, we set up so generating a block takes a lot of computational work. The key is that everyone just agrees they'll use the longest chain available. Since making the chain logner takes work, the longest chain = the one with the most work behind it. If you had enough computing power, you could generate your own list of blocks completely independently from the current Bitcoin blockchain, and if it were long enough all Bitcoin nodes would immediately switch to using yours (although they would be pretty annoyed with you in real life). So even though this lets everyone agree on a particular blockchain, it doesn't give you confidence that the chain will never change. Bitcoin solves this ingeniously: they came up with a way to make people around the world try very hard to create the longest chain possible, so it will be very hard for you to make your own chain that beats them. Here's how they did that:
-
-Every bitcoin block contains information besides some transactions - it also says who created it. Participants of the network agree that the creator of each block gets a little bit of free bitcoin (just created out of thin air). So if you want to make some money, you can set up your computer to try to find the longest existing chain, generate a block at the end of the chain, and write in the block that it was you who created it. As soon as you succeed, your chain will be the longest, meaning everyone will agree it's the definitive one. And since you wrote your wallet address in the block, everyone will agree that you get a little bit of free bitcoin that you can go spend. And nobody wants to waste time generating blocks for a shorter chain nobody uses, so other people who had the same idea as you will switch to trying to generate a block on _your_ chain. This basically means everyone is working together to make the longest chain possible.
-
-Since everyone is trying to create the longest chain possible, it would be very difficult for you to make a new bitcoin blockchain from scratch. You would have to start out behind and have enough computing power to catch up to and exceed the length of the current chain. So this means there's one definitive chain everyone agrees on, and future chains that people agree on will always be extensions of the current one. (Put another way, they'll have the current chain as a prefix.) This prevents the blockchain from being retroactively changed, except to add new blocks.
-
-But how do you spend a bitcoin? As we said before, transactions are stored in blocks. Each transaction has a fee, which goes to the person who creates the block your transaction is stored in. That means people who generate blocks want to put as many transactions in their blocks as possible, to collect the fee. If you want to know if a transaction from a wallet is valid,<Note>Each wallet has an associated private key, and knowledge of the key is required to "sign" the transaction. A transaction from a wallet must also be signed by the wallet's corresponding private key to be considered valid.</Note> what you do is assume the wallet balance started at 0 and look through every transaction in the longest blockchain you know of to compute their current balance. The transaction is valid if it's for an amount less than their current balance. Other miners will check your block for invalid transactions and reject it if they find any. Since this information is stored in the blockchain, and everyone always agrees on the current blockchain state, everyone always agrees on the current balance of everyone's wallets. And since future agreed-upon chains will always have the current chain as a prefix, everyone is confident that a transaction to them won't be erased from history.
-
-[This 3blue1brown video](https://www.youtube.com/watch?v=bBC-nXj3Ng4&vl=en) explains more of the nitty-gritty of how all of this is accomplished cryptographically, so watch that to make sure you understand it.
-
-## Exerpt from the Tezos whitepaper:
-
-I'm posting this here because the formatting is broken on the [official site](https://wiki.tezosagora.org/whitepaper#mathematical):
-
-> A blockchain protocol is fundamentally a monadic implementation of concurrent mutations of a global state. This is achieved by defining "blocks" as operators acting on this global state. The free monoid of blocks acting on the genesis state forms a tree structure. A global, canonical, state is defined as the minimal leaf for a specified ordering.
->
-> This suggests the following abstract representation:
->
-> Let <Im math="(\mathbf{S},\leq)"/> be a totally ordered, countable, set of possible states.
->
-> Let <Im math="\oslash \notin \mathbf{S}"/> represent a special, invalid, state.
->
-> Let <Im math="\mathbf{B} \subset \mathbf{S}^{\mathbf{S} \cup \lbrace \oslash \rbrace}"/> be the set of blocks. The set of valid blocks is <Im math="\mathbf{B} \cap \mathbf{S}^{\mathbf{S}}"/>.
->
-> The total order on <Im math="\mathbf{S}"/> is extended so that <Im math="\forall s \in \mathbf{S}, \oslash < s"/>. This order determines which leaf in the block tree is considered to be the canonical one. Blocks in <Im math="\mathbf{B}"/> are seen as operators acting on the state.
-> All in all, any blockchain protocol (be it Bitcoin, Litecoin, Peercoin, Ethereum, Cryptonote, etc) can be fully determined by the tuple:
->
-> <BlockMath math="(\mathbf{S}, \leq, \oslash, \mathbf{B} \subset \mathbf{S}^{\mathbf{S} \cup \{ \oslash \}} )" />
->
-> The networking protocol is fundamentally identical for these blockchains. "Mining" algorithms are but an emergent property of the network, given the incentives for block creation.
->
-> In Tezos, we make a blockchain protocol introspective by letting blocks act on the protocol itself. We can then express the set of protocols recursively as:
->
-> <BlockMath math="\mathcal{P} = \lbrace (\mathbf{S}, \leq, \oslash, \mathbf{B} \subset \mathbf{S}^{(\mathbf{S} \times \mathcal{P}) \cup \{ \oslash \}} ) \rbrace" />
-
-## Proof of Stake
-
-Proof of Work is an example of a consensus algorithm. It allows everyone to come to consensus about the state of the blockchain, and have confidence that even though the chain is changing all the time, it will always have the current chain as a prefix (new blocks can be added but current ones will never change or be removed). But it does that by having a huge number of people doing the computationally hard problem of generating a block.
-
-Proof of work works well enough for bitcoin, but it's fundamentally limited. Since Bitcoin was created, a better system has emerged, called _proof of stake_.
-
-It's possible you noticed that in my description of proof of work, there was no penalty for creating bad blocks. Maybe you could try to submit a block with an invalid transaction - people would check it and throw it away, but nothing bad would happen to you. This is fine because checking that a transaction is valid is really easy - you just need to keep track of the balances of everyone's wallets and make sure you don't allow any transactions that would leave someone with a negative balance (well, you have to if you want people to accept your blocks).
 
 # The Tezos dev environment
 
