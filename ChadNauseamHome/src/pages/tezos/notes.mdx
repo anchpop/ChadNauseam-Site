@@ -43,7 +43,7 @@ There are two types of accounts in Tezos:
 
    Each smart contract has some amount of storage used to keep track of its state. The contents of the storage can be read and modified from the Michelson code.
 
-## [Michelson](https://tezos.gitlab.io/008/michelson.html) - The Smart Contracts Language
+## [Michelson](https://tezos.gitlab.io/alpha/michelson.html) - The Smart Contracts Language
 
 Smart contracts are specified in a simple programming language called Michelson. The language is low-level, so usually you actually write the contracts in [Ligo](https://ligolang.org/), then compile to Michelson.
 
@@ -96,7 +96,7 @@ PUSH int 2; PUSH int 2; ADD; PUSH int 4; ASSERT_CMPEQ;
 | `PUSH int 4;`   | Pushes the int `4` onto the stack.                                                                     | `4,4`               |
 | `ASSERT_CMPEQ;` | Pops the top two items off the stack and crashes the contract if they are not the same.                | ` `                 |
 
-Michelson's semantics are specified [here](https://tezos.gitlab.io/008/michelson.html#language-semantics) ([opcode reference](https://tezos.gitlab.io/008/michelson.html#operations-on-integers-and-natural-numbers)). Strangely a definition for `ASSERT_CMPEQ` isn't present on that page.
+Michelson's semantics are specified [here](https://tezos.gitlab.io/alpha/michelson.html#language-semantics) ([opcode reference](https://tezos.gitlab.io/alpha/michelson.html#operations-on-integers-and-natural-numbers)). Strangely a definition for `ASSERT_CMPEQ` isn't present on that page.
 
 ## What is a Blockchain
 
@@ -141,9 +141,7 @@ I'm posting this here because the formatting is broken on the [official site](ht
 >
 > In Tezos, we make a blockchain protocol introspective by letting blocks act on the protocol itself. We can then express the set of protocols recursively as:
 >
-> <BlockMath math="\mathcal{P} = \lbrace  (\mathbf{S}, \leq, \oslash, \mathbf{B} \subset \mathbf{S}^{(\mathbf{S} \times \mathcal{P}) \cup \{ \oslash \}} ) \rbrace " />
-
-It's actually pretty cool. It says: if you have some set of possible states that have a total order (e.g. the current balance of everyone's wallets),
+> <BlockMath math="\mathcal{P} = \lbrace (\mathbf{S}, \leq, \oslash, \mathbf{B} \subset \mathbf{S}^{(\mathbf{S} \times \mathcal{P}) \cup \{ \oslash \}} ) \rbrace" />
 
 ## Proof of Stake
 
@@ -151,7 +149,7 @@ Proof of Work is an example of a consensus algorithm. It allows everyone to come
 
 Proof of work works well enough for bitcoin, but it's fundamentally limited. Since Bitcoin was created, a better system has emerged, called _proof of stake_.
 
-It's possible you noticed that in my description of proof of work, there was no penalty for creating bad blocks. Maybe you could try to submit a block with an invalid transaction - people would check it and throw it away, but nothing bad would happen to you. This is fine because checking that a transaction is valid is really easy - you just need to keep track of the balances of everyone's wallets and make sure you don't allow any transactions that would leave someone with a negative balance.
+It's possible you noticed that in my description of proof of work, there was no penalty for creating bad blocks. Maybe you could try to submit a block with an invalid transaction - people would check it and throw it away, but nothing bad would happen to you. This is fine because checking that a transaction is valid is really easy - you just need to keep track of the balances of everyone's wallets and make sure you don't allow any transactions that would leave someone with a negative balance (well, you have to if you want people to accept your blocks).
 
 # The Tezos dev environment
 

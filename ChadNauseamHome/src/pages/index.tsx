@@ -11,9 +11,6 @@ const IndexPage = () => (
       <Link to="/reasoning-quiz">Political Reasoning Style Quiz</Link>!
     </p>
     <p>
-      Or my <Link to="/dating/philosophy">Philosophy of Dating</Link>!
-    </p>
-    <p>
       Programming tips (WIP):
       <ol>
         <li>
