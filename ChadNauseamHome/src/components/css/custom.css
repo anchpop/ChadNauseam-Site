@@ -236,6 +236,8 @@ blockquote .main-content {
 
 .section-header-container {
   padding-top: 2em;
+  margin-left: -2em;
+  margin-right: -2em;
 }
 .section-header {
   filter: drop-shadow(0px 0px 10px var(--text-main-shadow));
