@@ -251,9 +251,6 @@ blockquote .main-content {
 
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
-.section-header:hover {
-  filter: drop-shadow(0px 0px 10px var(--text-main-shadow));
-}
 
 h1 {
   font-size: calc(
