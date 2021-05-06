@@ -175,17 +175,29 @@ How do they agree on the same blockchain from that set? Well, that depends. For 
 
 Well, that's where Satoshi's genius comes in. He realized that if you put certain constraints on the type of operations allowed in your blocktree, you can guarantee that will be the case using _cryptoeconomics_.
 
+**(From now on, I'm going to refer to blockchain operations as _blocks_)**
+
 ## Proof of work
 
-In Proof of Work, we do two things.
+In Bitcoin's implementation of Proof of Work, we do a few things.
 
-1. We make it so the only valid operations on the blockchain are very computationally expensive.
+1. We make it so the blockchain state represents the current balance of everyone's wallets. Everyone's balance starts at zero, and blocks store "transactions" that move BTC from one wallet to another.
 
-   They're so expensive that only one valid operation is discovered every 10 minutes, despite millions of miners collectively using [15 Gigawatts](https://cbeci.org/)<Note numbered>At the time of this writing.</Note> of electrical power to discover valid operations as fast as possible.
+   Ah, but if everyone starts at zero, how does anyone get BTC in the first place?
 
-1. We make it so the set of valid operations is unique for every possible state.
+1. We also write, in each blockchain operation, a little note saying who actually created that operation (it usually isn't the same person who did the transaction). We make agree that whoever's name is in that note gets a little bit of BTC as a reward. (It's just created out of thin air.)
 
-Both of these are solved with something called a _hash function_. I can't do a better job at explaining it than [this 3blue1brown video](https://www.youtube.com/watch?v=bBC-nXj3Ng4&vl=en), so I recommend you just go watch that.
+   If people think BTC has any value, this makes it profitable to add new blocks, as long as you're adding them to the chain people in the future will agree is the longest. (You can add them to a shorter chain if you want, but there's no point because nobody cares about what's on any chain besides the longest one.)
+
+1. We make it so it's very computationally expensive to compute a new valid operation to add to the blockchain set, but easy to check that an already-existing operation is valid.
+
+   Trying to compute new blocks is called "mining". It's so difficult that only one valid operation is discovered every 10 minutes, despite millions of miners collectively using [15 Gigawatts](https://cbeci.org/)<Note numbered>At the time of this writing.</Note> of electrical power to discover valid blocks as fast as possible.
+
+(All of this is done with some neat bits of cryptography. I can't do a better job at explaining it than [this 3blue1brown video](https://www.youtube.com/watch?v=bBC-nXj3Ng4&vl=en), so I recommend you just go watch that.)
+
+Assuming it functions as described, just think about it. If people think BTC has any value, people will want to try to add blocks to whatever chain is going to be an ancestor of future longest-chains. What chain is going to be the ancestor of future longest-chains? Well, probably whichever chain is _currently_ the longest. And when they try to add blocks to it, they'll be making it even longer, inadvertently helping prove themselves right. If BTC has any value and miners are motivated by profit, future longest-chains _will_ be descendents of the current longest chain.
+
+If over 50% of mining power is controlled by miners not motivated by profit, they could mess up that guarantee by not mining from the currently longest chain. But in doing so they would obliterate everyone's trust in Bitcoin, so they wouldn't be able to actually steal anything this way. Bitcoin's security is based on the assumption that nobody is going to spend millions of dollars on electricity and hardware for mining unless it's making them money. That's a cryptoeconomic guarantee rather than a cryptographic one, but it's good enough in practice.
 
 ## Exerpt from the Tezos whitepaper:
 
