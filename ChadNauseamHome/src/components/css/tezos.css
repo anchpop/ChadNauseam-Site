@@ -10,11 +10,15 @@
 }
 
 .graphviz .edge.highlight path {
-  stroke: var(--highlight);
+  stroke: var(--attention);
 }
 .graphviz .edge.highlight polygon,
 .graphviz .node.highlight > ellipse {
-  fill: var(--highlight);
+  fill: var(--attention);
+}
+.graphviz .edge.blur,
+.graphviz .node.blur {
+  filter: blur(3px);
 }
 
 .graphviz .edge text {

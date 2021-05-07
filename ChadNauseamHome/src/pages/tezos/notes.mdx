@@ -91,23 +91,35 @@ So that's the _blocktree_ of our new positive-integer-storing-system. A _blockch
     edge [style="none"];
     node [style="none"];
     1[class="blocktree-root-node highlight"];
-    2;
+    2[class="blur"];
+    3[class="blur"];
+    20[class="blur"];
+    11[class="blur"];
+    100[class="blur"];
+    4[class="blur"];
+    30[class="blur"];
+    21[class="blur"];
+    200[class="blur"];
+    12[class="blur"];
+    110[class="blur"];
+    101[class="blur"];
+    1000[class="blur"];
     10[class="highlight"];
     11[class="blast-highlight"];
-    1 -> 2[label="+1"];
+    1 -> 2[label="+1",class="blur"];
     1 -> 10[label="×10",class="highlight"];
-    2 -> 3[label="+1"];
-    2 -> 20[label="×10"];
+    2 -> 3[label="+1",class="blur"];
+    2 -> 20[label="×10",class="blur"];
     10 -> 11[label="+1",class="highlight"];
-    10 -> 100[label="×10"];
-    3 -> 4[label="+1"];
-    3 -> 30[label="×10"];
-    11 -> 12[label="+1"];
-    11 -> 110[label="×10"];
-    20 -> 21[label="+1"];
-    20 -> 200[label="×10"];
-    100 -> 101[label="+1"];
-    100 -> 1000[label="×10"];
+    10 -> 100[label="×10",class="blur"];
+    3 -> 4[label="+1",class="blur"];
+    3 -> 30[label="×10",class="blur"];
+    11 -> 12[label="+1",class="blur"];
+    11 -> 110[label="×10",class="blur"];
+    20 -> 21[label="+1",class="blur"];
+    20 -> 200[label="×10",class="blur"];
+    100 -> 101[label="+1",class="blur"];
+    100 -> 1000[label="×10",class="blur"];
 }
 `}
 />
@@ -134,7 +146,7 @@ POW and POS both accomplish byzantine consensus. But they can't work with a whol
 
 That already makes problem #1 easier. Remember, it was "Given a blocktree, how can we make everyone agree on a particular blockchain inside that blocktree?". Now all we need to do is make sure everyone:
 
-1. Agrees on a set of blockchains.
+1. Agrees on the set of blockchains.
 
 2. Agrees on the same blockchain from that set.
 
@@ -148,28 +160,37 @@ Using our toy example from earlier, a set of blockchains might look like `{[+1],
     1[class="blocktree-root-node highlight"];
     2[class="blast-highlight"];
     10[class="highlight"];
+    3[class="blur"];
+    20[class="blur"];
     11[class="highlight"];
     100[class="blast-highlight"];
+    4[class="blur"];
+    30[class="blur"];
+    21[class="blur"];
+    200[class="blur"];
     12[class="blast-highlight"];
+    110[class="blur"];
+    101[class="blur"];
+    1000[class="blur"];
     1 -> 2[label="+1",class="highlight"];
     1 -> 10[label="×10",class="highlight"];
-    2 -> 3[label="+1"];
-    2 -> 20[label="×10"];
+    2 -> 3[label="+1",class="blur"];
+    2 -> 20[label="×10",class="blur"];
     10 -> 11[label="+1",class="highlight"];
     10 -> 100[label="×10",class="highlight"];
-    3 -> 4[label="+1"];
-    3 -> 30[label="×10"];
+    3 -> 4[label="+1",class="blur"];
+    3 -> 30[label="×10",class="blur"];
     11 -> 12[label="+1",class="highlight"];
-    11 -> 110[label="×10"];
-    20 -> 21[label="+1"];
-    20 -> 200[label="×10"];
-    100 -> 101[label="+1"];
-    100 -> 1000[label="×10"];
+    11 -> 110[label="×10",class="blur"];
+    20 -> 21[label="+1",class="blur"];
+    20 -> 200[label="×10",class="blur"];
+    100 -> 101[label="+1",class="blur"];
+    100 -> 1000[label="×10",class="blur"];
 }
 `}
 />
 
-How do we agree on a set of blockchains? Simple. Anyone can add any blockchain they want to the set. As soon as they do, they send it to all the computers they're connected to. And if you recieve a set of blockchains from another computer with some new blockchains you didn't have in your own set, you combine it with your own set and share your new (expanded) set to all the computers _you're_ connected to. This is the same trick we used before to come to eventual consistency on a set of numbers! This is possible because sets of blockchains (like sets of numbers or sets of anything else) are CRDTs.
+How do we agree on the set of blockchains? Simple. Anyone can add any blockchain they want to their set. As soon as they do, they send their new set to all the computers they're connected to. When you recieve a set from another computer, you combine it with your own set and share your new (expanded) set to all the computers _you're_ connected to. This is the same trick we used before to come to eventual consistency on a set of numbers! This is possible because sets of blockchains (like sets of numbers or sets of anything else) are CRDTs.
 
 How do they agree on the same blockchain from that set? Well, that depends. For Proof of Work, you just use the biggest blockchain in your set. Now, I know what you're thinking. "But that doesn't solve Satoshi's second problem! Sure, everyone will agree on which is the longest blockchain in the set, but there's no guarantee that the longest blockchain in tomorrow's set will be a descendent of the longest blockchain in today's set!"
 
@@ -183,9 +204,9 @@ In Bitcoin's implementation of Proof of Work, we do a few things.
 
 1. We make it so the blockchain state represents the current balance of everyone's wallets. Everyone's balance starts at zero, and blocks store "transactions" that move BTC from one wallet to another.
 
-   Ah, but if everyone starts at zero, how does anyone get BTC in the first place?
+   "Ah, but if everyone starts at zero, how does anyone get BTC in the first place?"
 
-1. We also write, in each blockchain operation, a little note saying who actually created that operation (it usually isn't the same person who did the transaction). We make agree that whoever's name is in that note gets a little bit of BTC as a reward. (It's just created out of thin air.)
+1. We also write, in each blockchain operation, a little note saying who actually created that operation (it usually isn't the same person who did the transaction). We agree that whoever's name is in that note gets a little bit of BTC as a reward. (It's just created out of thin air.)
 
    If people think BTC has any value, this makes it profitable to add new blocks, as long as you're adding them to the chain people in the future will agree is the longest. (You can add them to a shorter chain if you want, but there's no point because nobody cares about what's on any chain besides the longest one.)
 
