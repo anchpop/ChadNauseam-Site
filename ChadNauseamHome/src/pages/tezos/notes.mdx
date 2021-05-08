@@ -276,7 +276,72 @@ Currently, this algorithm does _not_ do a good job of guaranteeing chain quality
 
 ## Tezos-Style Proof of Stake 😎
 
+### The cryptographic side
+
 Tezos's Proof of Stake algorithm is a bit more sophisticated. It guarantees complete chain quality as long as over 50% of the stake is honest. We'll explain that first, then explain how Tezos cryptoeconomically ensures over that over 50% of the stake has a powerful incentive to act honestly. (But for now, just assume over 50% are honest.)
+
+First, we should abstract a few things. Here's an OCaml definition for what a Tezos block looks like:
+
+```ocaml
+type block = {
+  pred: Block_hash.t;
+  header: ???;
+  operations: ??? list;
+  timestamp: float;
+}
+```
+
+This is actually simplifying a bit. First, I've taken some irrelevant bits (like the specific operations and header) and replaced them with `???` so you know you don't need to worry about their exact types. Second, you actually only store the hashes of the operations in the block header, not the operations themselves, but we can ignore that for now. Basically, the only info the system _needs_ is the hash of the predecessor block and the timestamp. Moving on!
+
+Like in Nakamoto-Style, we divide time into slots and say we're going to make one block per slot. We also group the blocks into cycles, each a few thousand blocks long.<Note numbered>4096 blocks, to be exact.</Note> Like in Nakamoto-Style, each block is mined by a randomly-selected lottery winner (chosen randomly from all the bakers). The random number generator is seeded with a value determined in the previous two cycles. <Note>The random number generator is seeded with [this algorithm using the participants of the last cycle](https://keybase.io/blog/cryptographic-coin-flipping), and it's secure as long at least one of the participants is honest.</Note> The random number is used to select several participants from the pool of bakers: some are selected to be _miners_, and some are selected to be _bakers_. We actually select multiple miners, and we also select several participants to be _signers_. (Spoilers for the cryptoeconomic section: mining and signing both offer a reward and require a "security deposit".)
+
+The reason we select multiple miners is because we still want to be able to get something done if one miner's computer is offline. The miners are put in a random order, called the _priority_. The highest-priority miner has 1 minute to generate a block. If 1 minute is up and they still haven't created a block, the next-highest priority miner gets a 1-minute chance, etc.
+
+Of course, this introduces an issue. If there are multiple miners, and both generate a block, now you have two separate blockchains and must choose one of them to agree upon. (Since the blocks are all the same except for the last block, it looks like a fork in the chain when you show it on the blocktree, so this is called a fork.)
+
+<Graphviz
+  dot={`digraph {
+    bgcolor="transparent";
+    edge [style="none"];
+    node [style="none"];
+    1[class="blocktree-root-node highlight"];
+    2[class="blur"];
+    10[class="highlight"];
+    3[class="blur"];
+    20[class="blur"];
+    11[class="highlight"];
+    100[class="blur"];
+    4[class="blur"];
+    30[class="blur"];
+    21[class="blur"];
+    200[class="blur"];
+    12[class="blast-highlight"];
+    110[class="blast-highlight"];
+    101[class="blur"];
+    1000[class="blur"];
+    1 -> 2[label="+1",class="blur"];
+    1 -> 10[label="×10",class="highlight"];
+    2 -> 3[label="+1",class="blur"];
+    2 -> 20[label="×10",class="blur"];
+    10 -> 11[label="+1",class="highlight"];
+    10 -> 100[label="×10",class="blur"];
+    3 -> 4[label="+1",class="blur"];
+    3 -> 30[label="×10",class="blur"];
+    11 -> 12[label="+1",class="highlight"];
+    11 -> 110[label="×10",class="highlight"];
+    20 -> 21[label="+1",class="blur"];
+    20 -> 200[label="×10",class="blur"];
+    100 -> 101[label="+1",class="blur"];
+    100 -> 1000[label="×10",class="blur"];
+}
+`}
+/>
+
+Actually, this can happen in Bitcoin too, when two people solve a hash puzzle at nearly the same time. It's called a soft fork and in Bitcoin, miners just select one of the chains based on a rule of their choosing and keep mining. Around half will be mining on one fork, and the other half will be mining on the other fork, but the one with more mining power on it will eventually outpace the other and (since it's longer) start to be considered the consensus fork, and miners (who have no interest in mining on a shorter, non-consensus chain that no one cares about) will switch over to the longer fork and the issue will resolve itself. For this reason, when doing a Bitcoin transaction you often have to wait for several blocks to be mined (say, between 3 and 10) before you can have confidence that your transaction will be part of the blockchain. Since Bitcoin blocks are mined every 10 minutes, this means waiting 30 minutes to an hour before you can have confidence in your transaction. Could be better!
+
+Picking the longest chain wouldn't work for Tezos-Style Proof of Stake, however. It works in Proof of Work because computing power is limited by the real world, and so needs to be divided between the forks. But blocks are easy to make in Tezos, you can easily make one per slot, so if there's a fork for whatever reason miners will just start mining on both forks and they'll stay equally long. In Tezos-Style Proof of Stake, all of the signers can sign each block, then we pick the chain with the most total _signatures_. This works because we're assuming that 50% of the stake is honest and will only sign one of the available blocks, and will sign the highest-priority block they know about.<Note numbered>Each block contains the information necessary to determine the priority of the miner who created it with cryptographic certainty.</Note> (And we'll get to why that's a reasonable assumption in the next part, just bear with me).
+
+### The cryptoeconomic side
 
 ## Excerpt from the Tezos whitepaper:
 
