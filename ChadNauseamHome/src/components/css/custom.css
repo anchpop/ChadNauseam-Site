@@ -221,6 +221,7 @@ li {
 .graphviz .edge text,
 .graphviz .node text {
   fill: var(--text-main);
+  pointer-events: none;
 }
 .graphviz .edge path {
   stroke: var(--selection-light);
@@ -229,6 +230,10 @@ li {
 .graphviz .node > ellipse {
   stroke: transparent;
   fill: var(--selection-light);
+}
+.graphviz .node > ellipse {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  filter: brightness(1);
 }
 .graphviz .node > ellipse:hover {
   filter: brightness(1.25);

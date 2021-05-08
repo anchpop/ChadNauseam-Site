@@ -1,6 +1,39 @@
 {
     "cSpell.words": [
+        "Blockchains",
+        "CMPEQ",
+        "CRDT",
+        "CRDTs",
+        "Cryptoeconomics",
+        "Cryptonote",
+        "Graphviz",
+        "Ligo",
+        "Litecoin",
+        "Nakamoto",
+        "Peercoin",
+        "Satoshi",
+        "Satoshi's",
+        "Tezo's",
+        "Tezos's",
+        "bgcolor",
+        "blocktree",
         "chadnauseum",
-        "tippyjs"
-    ]
+        "cryptocurrency",
+        "cryptoeconomic",
+        "cryptoeconomically",
+        "discretize",
+        "entrypoint",
+        "incentivized",
+        "katex",
+        "mathbf",
+        "mathcal",
+        "monoid",
+        "mutez",
+        "stakers",
+        "tezos",
+        "tezt",
+        "tippyjs",
+        "whoever's"
+    ],
+    "cSpell.enabled": true
 }
