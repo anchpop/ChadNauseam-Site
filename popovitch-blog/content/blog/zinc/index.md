@@ -200,7 +200,7 @@ type state = (list(Rpn.instruction), list(int));
 let advance = (s: state): state => {
   Rpn.(
     switch (s) {
-    | ([Rpn.Num(x), ...c],           s ) => (c, [x, ...s])
+    | ([Num(x), ...c],           s ) => (c, [x, ...s])
     | ([Add,        ...c], [a, b, ...s]) => (c, [a + b, ...s])
     | ([Sub,        ...c], [a, b, ...s]) => (c, [a - b, ...s])
     | _ => assert(false)
