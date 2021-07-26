@@ -200,12 +200,120 @@ type state = (list(Rpn.instruction), list(int));
 let advance = (s: state): state => {
   Rpn.(
     switch (s) {
-    | ([Num(x), ...c],           s ) => (c, [x, ...s])
-    | ([Add,        ...c], [a, b, ...s]) => (c, [a + b, ...s])
-    | ([Sub,        ...c], [a, b, ...s]) => (c, [a - b, ...s])
+    | ([Num(x), ...c], s) => (c, [x, ...s])
+    | ([Add, ...c], [a, b, ...s]) => (c, [a + b, ...s])
+    | ([Sub, ...c], [a, b, ...s]) => (c, [a - b, ...s])
     | _ => assert(false)
     }
   );
 };
 ```
+
+That leaves unspecified the question of how to convert a result in RPN to a result in our arithmetic language, which isn't always well-defined (not all RPN expressions have a corresponding expression in ous arithmetic language). 
+
+## The Zinc Abstract Machine
+
+So, to describe RPN, we used two things: 
+
+1) A description of how to convert arithmetic expressions to RPN
+2) A semantics for RPN
+
+We can do the same thing for Zinc. But first let's define the lambda calculus.
+
+### LC and De Bruijn indices
+
+Lambda Calculus is normally represented using names for bound variables. For example, `λx. (λy. x) x` has two bound variables, `x` and `y`. There's another way of expressing this that doesn't require names for bound variables, by replacing them with numbers that represent "how many levels down" the variable is from the lambda that binds it. So `λx. (λy. x) x` translated to De Bruijn indices would look like this: `λ (λ 2) 1`. Here's a visual example:
+
+![Visual depiction of λ (λ 1 (λ 1)) (λ 2 1)](./De_Bruijn_index_illustration_1.svg)
+
+Another thing that makes our lambda calculus a bit unique is that we have a special construction for a lambda that's immediately applied, just because it's a common case that we can optimize. We call it `let` and it's equivalent to `let x=y in z`, except we do it with De Bruijn indices so we don't actually give a name to the value being bound. 
+
+```reason
+type lang =
+  | Var(int) // we're using De Bruijn indices
+  | Lambda(lang) // λ.a
+  | App(lang, list(lang)) // f a0 a1 a2 ...
+  | Let(lang, lang) // let a in b
+```
+
+Also, De Bruijn indices normally start at 1, but I never understood why so we're just going to make them start at 0.
+
+### Zinc Instructions
+
+Like RPN, a Zinc program is basically just a list of instructions. 
+
+```reason
+type zinc =
+  | Grab
+  | Return
+  | PushRetAddr(list(zinc))
+  | Apply
+  | Access(int)
+  | Closure(list(zinc))
+  | EndLet
+```
+
+The instructions are slightly more hierarchial than in RPN - `PushRetAddr` and `Closure` themselves hold a list of instructions. To implement these in a compiler, you want to have these just hold pointers to other instructions, but putting it all in lists is fine for our purposes.
+
+Like RPN, evaluating Zinc requires a stack for intermediate values, but it also involves a second stack represent what's called the *environment*. We're just going to call them the stack and the envirnoment to save space.
+
+### Conversion from LC to Zinc
+
+To compile to efficient Zinc, you actually need two functions: one to compile tail calls and one to compile everything else. To make things even more tricky: to compile nontail calls, you sometimes need to know what's going to come "after" the call - I address this here by passing what's kind of like a "continuation". It sounds complicated but it's not so bad. The other thing to be aware of is the right-to-left evaluation order when calling functions with multiple arguments. We're going to call the function that handles tail calls `T`, and the function that handles other calls `C`. `T` takes the lambda expression it's supposed to compile, and `C` takes the expression and the result of compiling all the expressions that come later. 
+
+First, here's the definition of `T`:
+
+| LC            | Zinc                     | Explanation |
+| :------------ | :----------------------- | :---------- |
+| `λ. a`        | `[Grab; ...T(a)]`        |             |
+| `let a in b`  | `C(a, [Grab, ...T(b)])`  |             |
+| `f a1 a2 ...` | `[C(a2, [C(a1, [T(f)])]` |             |
+| `a`           | `C(a, [Return])`         |             |
+
+Then, `C`. We're using `k` to represent the continuation that's passed:
+
+| LC           | Zinc                                             | Explanation |
+| :----------- | :----------------------------------------------- | :---------- |
+| `Var(n)`     | `[Access(n), ...k]`                              |             |
+| `λ. a`       | `[Closure([Grab, ...T(a)]), ...k]`               |             |
+| `let a in b` | `C(a, [Grab, ...C(b, [EndLett, ...k])])`         |             |
+| `f a1 a2...` | `[PushRetAddr(k), C(a2, C(a1, [C(f, [Apply])])]` |             |
+| `a`          | `C(a, [Return])`                                 |             |
+
+And here that is in reason:
+
+```reason
+let rec tail_compile = (l: lang) => {
+  switch (l) {
+  | Lambda(a) => [Grab, ...tail_compile(a)]
+  | Let(a, b) => other_compile(a, [Grab, ...tail_compile(b)])
+  | App(func, args) =>
+    let rec comp = l =>
+      switch (l) {
+      | [] => tail_compile(func)
+      | [arg, ...args] => other_compile(arg, comp(args))
+      };
+    comp(List.rev(args));
+  | a => other_compile(a, [Return])
+  };
+}
+and other_compile = (l: lang, k: list(zinc)): list(zinc) => {
+  switch (l) {
+  | Var(n) => [Access(n), ...k]
+  | Lambda(a) => [Closure([Grab, ...tail_compile(a)]), ...k]
+  | Let(a, b) => other_compile(a, [Grab, ...other_compile(b, [EndLet, ...k])])
+  | App(func, args) =>
+    let rec comp = l =>
+      switch (l) {
+      | [] => other_compile(func, [Apply])
+      | [arg, ...args] => other_compile(arg, comp(args))
+      };
+    [PushRetAddr(k), ...comp(List.rev(args))];
+  | Z => [Num(0), ...k]
+  | S(n) => other_compile(n, [Succ, ...k])
+  };
+};
+```
+
+### A Semantics for Zinc
 
