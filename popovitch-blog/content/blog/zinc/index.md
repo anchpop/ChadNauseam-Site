@@ -4,11 +4,11 @@ date: "2020-07-25T22:12:03.284Z"
 description: Implementing the lambda calculus with naive term-substitution is inefficient - instead, modern compilers for functional languages convert the code to a form that can be more efficiently executed.
 ---
 
-## Practice run with Arithmetic Expressions:
-
 Invented by Xavier Leroy, Zinc is an "abstract machine" capable of representing any computation. An abstract machine is just a specification of a computing system - other examples are the lambda calculus, turing machines, and cellular automata. 
 
 It turns out that a pretty good way of implementing the lambda calculus (LC) is to just convert an LC term to a list of Zinc instructions. To understand how this works, I'll use the example that everyone uses, which is converting arithmetic expressions to reverse polish notation.
+
+## Practice run with Arithmetic Expressions:
 
 ### The Arithmetic Expression Language
 
@@ -533,7 +533,7 @@ Stack  Num(3)
 
 Which is pretty much what we wanted! We have some garbage in `env`, but the stack contains `Num(3)` and the next instruction is `Return`, so the output of our computation is `3`, just like it should be.
 
-## Zinc by Example
+## Example Execution
 
 Let's look at a simpler LC expression: `(λ.S(0)) ((λ.λ.λ.0) Z Z Z)`. I actually find Zinc a bit easier to analyze if we flip the order of applications backwards, so `f a1 a2 a3` turns into `a3 a2 a1 f`. Doing that, our expression turns into `(Z Z Z (λ.λ.λ.0)) (λ.0 S)`
 
