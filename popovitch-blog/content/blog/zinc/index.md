@@ -255,32 +255,44 @@ type zinc =
 
 The instructions are slightly more hierarchial than in RPN - `PushRetAddr` and `Closure` themselves hold a list of instructions. To implement these in a compiler, you want to have these just hold pointers to other instructions, but putting it all in lists is fine for our purposes.
 
-Like RPN, evaluating Zinc requires a stack for intermediate values, but it also involves a second stack represent what's called the *environment*. We're just going to call them the stack and the envirnoment to save space.
+Like RPN, evaluating Zinc requires a stack for intermediate values, but it also involves a second stack represent what's called the *environment*. (The environment also needs to support random access, while the intermediate-values-stack doesn't.) We're just going to call them the stack and the environment to save space.
 
 ### Conversion from LC to Zinc
 
-To compile to efficient Zinc, you actually need two functions: one to compile tail calls and one to compile everything else. To make things even more tricky: to compile nontail calls, you sometimes need to know what's going to come "after" the call - I address this here by passing what's kind of like a "continuation". It sounds complicated but it's not so bad. The other thing to be aware of is the right-to-left evaluation order when calling functions with multiple arguments. We're going to call the function that handles tail calls `T`, and the function that handles other calls `C`. `T` takes the lambda expression it's supposed to compile, and `C` takes the expression and the result of compiling all the expressions that come later. 
+To compile to efficient Zinc, you actually need two functions: one to compile tail calls (`T`) and one to compile everything else (`C`). To make things even more tricky: to compile nontail calls, you sometimes need to know what's going to come "after" the call - I address this here by passing `C` a list of what instructions follow it, kind of like a "continuation". It sounds complicated but it's not so bad. 
+
+The other thing to be aware of is the right-to-left evaluation order when calling functions with multiple arguments. We're going to call the function that handles tail calls `T`, and the function that handles other calls `C`. `T` takes the lambda expression it's supposed to compile, and `C` takes the expression and the result of compiling all the expressions that come later. 
 
 First, here's the definition of `T`:
 
-| LC            | Zinc                     | Explanation |
-| :------------ | :----------------------- | :---------- |
-| `λ. a`        | `[Grab; ...T(a)]`        |             |
-| `let a in b`  | `C(a, [Grab, ...T(b)])`  |             |
-| `f a1 a2 ...` | `[C(a2, [C(a1, [T(f)])]` |             |
-| `a`           | `C(a, [Return])`         |             |
+| T(LC)         | Zinc                    |
+| :------------ | :---------------------- |
+| `λ. a`        | `[Grab, ...T(a)]`       |
+| `let a in b`  | `C(a, [Grab, ...T(b)])` |
+| `f a1 a2 ...` | `[C(a2, [C(a1, T(f))]`  |
+| `a`           | `C(a, [Return])`        |
 
 Then, `C`. We're using `k` to represent the continuation that's passed:
 
-| LC           | Zinc                                             | Explanation |
-| :----------- | :----------------------------------------------- | :---------- |
-| `Var(n)`     | `[Access(n), ...k]`                              |             |
-| `λ. a`       | `[Closure([Grab, ...T(a)]), ...k]`               |             |
-| `let a in b` | `C(a, [Grab, ...C(b, [EndLett, ...k])])`         |             |
-| `f a1 a2...` | `[PushRetAddr(k), C(a2, C(a1, [C(f, [Apply])])]` |             |
-| `a`          | `C(a, [Return])`                                 |             |
+| C(LC, k)     | Zinc                                             |
+| :----------- | :----------------------------------------------- |
+| `Var(n)`     | `[Access(n), ...k]`                              |
+| `λ. a`       | `[Closure([Grab, ...T(a)]), ...k]`               |
+| `let a in b` | `C(a, [Grab, ...C(b, [EndLett, ...k])])`         |
+| `f a1 a2...` | `[PushRetAddr(k), C(a2, C(a1, [C(f, [Apply])])]` |
 
-And here that is in reason:
+Lots of these are easy to get a vague understanding for. For example?
+
+1) `Grab` pops a value off the stack and pushes it onto the environment.
+   
+   So `T(λ. a)` becomes `[Grab, ...T(a)]` - equivalent to moving a value from the top of the stack to the top of the environment, then evaluating `a`. 
+
+2) `Var(n)` copies the `n`th value in the environment onto the stack. 
+   
+  So if you imagine `T(λ. 0)` (remember, our De Bruijn indices start at 0), it's going to become `[Grab, ...T(0)]`, which becomes `[Grab, ...C(0, [Return])]`, which becomes `[Grab, Access(0), Return]`. The behavior of `Return` is dependent on what's actually on the stack, as we'll see later.
+
+
+And here that is in Reason:
 
 ```reason
 let rec tail_compile = (l: lang) => {
@@ -317,3 +329,102 @@ and other_compile = (l: lang, k: list(zinc)): list(zinc) => {
 
 ### A Semantics for Zinc
 
+As mentioned previously, to execute Zinc you need a stack and an environment (as well as a code-stack of Zinc instructions). In RPN, the stack was just a stack of numbers. In Zinc, the stack and environment is slightly more sophisticated. I'm going to define "environment items" and "stack items" as well as one last thing we need, closures.
+
+1) A closure is just a list of Zinc instructions and a list of environment items.
+
+  In Reason, it'd be defined as:
+
+  ```reason
+  type clos = {
+    code: list(zinc),
+    env: list(env_item),
+  }
+  ```
+
+2) An environment item is either a zinc instruction or a closure
+   
+  In Reason, it'd be defined as:
+
+  ```reason
+  type env_item =
+  | ZE(zinc) // Z stands for zinc, E stands for environment
+  | ClosE(clos)
+  ```
+
+3) A stack item is either a zinc instruction, a closure, or a marker (which is a list of zinc instructions and a list of environment items, just a like a closure):
+
+  In Reason, it'd be defined as:
+
+  ```reason
+  type stack_item =
+    | Z(zinc)
+    | Clos(clos)
+    | Marker(list(zinc), list(env_item))
+  ```
+
+Now that you know that, here's the semantics:
+
+Here's the full semantics. For brevity I've left out some of the type constructors you'd need to actually implement it, but the intention should be clear:
+
+| Code                      | Env         | Stack                        | → → → | Code | Env         | Stack                         |
+| :------------------------ | :---------- | :--------------------------- | :---- | :--- | :---------- | :---------------------------- |
+| `[Grab, ...c]`            | `e`         | `[Marker(c', e'), ...s]`     | → → → | `c'` | `e'`        | `[{code: c, env: e}, ...s]`   |
+| `[Grab, ...c]`            | `e`         | `[v, ...s]`                  | → → → | `c`  | `[v, ...e]` | `s`                           |
+| `[Return, ...c]`          | `e`         | `[v, Marker(c', e'), ...s]`  | → → → | `c'` | `e'`        | `[v, ...s]`                   |
+| `[Return, ...c]`          | `e`         | `[{code: c', env: e'} ...s]` | → → → | `c'` | `e'`        | `s`                           |
+| `[PushRetAddr(c'), ...c]` | `e`         | `s`                          | → → → | `c`  | `e`         | `[Marker(c', e), ...s]`       |
+| `[Apply, ...c]`           | `e`         | `[{code: c', env: e'} ...s]` | → → → | `c'` | `e'`        | `s`                           |
+| `[Access(n), ...c]`       | `e`         | `s`                          | → → → | `c`  | `e`         | `[e[n], ...s]`                |
+| `[Closure(c'), ...c]`     | `e`         | `s`                          | → → → | `c`  | `e`         | `[{code: c', env: e'}, ...s]` |
+| `[EndLet, ...c]`          | `[v, ...e]` | `s`                          | → → → | `c`  | `e`         | `s`                           |
+
+And here it is in Reason:
+
+```reason
+let apply_zinc = state => {
+  let (
+    instructions: list(zinc),
+    env: list(env_item),
+    stack: list(stack_item),
+  ) = state;
+  switch (instructions, env, stack) {
+  | ([Grab, ...c], env, [Z(v), ...s]) => (c, [ZE(v), ...env], s)
+  | ([Grab, ...c], env, [Clos(v), ...s]) => (c, [ClosE(v), ...env], s)
+  | ([Grab, ...c], env, [Marker(c', e'), ...s]) => (
+      c',
+      e',
+      [Clos({code: [Grab, ...c], env}), ...s],
+    )
+  | ([Return, ...c], env, [Z(v), Marker(c', e'), ...s]) => (
+      c',
+      e',
+      [Z(v), ...s],
+    )
+  | ([Return, ...c], env, [Clos({code: c', env: e'}), ...s]) => (
+      c',
+      e',
+      s,
+    )
+  | ([PushRetAddr(c'), ...c], env, s) => (c, env, [Marker(c', env), ...s])
+  | ([Apply, ...c], env, [Clos({code: c', env: e'}), ...s]) => (c', e', s)
+  // Below here is just modern SECD
+  | ([Access(n), ...c], env, s) => (
+      c,
+      env,
+      [env_to_stack(List.nth(env, n)), ...s],
+    )
+  | ([Closure(c'), ...c], env, s) => (
+      c,
+      env,
+      [Clos({code: c', env}), ...s],
+    )
+  | ([EndLet, ...c], [v, ...env], s) => (c, env, s)
+  | _ => assert(false)
+  };
+};
+```
+
+## Analyzing Zinc
+
+One important thing to realize about Zinc is that it uses a model called "eval-apply". 
