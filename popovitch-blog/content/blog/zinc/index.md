@@ -427,4 +427,6 @@ let apply_zinc = state => {
 
 ## Analyzing Zinc
 
-One important thing to realize about Zinc is that it uses a model called "eval-apply". 
+One important thing to understand about Zinc is that it uses a model called "eval-apply". 
+
+WIP
