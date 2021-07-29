@@ -1,6 +1,6 @@
 ---
 title: Efficently Implementing the Lamda Calculus
-date: "2020-07-25T22:12:03.284Z"
+date: "2020-07-28T22:12:03.284Z"
 description: Implementing the lambda calculus with naive term-substitution is inefficient - instead, modern compilers for functional languages convert the code to a form that can be more efficiently executed.
 ---
 
