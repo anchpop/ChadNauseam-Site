@@ -8,7 +8,7 @@ Invented by Xavier Leroy, Zinc is an "abstract machine" capable of representing 
 
 It turns out that a pretty good way of implementing the lambda calculus (LC) is to just convert an LC term to a list of Zinc instructions. To understand how this works, I'll use the example that everyone uses, which is converting arithmetic expressions to reverse polish notation.
 
-## Practice run with Arithmetic Expressions:
+## Practice run with Arithmetic Expressions
 
 ### The Arithmetic Expression Language
 
@@ -50,7 +50,7 @@ let () = Printf.printf("%d\n", interpret(ten_plus_three_minus_one));
 
 And that would be fine for most purposes. However, for the sake of illustration, let's convert it to another way of writing arithmetic expressions that can be evaluated slightly more efficiently, called reverse polish notation (RPN). The nice thing about RPN is that it's non-hierarchial and doesn't require parentheses, making it a closer approximation to how computers work.
 
-How RPN works is simple. This is the definition of an RPN instruction:
+How RPN works is simple. It's simply a list of "RPN instructions":
 
 ```reason
 type rpn_instruction =
@@ -226,7 +226,7 @@ Lambda Calculus is normally represented using names for bound variables. For exa
 
 ![Visual depiction of λ (λ 1 (λ 1)) (λ 2 1)](./De_Bruijn_index_illustration_1.svg)
 
-Another thing that makes our lambda calculus a bit unique is that we have a special construction for a lambda that's immediately applied, just because it's a common case that we can optimize. We call it `let` and it's equivalent to `let x=y in z`, except we do it with De Bruijn indices so we don't actually give a name to the value being bound. 
+Another thing that makes our lambda calculus a bit unique is that we have a special construction for a lambda that's immediately applied, just because it's a common case that we can optimize. We call it `let` (of `let x=y in z` fame), equivalent to `(λx. z) y`, except we do it with De Bruijn indices so we don't actually give a name to the value being bound. 
 
 ```reason
 type lang =
@@ -240,7 +240,7 @@ Also, De Bruijn indices normally start at 1, but I never understood why so we're
 
 ### Zinc Instructions
 
-Like RPN, a Zinc program is basically just a list of instructions. 
+Like RPN, a Zinc program is just a list of instructions. 
 
 ```reason
 type zinc =
@@ -253,35 +253,35 @@ type zinc =
   | EndLet
 ```
 
-The instructions are slightly more hierarchial than in RPN - `PushRetAddr` and `Closure` themselves hold a list of instructions. To implement these in a compiler, you want to have these just hold pointers to other instructions, but putting it all in lists is fine for our purposes.
+The instructions are slightly more hierarchial than in RPN - `PushRetAddr` and `Closure` themselves hold a list of instructions. To implement these in a compiler you'd want to have these hold pointers to other instructions, but putting it all in lists is fine for our purposes.
 
 Like RPN, evaluating Zinc requires a stack for intermediate values, but it also involves a second stack represent what's called the *environment*. (The environment also needs to support random access, while the intermediate-values-stack doesn't.) We're just going to call them the stack and the environment to save space.
 
 ### Conversion from LC to Zinc
 
-To compile to efficient Zinc, you actually need two functions: one to compile tail calls (`T`) and one to compile everything else (`C`). To make things even more tricky: to compile nontail calls, you sometimes need to know what's going to come "after" the call - I address this here by passing `C` a list of what instructions follow it, kind of like a "continuation". It sounds complicated but it's not so bad. 
+To compile to efficient Zinc, you actually need two functions: one to compile tail calls (`T`) and one to compile everything else (`C`). To make things even more tricky: to compile nontail calls, you sometimes need to know what's going to come "after" the call - I address this here by passing `C` a list of what instructions follow it, kind of like a continuation. It sounds complicated but it's not so bad. 
 
-The other thing to be aware of is the right-to-left evaluation order when calling functions with multiple arguments. We're going to call the function that handles tail calls `T`, and the function that handles other calls `C`. `T` takes the lambda expression it's supposed to compile, and `C` takes the expression and the result of compiling all the expressions that come later. 
+The other thing to be aware of is the right-to-left evaluation order when calling functions with multiple arguments. We're going to call the function that handles tail calls `T`, and the function that handles other calls `C`. `T` takes the lambda expression it's supposed to compile, and `C` takes the expression and the result of compiling all the expressions that come "after". 
 
 First, here's the definition of `T`:
 
-| T(LC)         | Zinc                    |
-| :------------ | :---------------------- |
-| `λ. a`        | `[Grab, ...T(a)]`       |
-| `let a in b`  | `C(a, [Grab, ...T(b)])` |
-| `f a1 a2 ...` | `[C(a2, [C(a1, T(f))]`  |
-| `a`           | `C(a, [Return])`        |
+| T(LC)         | Zinc                       |
+| :------------ | :------------------------- |
+| `λ. a`        | `[Grab, ...T(a)]`          |
+| `let a in b`  | `C(a, [Grab, ...T(b)])`    |
+| `f a1 a2 ...` | `... [C(a2, [C(a1, T(f))]` |
+| `a`           | `C(a, [Return])`           |
 
 Then, `C`. We're using `k` to represent the continuation that's passed:
 
-| C(LC, k)     | Zinc                                             |
-| :----------- | :----------------------------------------------- |
-| `Var(n)`     | `[Access(n), ...k]`                              |
-| `λ. a`       | `[Closure([Grab, ...T(a)]), ...k]`               |
-| `let a in b` | `C(a, [Grab, ...C(b, [EndLet, ...k])])`          |
-| `f a1 a2...` | `[PushRetAddr(k), C(a2, C(a1, [C(f, [Apply])])]` |
+| C(LC, k)     | Zinc                                                 |
+| :----------- | :--------------------------------------------------- |
+| `Var(n)`     | `[Access(n), ...k]`                                  |
+| `λ. a`       | `[Closure([Grab, ...T(a)]), ...k]`                   |
+| `let a in b` | `C(a, [Grab, ...C(b, [EndLet, ...k])])`              |
+| `f a1 a2...` | `[PushRetAddr(k), ... C(a2, C(a1, [C(f, [Apply])])]` |
 
-Lots of these are easy to get a vague understanding for. For example?
+Lots of these are easy to get a vague understanding for. For example:
 
 1) `Grab` pops a value off the stack and pushes it onto the environment.
    
@@ -295,7 +295,7 @@ Lots of these are easy to get a vague understanding for. For example?
 And here that is in Reason:
 
 ```reason
-let rec tail_compile = (l: lang) => {
+let rec tail_compile = (l: lang): list(zinc) => {
   switch (l) {
   | Lambda(a) => [Grab, ...tail_compile(a)]
   | Let(a, b) => other_compile(a, [Grab, ...tail_compile(b)])
@@ -342,7 +342,7 @@ As mentioned previously, to execute Zinc you need a stack and an environment (as
   }
   ```
 
-2) An environment item is either a zinc instruction or a closure
+2) An environment item is either a Zinc instruction or a closure
    
   In Reason, it'd be defined as:
 
@@ -352,7 +352,7 @@ As mentioned previously, to execute Zinc you need a stack and an environment (as
   | ClosE(clos)
   ```
 
-3) A stack item is either a zinc instruction, a closure, or a marker (which is a list of zinc instructions and a list of environment items, just a like a closure):
+3) A stack item is either a Zinc instruction, a closure, or a marker (which is a list of Zinc instructions and a list of environment items, just a like a closure):
 
   In Reason, it'd be defined as:
 
@@ -474,7 +474,7 @@ let apply_zinc = state => {
   ) = state;
   switch (instructions, env, stack) {
   // ...
-  // New
+  // New:
   // Don't be confused - the `Z` here stands for Zinc, not Zero - it's 
   // the data constructor we use to put Zinc values on the stack 
   | ([Num(n), ...c], env, s) => (c, env, [Z(Num(n)), ...s]) 
@@ -535,12 +535,12 @@ Which is pretty much what we wanted! We have some garbage in `env`, but the stac
 
 ## Example Execution
 
-Let's look at a simpler LC expression: `(λ.S(0)) ((λ.λ.λ.0) Z Z Z)`. I actually find Zinc a bit easier to analyze if we flip the order of applications backwards, so `f a1 a2 a3` turns into `a3 a2 a1 f`. Doing that, our expression turns into `(Z Z Z (λ.λ.λ.0)) (λ.0 S)`
+Let's look at a simpler LC expression: `(λ.S 0) ((λ.λ.λ.0) Z Z Z)`. I actually find Zinc a bit easier to analyze if we flip the order of applications backwards, so `f a1 a2 a3` turns into `a3 a2 a1 f`. Doing that, our expression turns into `(Z Z Z (λ.λ.λ.0)) (λ.0 S)`. It may seem strange but it's really useful - expressions will be written that way for the rest of the post.
 
 Let's compile that to Zinc
 
 ```
-T(Z Z Z (λ.λ.λ.0))    (λ.0 S)
+T((Z Z Z (λ.λ.λ.0))   (λ.0 S))
 C(Z Z Z (λ.λ.λ.0), k=T(λ.0 S))
 C(Z Z Z (λ.λ.λ.0), k=[Grab, ...T(0 S)])
 C(Z Z Z (λ.λ.λ.0), k=[Grab, ...C(0, k=T(S)])
@@ -563,7 +563,7 @@ C(Z Z Z (λ.λ.λ.0), k=[Grab, Access(0), Succ, Return])
 [PushRetAddr([Grab, Access(0), Succ, Return]), Num(0), Num(0), Num(0), Closure([Grab, Grab, Grab, Access(0), Return]), Apply]
 ```
 
-You can kind of see the correspondence if you squint:
+You can kind of see the correspondence between the input LC and the compiled Zinc if you squint:
 
 <!--
                                   +------------------------------------------------------------------------------------------------------+
@@ -582,10 +582,10 @@ You can kind of see the correspondence if you squint:
 
 ![Correspondence between Zinc and original LC expression](./bob.svg)
 
-1) Because Zinc has strict semantics, the inner expression `Z Z Z (λ.λ.λ.0)` needs to be executed first. But before it can be, we need to add a `PushReturnAddr` instruction, so we know what to do after we're done executing that expression. What we do after is apply it to `(λ.0 S)`, so our first instruction is `PushRetAddr(T(λ.0 S))` or `PushRetAddr([Grab, Access(0), Succ, Return])`. Let's "eagerly" execute that: 
+1) Because Zinc has strict semantics, the inner expression `Z Z Z (λ.λ.λ.0)` needs to be executed first. But before it can be, we need to add a `PushReturnAddr` instruction, so we know "what to do after" we're done executing that expression. "What to do after" is apply it to `(λ.0 S)`, so our first instruction is `PushRetAddr(T(λ.0 S))` or `PushRetAddr([Grab, Access(0), Succ, Return])`. Let's "eagerly" execute that: 
 
   ```
-  Code:  [PushRetAddr([Grab, Access(0), Succ, Return]), ...c)
+  Code:  [PushRetAddr([Grab, Access(0), Succ, Return]), ...c]
   Env:   []
   Stack: []
   ```
@@ -616,7 +616,7 @@ You can kind of see the correspondence if you squint:
   Stack: [Num(0), Num(0), Num(0), Marker((Grab Access(0) Succ Return], [])] 
   ```
 
-3. That leaves us with `C(λ.λ.λ.0)`. Since it's not a tail call, we have to put it in a closure. An optimizing compiler could have seen that we immediately apply it and remove the closure using `let`, but let's not worry about that. That becomes `Closure([Grab, Grab, Grab, Access(0), Return]), Apply`, which is the last of our instructions
+3. That leaves us with `C(λ.λ.λ.0)`. Since it's not a tail call, we have to put it in a closure. An optimizing compiler could have seen that we immediately apply it and remove the closure using `let`, but let's not worry about that. That becomes `Closure([Grab, Grab, Grab, Access(0), Return]), Apply`, which is the last of our instructions.
 
   ```
   Code:  [Closure([Grab, Grab, Grab, Access(0), Return]), Apply]
@@ -632,7 +632,7 @@ You can kind of see the correspondence if you squint:
   Stack: [{code: [Grab, Grab, Grab, Access(0), Return], env: []}, Num(0), Num(0), Num(0), Marker((Grab Access(0) Succ Return], [])] 
   ```
 
-  And how here's where the magic starts happening. Apply immediately puts the closure back onto the code-stack (this is why it'd be faster to use a `let`).
+  And how here's where the magic starts happening. Apply immediately puts the closure's code back onto the code-stack (this is why it'd be faster to use a `let`). (It also puts the closure's environment back onto the environment-stack, but both are empty right now so that has no effect.) 
 
   ```
   Code:  [Grab, Grab, Grab, Access(0), Return]
@@ -656,7 +656,7 @@ You can kind of see the correspondence if you squint:
   Stack: [Num(0), Marker([Grab,Access(0),Succ,Return], [])]
   ```
 
-  On the top of the stack is `Num(0)`, the output of `Z Z Z (λ.λ.λ.0)`! Now `Return` has to pass control back to the caller. It sees there's a value on the stack (this is the return value), and a `Marker` (that's the caller), so we make a new stack that's `Num(0)` followed by the marker's stack, and use the marker's environment:
+  On the top of the stack is `Num(0)`, the output of `Z Z Z (λ.λ.λ.0)`! Now `Return` has to pass control back to the caller. It sees there's a value `Num(0)` on the stack (this is the return value), and a `Marker` (that's the caller), so we make a new stack that's `Num(0)` followed by the marker's stack. (We also use the marker's environment which again is empty.)
 
   ```
   Code:  [Grab, Access(0), Succ,Return]
@@ -692,4 +692,4 @@ You can kind of see the correspondence if you squint:
 
 ## Why Zinc is Nice
 
-The nice thing about Zinc is that over- and under-applications are handled correctly. If you pass one value to a function that expects 2 (like `λ.λ.0`), the second `Grab` will fail and return a closure. If you pass three values to a function that expects two, the function probably returned a closure that takes another value (remember, returning means placing the value on top of the stack). `Return` won't see a marker in the place it expects to, but it will see a closure at the top of the stack, so it will tail-apply the next argument to that closure. These properties among others make Zinc ideal for OCaml-like languages that encourage currying.  
+The nice thing about Zinc is that over- and under-applications are handled correctly. If you pass one value to a function that expects two (like `λ.λ.0`), the second `Grab` will fail and return a closure. If you pass three values to a function that expects two, the function probably returned a closure that takes another value (remember, returning means placing the value on top of the stack). `Return` won't see a marker in the place it expects to, but it will see a closure at the top of the stack, so it will tail-apply the next argument to that closure. These properties among others make Zinc ideal for OCaml-like languages that are strict and encourage currying.
