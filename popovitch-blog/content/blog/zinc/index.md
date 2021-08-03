@@ -1,8 +1,10 @@
 ---
-title: Efficently Implementing the Lamda Calculus
+title: Efficently Implementing the Labmda Calculus
 date: "2020-07-25T22:12:03.284Z"
 description: Implementing the lambda calculus with naive term-substitution is inefficient - instead, modern compilers for functional languages convert the code to a form that can be more efficiently executed.
 ---
+
+<link rel="canonical" href="https://marigold.dev/blog/zinc-introduction/" /> 
 
 ## Practice run with Arithmetic Expressions:
 
