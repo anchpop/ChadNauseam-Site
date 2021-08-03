@@ -155,6 +155,10 @@ select {
   align-items: stretch;
 }
 
+.total-content {
+  padding-bottom: 10em;
+}
+
 .page-navigation-footer {
   display: flex;
   flex-direction: row;

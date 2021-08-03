@@ -69,41 +69,44 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
               subtitle={subtitle}
               style={style}
             />
-            <ThemeContext.Provider
-              value={{
-                lightTheme,
-                smallScreen,
-              }}
-            >
-              <main style={style} className="main-content">
-                {children}
-              </main>
-            </ThemeContext.Provider>
+            <div className="total-content">
 
-            <div
-              style={{
-                ...style,
-              }}
-              className="socials-container"
-            >
-              <SocialButton
-                text="My Discord"
-                color="#23272A"
-                icon={discord}
-                href="/discord"
-              ></SocialButton>
-              {/*<SocialButton
+              <ThemeContext.Provider
+                value={{
+                  lightTheme,
+                  smallScreen,
+                }}
+              >
+                <main style={style} className="main-content">
+                  {children}
+                </main>
+              </ThemeContext.Provider>
+
+              <div
+                style={{
+                  ...style,
+                }}
+                className="socials-container"
+              >
+                <SocialButton
+                  text="My Discord"
+                  color="#23272A"
+                  icon={discord}
+                  href="/discord"
+                ></SocialButton>
+                {/*<SocialButton
                 text="...Or my Reddit"
                 color="#FF4500"
                 icon={reddit}
                 href="/reddit"
               ></SocialButton>*/}
-              <SocialButton
-                text="My Twitter"
-                color="#1DA1F2"
-                icon={twitter}
-                href="/twitter"
-              ></SocialButton>
+                <SocialButton
+                  text="My Twitter"
+                  color="#1DA1F2"
+                  icon={twitter}
+                  href="/twitter"
+                ></SocialButton>
+              </div>
             </div>
           </>
         )}
