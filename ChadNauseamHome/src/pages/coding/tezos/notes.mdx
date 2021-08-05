@@ -1,5 +1,5 @@
-import "../../components/css/tezos.css";
-import blocktree from "../../images/tezos/basic_blocktree.jpg";
+import "../../../components/css/tezos.css";
+import blocktree from "../../../images/tezos/basic_blocktree.jpg";
 
 <Layout
   subtitle="ꜩ Tezos Development Notes ꜩ"
@@ -339,13 +339,11 @@ Of course, this introduces an issue. If there are multiple miners, and both gene
 
 Actually, this can happen in Bitcoin too, when two people solve a hash puzzle at nearly the same time. It's called a soft fork and in Bitcoin, miners just select one of the chains based on a rule of their choosing and keep mining. Around half will be mining on one fork, and the other half will be mining on the other fork, but the one with more mining power on it will eventually outpace the other and (since it's longer) start to be considered the consensus fork, and miners (who have no interest in mining on a shorter, non-consensus chain that no one cares about) will switch over to the longer fork and the issue will resolve itself. For this reason, when doing a Bitcoin transaction you often have to wait for several blocks to be mined (say, between 3 and 10) before you can have confidence that your transaction will be part of the blockchain. Since Bitcoin blocks are mined every 10 minutes, this means waiting 30 minutes to an hour before you can have confidence in your transaction. Could be better!
 
-Picking the longest chain wouldn't work for Tezos-Style Proof of Stake, however. It works in Proof of Work because computing power is limited by the real world, and so needs to be divided between the forks. But blocks are easy to make in Tezos, you can easily make one per slot, so if there's a fork for whatever reason miners will just start mining on both forks and they'll stay equally long. In Tezos-Style Proof of Stake, all of the signers can sign each block, then we pick the chain with the most total _signatures_. This works because we're assuming that 50% of the stake is honest and will only sign one of the available blocks, and will sign the highest-priority block they know about.<Note numbered>Each block contains the information necessary to determine the priority of the miner who created it with cryptographic certainty.</Note> 
+Picking the longest chain wouldn't work for Tezos-Style Proof of Stake, however. It works in Proof of Work because computing power is limited by the real world, and so needs to be divided between the forks. But blocks are easy to make in Tezos, you can easily make one per slot, so if there's a fork for whatever reason miners will just start mining on both forks and they'll stay equally long. In Tezos-Style Proof of Stake, all of the signers can sign each block, then we pick the chain with the most total _signatures_. This works because we're assuming that 50% of the stake is honest and will only sign one of the available blocks, and will sign the highest-priority block they know about.<Note numbered>Each block contains the information necessary to determine the priority of the miner who created it with cryptographic certainty.</Note>
 
-Unfortunately, everyone still needs to check that the actual operations on the chain are valid. It's very difficult to motivate miners to only create valid blocks without everyone checking the blocks they create for validity. Bitcoin miners not doing this caused them to [accidentally create a long-lived fork](https://bitcoin.stackexchange.com/questions/38437/what-is-spv-mining-and-how-did-it-inadvertently-cause-the-fork-after-bip66-wa) a few years back. 
+Unfortunately, everyone still needs to check that the actual operations on the chain are valid. It's very difficult to motivate miners to only create valid blocks without everyone checking the blocks they create for validity. Bitcoin miners not doing this caused them to [accidentally create a long-lived fork](https://bitcoin.stackexchange.com/questions/38437/what-is-spv-mining-and-how-did-it-inadvertently-cause-the-fork-after-bip66-wa) a few years back.
 
 ### The cryptoeconomic side
-
-
 
 ## Excerpt from the Tezos whitepaper:
 
