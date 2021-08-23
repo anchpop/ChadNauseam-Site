@@ -1,12 +1,14 @@
 ---
-title: Efficently Implementing the Labmda Calculus
-date: "2020-07-25T22:12:03.284Z"
+title: Efficiently Implementing the Lambda Calculus With Zinc
+date: "2021-07-28T22:12:03.284Z"
 description: Implementing the lambda calculus with naive term-substitution is inefficient - instead, modern compilers for functional languages convert the code to a form that can be more efficiently executed.
 ---
 
-<link rel="canonical" href="https://marigold.dev/blog/zinc-introduction/" /> 
+<link rel="canonical" href="https://marigold.dev/blog/zinc-introduction/" />
 
-Invented by Xavier Leroy, Zinc is an "abstract machine" capable of representing any computation. An abstract machine is just a specification of a computing system - other examples are the lambda calculus, turing machines, and cellular automata. 
+This post is also available on [Marigold's blog](https://marigold.dev/blog/zinc-introduction).
+
+Invented by Xavier Leroy, Zinc is an _abstract machine_ capable of representing any computation. An abstract machine is just a specification of a computing system - other examples are the lambda calculus, turing machines, and cellular automata.
 
 It turns out that a pretty good way of implementing the lambda calculus (LC) is to just convert an LC term to a list of Zinc instructions. To understand how this works, I'll use the example that everyone uses, which is converting arithmetic expressions to reverse polish notation.
 
@@ -18,7 +20,7 @@ Let's imagine an arithmetic expression language, which we'll define in ReasonML 
 
 ```reason
 type lang =
-  | Num(int) 
+  | Num(int)
   | Add(lang, lang)
   | Sub(lang, lang);
 
@@ -44,7 +46,7 @@ let rec interpret = l => {
 
 // Example:
 
-let () = Printf.printf("%d\n", interpret(ten_plus_three_minus_one)); 
+let () = Printf.printf("%d\n", interpret(ten_plus_three_minus_one));
 // 12
 ```
 
@@ -52,7 +54,7 @@ let () = Printf.printf("%d\n", interpret(ten_plus_three_minus_one));
 
 And that would be fine for most purposes. However, for the sake of illustration, let's convert it to another way of writing arithmetic expressions that can be evaluated slightly more efficiently, called reverse polish notation (RPN). The nice thing about RPN is that it's non-hierarchial and doesn't require parentheses, making it a closer approximation to how computers work.
 
-How RPN works is simple. It's simply a list of "RPN instructions":
+How RPN works is simple - it's simply a list of "RPN instructions". For instance,
 
 ```reason
 type rpn_instruction =
@@ -64,9 +66,9 @@ type rpn = list(rpn_instruction);
 
 A value of type `rpn` can express anything our `lang` type could. For example, `Add(ten, Sub(three, one))` becomes `[Num(10), Num(1), Num(3), Sub, Add]`. To evaluate it, you need two things:
 
-1) An "instruction pointer" telling you the next instruction to execute.
+1. An "instruction pointer" telling you the next instruction to execute.
 
-2) A stack to hold intermediate values. 
+2. A stack to hold intermediate values.
 
 Here are the rules. `Num(x)` adds `x` to the stack. `Add` pops two values off the stack, adds them, then pushes the result back onto the stack. `Sub` does the same thing, except subtracting instead of adding. By example:
 
@@ -100,7 +102,7 @@ instructions: [Num(10), Num(1), Num(3), Sub, Add]
 stack:        [3, 1, 10]
 ```
 
-Now the instruction pointer is pointing to `Sub`, so we pop the top two numbers off the stack, subtract them, then push the result back onto the stack. The top two numbers are `3` and `1`, and `3-1` is `2`, so that turns the stack into `[2, 10]`. 
+Now the instruction pointer is pointing to `Sub`, so we pop the top two numbers off the stack, subtract them, then push the result back onto the stack. The top two numbers are `3` and `1`, and `3-1` is `2`, so that turns the stack into `[2, 10]`.
 
 ```
 instructions: [Num(10), Num(1), Num(3), Sub, Add]
@@ -110,14 +112,13 @@ stack:        [2, 10]
 
 Now, same thing for `Add`. Pop the top two numbers off the stack (`2` and `10`), add them, then push the result onto the stack.
 
-
 ```
 instructions: [Num(10), Num(1), Num(3), Sub, Add]
                                                 ☝️
 stack:        [12]
 ```
 
-And our instruction pointer has reached the end of the program, so we're done! The only thing on the stack is `12`, so that's the result of our computation. 
+And our instruction pointer has reached the end of the program, so we're done! The only thing on the stack is `12`, so that's the result of our computation.
 
 ### Converting Between Arithmetic Expressions and RPN
 
@@ -177,7 +178,7 @@ let rec arithmetic_to_rpn = l =>
 
 // Example:
 
-arithmetic_to_rpn(ten_plus_three_minus_one) 
+arithmetic_to_rpn(ten_plus_three_minus_one)
 // [Num(10), Num(3), Num(1), Sub, Add]
 ```
 
@@ -187,11 +188,12 @@ I explained that RPN could be evaluated with an instruction pointer. But the ins
 
 To actually specify the semantics, you can use code, but you can also use this table notation that you'll often see:
 
-| Code             | Instructions   | → → → | Code | Instructions    |
-| :--------------- | :------------- | :---- | :--- | :-------------- |
-| `[Num(x), ...c]` | `s`            | → → → | `c`  | `[x, ...s]`     |
-| `[Add, ...c]`    | `[a, b, ...s]` | → → → | `c`  | `[a + b, ...s]` |
-| `[Sub, ...c]`    | `[a, b, ...s]` | → → → | `c`  | `[a - b, ...s]` |
+    | Code             | Instructions   | →    | Code | Instructions    |
+
+| :--------------- | :------------- | :--- | :--- | :-------------- |
+| `[Num(x), ...c]` | `s` | → | `c` | `[x, ...s]` |
+| `[Add, ...c]` | `[a, b, ...s]` | → | `c` | `[a + b, ...s]` |
+| `[Sub, ...c]` | `[a, b, ...s]` | → | `c` | `[a - b, ...s]` |
 
 That table specifies how to advance "one step" in RPN. You find the row where the left side of the table matches your current code-stack and instructions-stack, and the output is the code and instruction stack on the right side of the table. You repeat this process until you have nothing left to do (empty instruction stack, or no matching row), and then halt.
 
@@ -211,14 +213,14 @@ let advance = (s: state): state => {
 };
 ```
 
-That leaves unspecified the question of how to convert a result in RPN to a result in our arithmetic language, which isn't always well-defined (not all RPN expressions have a corresponding expression in ous arithmetic language). 
+That leaves unspecified the question of how to convert a result in RPN to a result in our arithmetic language, which isn't always well-defined (not all RPN expressions have a corresponding expression in ous arithmetic language).
 
 ## The Zinc Abstract Machine
 
-So, to describe RPN, we used two things: 
+So, to describe RPN, we used two things:
 
-1) A description of how to convert arithmetic expressions to RPN
-2) A semantics for RPN
+1. A description of how to convert arithmetic expressions to RPN
+2. A semantics for RPN
 
 We can do the same thing for Zinc. But first let's define the lambda calculus.
 
@@ -228,7 +230,7 @@ Lambda Calculus is normally represented using names for bound variables. For exa
 
 ![Visual depiction of λ (λ 1 (λ 1)) (λ 2 1)](./De_Bruijn_index_illustration_1.svg)
 
-Another thing that makes our lambda calculus a bit unique is that we have a special construction for a lambda that's immediately applied, just because it's a common case that we can optimize. We call it `let` (of `let x=y in z` fame), equivalent to `(λx. z) y`, except we do it with De Bruijn indices so we don't actually give a name to the value being bound. 
+Another thing that makes our lambda calculus a bit unique is that we have a special construction for a lambda that's immediately applied, just because it's a common case that we can optimize. We call it `let` (of `let x=y in z` fame), equivalent to `(λx. z) y`, except we do it with De Bruijn indices so we don't actually give a name to the value being bound.
 
 ```reason
 type lang =
@@ -242,7 +244,7 @@ Also, De Bruijn indices normally start at 1, but I never understood why so we're
 
 ### Zinc Instructions
 
-Like RPN, a Zinc program is just a list of instructions. 
+Like RPN, a Zinc program is just a list of instructions.
 
 ```reason
 type zinc =
@@ -257,13 +259,13 @@ type zinc =
 
 The instructions are slightly more hierarchial than in RPN - `PushRetAddr` and `Closure` themselves hold a list of instructions. To implement these in a compiler you'd want to have these hold pointers to other instructions, but putting it all in lists is fine for our purposes.
 
-Like RPN, evaluating Zinc requires a stack for intermediate values, but it also involves a second stack represent what's called the *environment*. (The environment also needs to support random access, while the intermediate-values-stack doesn't.) We're just going to call them the stack and the environment to save space.
+Like RPN, evaluating Zinc requires a stack for intermediate values, but it also involves a second stack represent what's called the _environment_. (The environment also needs to support random access, while the intermediate-values-stack doesn't.) We're just going to call them the stack and the environment to save space.
 
 ### Conversion from LC to Zinc
 
-To compile to efficient Zinc, you actually need two functions: one to compile tail calls (`T`) and one to compile everything else (`C`). To make things even more tricky: to compile nontail calls, you sometimes need to know what's going to come "after" the call - I address this here by passing `C` a list of what instructions follow it, kind of like a continuation. It sounds complicated but it's not so bad. 
+To compile to efficient Zinc, you actually need two functions: one to compile tail calls (`T`) and one to compile everything else (`C`). To make things even more tricky: to compile nontail calls, you sometimes need to know what's going to come "after" the call - I address this here by passing `C` a list of what instructions follow it, kind of like a continuation. It sounds complicated but it's not so bad.
 
-The other thing to be aware of is the right-to-left evaluation order when calling functions with multiple arguments. We're going to call the function that handles tail calls `T`, and the function that handles other calls `C`. `T` takes the lambda expression it's supposed to compile, and `C` takes the expression and the result of compiling all the expressions that come "after". 
+The other thing to be aware of is the right-to-left evaluation order when calling functions with multiple arguments. We're going to call the function that handles tail calls `T`, and the function that handles other calls `C`. `T` takes the lambda expression it's supposed to compile, and `C` takes the expression and the result of compiling all the expressions that come "after".
 
 First, here's the definition of `T`:
 
@@ -285,14 +287,13 @@ Then, `C`. We're using `k` to represent the continuation that's passed:
 
 Lots of these are easy to get a vague understanding for. For example:
 
-1) `Grab` pops a value off the stack and pushes it onto the environment.
-   
-   So `T(λ. a)` becomes `[Grab, ...T(a)]` - equivalent to moving a value from the top of the stack to the top of the environment, then evaluating `a`. 
+1. `Grab` pops a value off the stack and pushes it onto the environment.
 
-2) `Var(n)` copies the `n`th value in the environment onto the stack. 
-   
-  So if you imagine `T(λ. 0)` (remember, our De Bruijn indices start at 0), it's going to become `[Grab, ...T(0)]`, which becomes `[Grab, ...C(0, [Return])]`, which becomes `[Grab, Access(0), Return]`. The behavior of `Return` is dependent on what's actually on the stack, as we'll see later.
+   So `T(λ. a)` becomes `[Grab, ...T(a)]` - equivalent to moving a value from the top of the stack to the top of the environment, then evaluating `a`.
 
+2. `Var(n)` copies the `n`th value in the environment onto the stack.
+
+So if you imagine `T(λ. 0)` (remember, our De Bruijn indices start at 0), it's going to become `[Grab, ...T(0)]`, which becomes `[Grab, ...C(0, [Return])]`, which becomes `[Grab, Access(0), Return]`. The behavior of `Return` is dependent on what's actually on the stack, as we'll see later.
 
 And here that is in Reason:
 
@@ -333,53 +334,53 @@ and other_compile = (l: lang, k: list(zinc)): list(zinc) => {
 
 As mentioned previously, to execute Zinc you need a stack and an environment (as well as a code-stack of Zinc instructions). In RPN, the stack was just a stack of numbers. In Zinc, the stack and environment is slightly more sophisticated. I'm going to define "environment items" and "stack items" as well as one last thing we need, closures.
 
-1) A closure is just a list of Zinc instructions and a list of environment items.
+1. A closure is just a list of Zinc instructions and a list of environment items.
 
-  In Reason, it'd be defined as:
+In Reason, it'd be defined as:
 
-  ```reason
-  type clos = {
-    code: list(zinc),
-    env: list(env_item),
-  }
-  ```
+```reason
+type clos = {
+  code: list(zinc),
+  env: list(env_item),
+}
+```
 
-2) An environment item is either a Zinc instruction or a closure
-   
-  In Reason, it'd be defined as:
+2. An environment item is either a Zinc instruction or a closure
 
-  ```reason
-  type env_item =
-  | ZE(zinc) // Z stands for zinc, E stands for environment
-  | ClosE(clos)
-  ```
+In Reason, it'd be defined as:
 
-3) A stack item is either a Zinc instruction, a closure, or a marker (which is a list of Zinc instructions and a list of environment items, just a like a closure):
+```reason
+type env_item =
+| ZE(zinc) // Z stands for zinc, E stands for environment
+| ClosE(clos)
+```
 
-  In Reason, it'd be defined as:
+3. A stack item is either a Zinc instruction, a closure, or a marker (which is a list of Zinc instructions and a list of environment items, just a like a closure):
 
-  ```reason
-  type stack_item =
-    | Z(zinc)
-    | Clos(clos)
-    | Marker(list(zinc), list(env_item))
-  ```
+In Reason, it'd be defined as:
+
+```reason
+type stack_item =
+  | Z(zinc)
+  | Clos(clos)
+  | Marker(list(zinc), list(env_item))
+```
 
 Now that you know that, here's the semantics:
 
 Here's the full semantics. For brevity I've left out some of the type constructors you'd need to actually implement it, but the intention should be clear:
 
-| Code                      | Env         | Stack                        | → → → | Code | Env         | Stack                         |
-| :------------------------ | :---------- | :--------------------------- | :---- | :--- | :---------- | :---------------------------- |
-| `[Grab, ...c]`            | `e`         | `[Marker(c', e'), ...s]`     | → → → | `c'` | `e'`        | `[{code: c, env: e}, ...s]`   |
-| `[Grab, ...c]`            | `e`         | `[v, ...s]`                  | → → → | `c`  | `[v, ...e]` | `s`                           |
-| `[Return, ...c]`          | `e`         | `[v, Marker(c', e'), ...s]`  | → → → | `c'` | `e'`        | `[v, ...s]`                   |
-| `[Return, ...c]`          | `e`         | `[{code: c', env: e'} ...s]` | → → → | `c'` | `e'`        | `s`                           |
-| `[PushRetAddr(c'), ...c]` | `e`         | `s`                          | → → → | `c`  | `e`         | `[Marker(c', e), ...s]`       |
-| `[Apply, ...c]`           | `e`         | `[{code: c', env: e'} ...s]` | → → → | `c'` | `e'`        | `s`                           |
-| `[Access(n), ...c]`       | `e`         | `s`                          | → → → | `c`  | `e`         | `[e[n], ...s]`                |
-| `[Closure(c'), ...c]`     | `e`         | `s`                          | → → → | `c`  | `e`         | `[{code: c', env: e'}, ...s]` |
-| `[EndLet, ...c]`          | `[v, ...e]` | `s`                          | → → → | `c`  | `e`         | `s`                           |
+| Code                      | Env         | Stack                         | → → → | Code | Env         | Stack                         |
+| :------------------------ | :---------- | :---------------------------- | :---- | :--- | :---------- | :---------------------------- |
+| `[Grab, ...c]`            | `e`         | `[Marker(c', e'), ...s]`      | → → → | `c'` | `e'`        | `[{code: c, env: e}, ...s]`   |
+| `[Grab, ...c]`            | `e`         | `[v, ...s]`                   | → → → | `c`  | `[v, ...e]` | `s`                           |
+| `[Return, ...c]`          | `e`         | `[v, Marker(c', e'), ...s]`   | → → → | `c'` | `e'`        | `[v, ...s]`                   |
+| `[Return, ...c]`          | `e`         | `[{code: c', env: e'}, ...s]` | → → → | `c'` | `e'`        | `s`                           |
+| `[PushRetAddr(c'), ...c]` | `e`         | `s`                           | → → → | `c`  | `e`         | `[Marker(c', e), ...s]`       |
+| `[Apply, ...c]`           | `e`         | `[{code: c', env: e'}, ...s]` | → → → | `c'` | `e'`        | `s`                           |
+| `[Access(n), ...c]`       | `e`         | `s`                           | → → → | `c`  | `e`         | `[e[n], ...s]`                |
+| `[Closure(c'), ...c]`     | `e`         | `s`                           | → → → | `c`  | `e`         | `[{code: c', env: e'}, ...s]` |
+| `[EndLet, ...c]`          | `[v, ...e]` | `s`                           | → → → | `c`  | `e`         | `s`                           |
 
 And here it is in Reason:
 
@@ -429,7 +430,7 @@ let apply_zinc = state => {
 
 ## Extending Zinc to add support for Peano Numbers
 
-It's kind of hard to have fun with *just* the pure LC, so let's add support for simple numbers. We're going to extend our lambda calculus to add two values. One is `Z`, meaning `0`, and one is a built-function that increments a number. So `Z` is `0`, `S(Z)` should evaluate to `1`, `S(S(Z))` is 2, etc.
+It's kind of hard to have fun with _just_ the pure LC, so let's add support for simple numbers. We're going to extend our lambda calculus to add two values. One is `Z`, meaning `0`, and one is a built-function that increments a number. So `Z` is `0`, `S(Z)` should evaluate to `1`, `S(S(Z))` is 2, etc.
 
 ```reason
 type lang =
@@ -452,7 +453,7 @@ type zinc =
   | Succ;
 ```
 
-Then the compilation rules are simple. The tail-compilation function `T` doesn't change at all. `C` just converts `Z` to `Num(0)` and `S(n)` to `C(n), Succ`. 
+Then the compilation rules are simple. The tail-compilation function `T` doesn't change at all. `C` just converts `Z` to `Num(0)` and `S(n)` to `C(n), Succ`.
 
 ```reason
 let other_compile = (l: lang, k: list(zinc)): list(zinc) => {
@@ -477,9 +478,9 @@ let apply_zinc = state => {
   switch (instructions, env, stack) {
   // ...
   // New:
-  // Don't be confused - the `Z` here stands for Zinc, not Zero - it's 
-  // the data constructor we use to put Zinc values on the stack 
-  | ([Num(n), ...c], env, s) => (c, env, [Z(Num(n)), ...s]) 
+  // Don't be confused - the `Z` here stands for Zinc, not Zero - it's
+  // the data constructor we use to put Zinc values on the stack
+  | ([Num(n), ...c], env, s) => (c, env, [Z(Num(n)), ...s])
   | ([Succ, ...c], env, [Z(Num(i)), ...s]) => (
       c,
       env,
@@ -500,7 +501,7 @@ Let's test it out by adding some church-encoded numbers, then turning them into 
 | increment | `(λ.(λ.(λ.(1 (2 1 0)))))`               |
 | plus      | `(λ.(λ.(0 (λ.(λ.(λ.(1 (2 1 0))))) 1)))` |
 
-In reason: 
+In reason:
 
 ```reason
 let one = Lambda(Lambda(App(Var(1), [Var(0)])));
@@ -515,22 +516,22 @@ let increment =
 let plus = Lambda(Lambda(App(Var(0), [increment, Var(1)])));
 ```
 
-To convert a church-encoded number to an actual number, we'll pass `λ.S(0)` as the first argument, and `Z` as the second argument. That way a church-encoded `3` should become `S(S(S(Z)))`, which should evaluate to `3`. Does it? 
+To convert a church-encoded number to an actual number, we'll pass `λ.S(0)` as the first argument, and `Z` as the second argument. That way a church-encoded `3` should become `S(S(S(Z)))`, which should evaluate to `3`. Does it?
 
 The term we want to evaluate is `App(App(plus, [one, two]), [Lambda(S(Var(0))), Z])`. That's equivalent to the monster lambda expression `(((λ.(λ.(0 (λ.(λ.(λ.(1 (2 1 0))))) 1))) (λ.(λ.(1 0))) (λ.(λ.(1 (1 0))))) (λ.S(0)) Z)`. Compiled, we get this starting state:
 
 ```
 Code: Num(0) Closure(Grab Access(0) Succ Return) Closure(Grab Grab PushRetAddr(Access(1) Return) Access(0) Access(1) Apply) Closure(Grab Grab Access(0) Access(1) Return) Grab Grab Access(1) Closure(Grab Grab Grab PushRetAddr(Access(1) Return) Access(0) Access(1) Access(2) Apply) Access(0) Return
-Env:   
-Stack 
+Env:
+Stack:
 ```
 
 And after running for some time (54 Zinc iterations), we get stuck here:
 
 ```
-Code: Return
+Code:  Return
 Env:   Num(2)
-Stack  Num(3)
+Stack: Num(3)
 ```
 
 Which is pretty much what we wanted! We have some garbage in `env`, but the stack contains `Num(3)` and the next instruction is `Return`, so the output of our computation is `3`, just like it should be.
@@ -571,10 +572,10 @@ You can kind of see the correspondence between the input LC and the compiled Zin
                                   +------------------------------------------------------------------------------------------------------+
                             +---- | ---------------------------------------------------------------------------------------------------+ |
                +----------- | --- | -------------------------------------------------------------------------------------------------+ | |
-               |            |     |                                                                                                  | | | 
-               |            |     |                                                                                                  | | | 
-               |            |     |                                                                                                  | | | 
-               |            |     |              +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+   | | | 
+               |            |     |                                                                                                  | | |
+               |            |     |                                                                                                  | | |
+               |            |     |                                                                                                  | | |
+               |            |     |              +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+   | | |
                |            |     |              !  ( Z         Z         Z            ( λ.    λ.    λ.           0 ))           ! ( λ.0 S )
                |            |     |              !    |         |         |              |     |     |            |              !
 [PushRetAddr([Grab, Access( 0 ), Succ, Return]), ! Num( 0 ), Num( 0 ), Num( 0 ), Closure([Grab, Grab, Grab, Access( 0 ), Return])!, Apply]
@@ -584,113 +585,113 @@ You can kind of see the correspondence between the input LC and the compiled Zin
 
 ![Correspondence between Zinc and original LC expression](./bob.svg)
 
-1) Because Zinc has strict semantics, the inner expression `Z Z Z (λ.λ.λ.0)` needs to be executed first. But before it can be, we need to add a `PushReturnAddr` instruction, so we know "what to do after" we're done executing that expression. "What to do after" is apply it to `(λ.0 S)`, so our first instruction is `PushRetAddr(T(λ.0 S))` or `PushRetAddr([Grab, Access(0), Succ, Return])`. Let's "eagerly" execute that: 
+1. Because Zinc has strict semantics, the inner expression `Z Z Z (λ.λ.λ.0)` needs to be executed first. But before it can be, we need to add a `PushReturnAddr` instruction, so we know "what to do after" we're done executing that expression. "What to do after" is apply it to `(λ.0 S)`, so our first instruction is `PushRetAddr(T(λ.0 S))` or `PushRetAddr([Grab, Access(0), Succ, Return])`. Let's "eagerly" execute that:
 
-  ```
-  Code:  [PushRetAddr([Grab, Access(0), Succ, Return]), ...c]
-  Env:   []
-  Stack: []
-  ```
+```
+Code:  [PushRetAddr([Grab, Access(0), Succ, Return]), ...c]
+Env:   []
+Stack: []
+```
 
-  Becomes
+Becomes
 
-  ```
-  Code:  c
-  Env:   []
-  Stack: [Marker([Grab, Access(0), Succ, Return], [])] 
-  ```
+```
+Code:  c
+Env:   []
+Stack: [Marker([Grab, Access(0), Succ, Return], [])]
+```
 
-  Ok, so there's a Marker on our stack holding those instructions and the current environment (which is empty).
+Ok, so there's a Marker on our stack holding those instructions and the current environment (which is empty).
 
 2. Next up, we can execute `C(Z Z Z (λ.λ.λ.0))`. First, let's do the `Z`s:
 
-  ```
-  Code:  [Num(0), Num(0), Num(0), ...c]
-  Env:   []
-  Stack: [Marker([Grab, Access(0), Succ, Return], [])] 
-  ```
+```
+Code:  [Num(0), Num(0), Num(0), ...c]
+Env:   []
+Stack: [Marker([Grab, Access(0), Succ, Return], [])]
+```
 
-  Becomes
+Becomes
 
-  ```
-  Code:  c
-  Env:   []
-  Stack: [Num(0), Num(0), Num(0), Marker((Grab Access(0) Succ Return], [])] 
-  ```
+```
+Code:  c
+Env:   []
+Stack: [Num(0), Num(0), Num(0), Marker((Grab Access(0) Succ Return], [])]
+```
 
 3. That leaves us with `C(λ.λ.λ.0)`. Since it's not a tail call, we have to put it in a closure. An optimizing compiler could have seen that we immediately apply it and remove the closure using `let`, but let's not worry about that. That becomes `Closure([Grab, Grab, Grab, Access(0), Return]), Apply`, which is the last of our instructions.
 
-  ```
-  Code:  [Closure([Grab, Grab, Grab, Access(0), Return]), Apply]
-  Env:   []
-  Stack: [Num(0), Num(0), Num(0), Marker((Grab Access(0) Succ Return], [])] 
-  ```
+```
+Code:  [Closure([Grab, Grab, Grab, Access(0), Return]), Apply]
+Env:   []
+Stack: [Num(0), Num(0), Num(0), Marker((Grab Access(0) Succ Return], [])]
+```
 
-  Becomes
+Becomes
 
-  ```
-  Code:  [Apply]
-  Env:   []
-  Stack: [{code: [Grab, Grab, Grab, Access(0), Return], env: []}, Num(0), Num(0), Num(0), Marker((Grab Access(0) Succ Return], [])] 
-  ```
+```
+Code:  [Apply]
+Env:   []
+Stack: [{code: [Grab, Grab, Grab, Access(0), Return], env: []}, Num(0), Num(0), Num(0), Marker((Grab Access(0) Succ Return], [])]
+```
 
-  And how here's where the magic starts happening. Apply immediately puts the closure's code back onto the code-stack (this is why it'd be faster to use a `let`). (It also puts the closure's environment back onto the environment-stack, but both are empty right now so that has no effect.) 
+And how here's where the magic starts happening. Apply immediately puts the closure's code back onto the code-stack (this is why it'd be faster to use a `let`). (It also puts the closure's environment back onto the environment-stack, but both are empty right now so that has no effect.)
 
-  ```
-  Code:  [Grab, Grab, Grab, Access(0), Return]
-  Env:   []
-  Stack: [Num(0), Num(0), Num(0), Marker([Grab,Access(0),Succ,Return], [])]
-  ```
+```
+Code:  [Grab, Grab, Grab, Access(0), Return]
+Env:   []
+Stack: [Num(0), Num(0), Num(0), Marker([Grab,Access(0),Succ,Return], [])]
+```
 
-  Then the three `Grab`s run, moving the `Num(0)`s onto the environment:
+Then the three `Grab`s run, moving the `Num(0)`s onto the environment:
 
-   ```
-  Code:  [Access(0), Return]
-  Env:   [Num(0), Num(0), Num(0)]
-  Stack: [Marker([Grab,Access(0),Succ,Return], [])]
-  ```
+```
+Code:  [Access(0), Return]
+Env:   [Num(0), Num(0), Num(0)]
+Stack: [Marker([Grab,Access(0),Succ,Return], [])]
+```
 
-  Then `Access(0)` copies a `Num(0)` off the environment and puts it on the stack:
+Then `Access(0)` copies a `Num(0)` off the environment and puts it on the stack:
 
-  ```
-  Code:  [Return]
-  Env:   [Num(0), Num(0), Num(0)]
-  Stack: [Num(0), Marker([Grab,Access(0),Succ,Return], [])]
-  ```
+```
+Code:  [Return]
+Env:   [Num(0), Num(0), Num(0)]
+Stack: [Num(0), Marker([Grab,Access(0),Succ,Return], [])]
+```
 
-  On the top of the stack is `Num(0)`, the output of `Z Z Z (λ.λ.λ.0)`! Now `Return` has to pass control back to the caller. It sees there's a value `Num(0)` on the stack (this is the return value), and a `Marker` (that's the caller), so we make a new stack that's `Num(0)` followed by the marker's stack. (We also use the marker's environment which again is empty.)
+On the top of the stack is `Num(0)`, the output of `Z Z Z (λ.λ.λ.0)`! Now `Return` has to pass control back to the caller. It sees there's a value `Num(0)` on the stack (this is the return value), and a `Marker` (that's the caller), so we make a new stack that's `Num(0)` followed by the marker's stack. (We also use the marker's environment which again is empty.)
 
-  ```
-  Code:  [Grab, Access(0), Succ,Return]
-  Env:   []
-  Stack: [Num(0)]
-  ```
-  
-  As you know, `Grab` takes a value from the stack and puts it on the environment:
+```
+Code:  [Grab, Access(0), Succ,Return]
+Env:   []
+Stack: [Num(0)]
+```
 
-  ```
-  Code:  [Access(0), Succ, Return]
-  Env:   [Num(0)]
-  Stack: []
-  ```
+As you know, `Grab` takes a value from the stack and puts it on the environment:
 
-  Then `Access` copies it back:
+```
+Code:  [Access(0), Succ, Return]
+Env:   [Num(0)]
+Stack: []
+```
 
-  ```
-  Code:  [Succ, Return]
-  Env:   [Num(0)]
-  Stack: [Num(0)]
-  ```
+Then `Access` copies it back:
 
-  Then `Succ` increments it:
+```
+Code:  [Succ, Return]
+Env:   [Num(0)]
+Stack: [Num(0)]
+```
 
-  ```
-  Code:  [Return]
-  Env:   [Num(0)]
-  Stack: [Num(1)]
-  ```
+Then `Succ` increments it:
 
-  And we're done!
+```
+Code:  [Return]
+Env:   [Num(0)]
+Stack: [Num(1)]
+```
+
+And we're done!
 
 ## Why Zinc is Nice
 
