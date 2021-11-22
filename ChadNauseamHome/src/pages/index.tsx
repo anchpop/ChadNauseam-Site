@@ -42,8 +42,7 @@ const IndexPage = () => (
     </p>
     <p>
       If you'd like to talk to me, message me on <a href="/twitter">Twitter</a>,
-      shoot me an email at `contact at chadnauseum dot com`, or join{" "}
-      <a href="/discord">my Discord</a>.
+      or join <a href="/discord">my Discord</a>!
     </p>
   </Layout>
 );
