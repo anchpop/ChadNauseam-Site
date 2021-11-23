@@ -26,7 +26,7 @@ const IndexPage = () => (
       forever.
     </p>
     <p>
-      I also like programming, but only in hipster languages like Rust and
+      I also like programming, but only in zoomer languages like Rust and
       Haskell. I actually think there's room in the market for a Haskell 2 - a
       language with many of the benefits of Haskell, but with modern Programming
       Language Theory knowledge used to make it easier to learn and use. Right
@@ -42,8 +42,7 @@ const IndexPage = () => (
     </p>
     <p>
       If you'd like to talk to me, message me on <a href="/twitter">Twitter</a>,
-      shoot me an email at `contact at chadnauseum dot com`, or join{" "}
-      <a href="/discord">my Discord</a>.
+      or join <a href="/discord">my Discord</a>!
     </p>
   </Layout>
 );
