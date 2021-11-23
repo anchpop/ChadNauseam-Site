@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 const Header = ({ subtitle, siteTitle, style }) => (
   <header
+    className="fadeIn"
     style={{
       marginBottom: `1.45rem`,
       ...style,

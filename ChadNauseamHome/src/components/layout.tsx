@@ -61,56 +61,47 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
         ></link>
       </Helmet>
 
-      <Motion defaultStyle={{ opacity: 0 }} style={{ opacity: spring(1) }}>
-        {(style) => (
-          <>
-            <Header
-              siteTitle={data.site.siteMetadata.title}
-              subtitle={subtitle}
-              style={style}
-            />
-            <div className="total-content">
+      <Header
+        siteTitle={data.site.siteMetadata.title}
+        subtitle={subtitle}
+        style={{}}
+      />
+      <div className="total-content">
 
-              <ThemeContext.Provider
-                value={{
-                  lightTheme,
-                  smallScreen,
-                }}
-              >
-                <main style={style} className="main-content">
-                  {children}
-                </main>
-              </ThemeContext.Provider>
+        <ThemeContext.Provider
+          value={{
+            lightTheme,
+            smallScreen,
+          }}
+        >
+          <main className="main-content fadeIn">
+            {children}
+          </main>
+        </ThemeContext.Provider>
 
-              <div
-                style={{
-                  ...style,
-                }}
-                className="socials-container"
-              >
-                <SocialButton
-                  text="My Discord"
-                  color="#23272A"
-                  icon={discord}
-                  href="/discord"
-                ></SocialButton>
-                {/*<SocialButton
-                text="...Or my Reddit"
-                color="#FF4500"
-                icon={reddit}
-                href="/reddit"
-              ></SocialButton>*/}
-                <SocialButton
-                  text="My Twitter"
-                  color="#1DA1F2"
-                  icon={twitter}
-                  href="/twitter"
-                ></SocialButton>
-              </div>
-            </div>
-          </>
-        )}
-      </Motion>
+        <div
+          className="socials-container fadeIn"
+        >
+          <SocialButton
+            text="My Discord"
+            color="#23272A"
+            icon={discord}
+            href="/discord"
+          ></SocialButton>
+          {/*<SocialButton
+          text="...Or my Reddit"
+          color="#FF4500"
+          icon={reddit}
+          href="/reddit"
+        ></SocialButton>*/}
+          <SocialButton
+            text="My Twitter"
+            color="#1DA1F2"
+            icon={twitter}
+            href="/twitter"
+          ></SocialButton>
+        </div>
+      </div>
     </>
   );
 };
