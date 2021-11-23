@@ -20,4 +20,3 @@ export const CenteredImg = ({ src, to }) => {
   }
 };
 
-export default Image;
