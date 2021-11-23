@@ -13,7 +13,9 @@ module.exports = {
         trackingId: "UA-189331390-1" // measurement id is "G-WMHWT0E2V4", but that is currently not supported
       },
     },
-    "gatsby-plugin-sharp",
+    `gatsby-plugin-image`,
+    `gatsby-plugin-sharp`,
+    `gatsby-transformer-sharp`, // Needed for dynamic images
     "gatsby-plugin-react-helmet",
     "gatsby-plugin-sitemap",
     {

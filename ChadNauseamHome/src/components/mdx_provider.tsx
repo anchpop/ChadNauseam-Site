@@ -10,6 +10,7 @@ import Note from "./note";
 import SubscribeHook from "./subscribe_hook";
 import SectionHeader from "./section_header";
 import _, { CenteredImg } from "./image";
+import { StaticImage } from "gatsby-plugin-image"
 
 import { Link } from "gatsby";
 
@@ -56,6 +57,7 @@ const shortcodes = {
   SubscribeHook,
   Minisection,
   CenteredImg,
+  StaticImage,
   Graphviz: ({ dot, options }) => (
     <Graphviz
       dot={dot}
