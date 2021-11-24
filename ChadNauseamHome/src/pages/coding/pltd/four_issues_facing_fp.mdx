@@ -3,4 +3,24 @@
   description="My thoughts on the biggest pain points that I encounter when functional programming"
 >
 
+A selling point of functional programming is that it's supposed to be simpler. Is it really? Of all the mainstream functional programming languages, Haskell is the functionalest, and it ended up being (famously) difficult to learn.
+
+Well, it is simpler. The issue is that it's so simple that you have to build a whole tower of abstractions to get anything done (monoids in the category of endofunctors). When an imperative programmer wants to do something, like iterate over elements in a collection, they usually have a specific language feature for that purpose, like loops. Functional languages, on the other hand, attempt to provide a simple base and build the same concepts in user space.
+
+So where imperative langauges have loops, functional langauges have recursion, and expect you to use that to recreate loops yourself. (I'm being a little mean, for lists you can use map and fold which are always in the standard library, and you can use deriving to automatically write equivalent functions for any custom type you make. The point is in a functional langauge you could have written them yourself, but in an imperative language you could never write `while` yourself.)
+
+But they really are simpler. In Haskell for example, the _only_ thing a function can do is return a value computed from its inputs. Same inputs, same value, no side effect. Short of functions intended to aid debugging, there are no exceptions to this. (At least none that a normal Haskell programmer will ever have to think about.) And this simplicity gives you power to write really sophisticated programs that would comparatively be a nightmare to write any other way.
+
+The issue is that this power takes you in a different direction than the direction imperative languages have taken. And I think to some extent, functional programming language designers are scared of doing that, because it would make their language less accessible to imperative programmers.
+
+So right now, functional languages are stuck in kind of an uncanny valley, where they've simplified their core langauge but not explored most of the power that simplification would enable. And the lack of power is _really annoying_, because you often run into situations where you really want it and just don't have it.
+
+1.
+
+2.
+
+3.
+
+4.
+
 </Layout>

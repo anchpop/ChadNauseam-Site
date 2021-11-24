@@ -31,7 +31,8 @@
 		"github.vscode-pull-request-github",
 		"ms-vsliveshare.vsliveshare-pack",
 		"silvenon.mdx",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"streetsidesoftware.code-spell-checker"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
