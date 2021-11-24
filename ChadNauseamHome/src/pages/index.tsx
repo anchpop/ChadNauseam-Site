@@ -20,7 +20,7 @@ const IndexPage = () => (
         </li>
         {/* */}
         <li>
-          <Link to="/coding/pltd/four_issues_facing_fp/">
+          <Link to="/coding/pltd/four-issues-facing-fp/">
             The four issues preventing FP adoption
           </Link>
         </li>
