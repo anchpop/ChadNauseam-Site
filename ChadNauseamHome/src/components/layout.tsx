@@ -53,29 +53,25 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
     }
   `);
 
-  const Web3 = ({ children }) => <div className="Web3-Link fadeIn">
-    {children}
-  </div>
-
-
   const Web3Banner = ({ locationProps }) => {
+
     const dwebUrlLimo = "https://" + data.site.siteMetadata.dwebUrl + ".limo" + locationProps.location.pathname
     const cwebUrlChopped = data.site.siteMetadata.siteUrl.split('://')[1]
     const Dweb = () => <span style={{ fontFamily: "Pacifico" }}>dweb</span>
 
     return locationProps.location.hostname !== undefined ?
       (locationProps.location.hostname.includes(cwebUrlChopped) ?
-        <Web3>
+        <>
           You're viewing my site on the centralized web. Check me out on the <a target="_blank" href={dwebUrlLimo}><Dweb /></a> ! (Warning: it's slow.)
-        </Web3>
+        </>
         : locationProps.location.hostname.includes(".eth") || locationProps.location.hostname.includes("ipfs") ?
-          <Web3>
+          <>
             You're viewing us on the <Dweb />! You can always go back to the <a href={data.site.siteMetadata.siteUrl + locationProps.location.pathname}>centralized version</a> if it's too slow.
-          </Web3>
+          </>
           : locationProps.location.hostname.includes("127.0.0.1") || locationProps.location.hostname.includes("codespace") ?
-            <Web3>
+            <>
               You seem to be developing locally. The centralized url is <a href={data.site.siteMetadata.siteUrl + locationProps.location.pathname}>{cwebUrlChopped}</a> and the <Dweb /> url is <a target="_blank" href={dwebUrlLimo}>{data.site.siteMetadata.dwebUrl}</a>.
-            </Web3>
+            </>
             : <></> /* not sure where they are */)
       : <></> // building
   }
@@ -111,7 +107,10 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
             </main>
           </ThemeContext.Provider>
 
-          <Web3Banner locationProps={locationProps} />
+          <div className="Web3-Link fadeIn">
+            <Web3Banner locationProps={locationProps} />
+          </div>
+
 
           <div
             className="socials-container fadeIn"
