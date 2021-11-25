@@ -196,6 +196,9 @@ code {
 .Block-Code {
   font-family: "Fira Code", monospace;
 }
+.Block-Code code {
+  font-size: calc(var(--text-font-size) * 0.8) !important;
+}
 
 @supports (font-variation-settings: normal) {
   .Block-Code {

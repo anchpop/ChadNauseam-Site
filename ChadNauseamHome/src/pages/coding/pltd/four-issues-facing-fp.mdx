@@ -7,15 +7,17 @@ A selling point of functional programming is that it's supposed to be simpler. B
 
 It turns out that Haskell is both simpler than other languages _and_ harder to learn. The issue is that it's so simple that you have to build a whole tower of abstractions to get anything done. Monads are the classic example of this - there's no direct way to represent effectful code in Haskell because Haskell is lazy, but Monads allow you to _describe_ an effectful program. Then you give that description to the magic name `main` and the runtime executes it. It's a beautiful abstraction but it adds a layer of indirection and complexity when compared to an imperative program with the same behavior.
 
-You can imagine a sliding scale between _core-language-simplicity_ and _practical-program-simplicity_. Functional langauges prefer core-langauge-simplicity, while imperative languages prefer practical-program-simplicity. When an imperative programmer wants to do something (like iterate over elements in a collection) they usually have a specific language feature for that purpose (like loops). This complicates the core language, but then actual programs written in that language are simple. Functional languages, on the other hand, attempt to provide a simple base and build the same concepts in user space.
+You can imagine a sliding scale between _core-language-simplicity_ and _practical-program-simplicity_. Functional languages prefer core-language-simplicity, while imperative languages prefer practical-program-simplicity. When an imperative programmer wants to do something (like iterate over elements in a collection) they usually have a specific language feature for that purpose (like loops). This complicates the core language, but then actual programs written in that language are simple. Functional languages, on the other hand, attempt to provide a simple base and build the same concepts in user space.
 
-So where imperative langauges have loops, functional langauges have recursion, and expect you to use that to recreate loops yourself. (I'm being a little mean, for lists you can use `map` and `fold` which are always in the standard library, and you in Haksell can use `deriving` to automatically write equivalent functions for any custom type you make. The point is in a functional langauge the complexity is in userspace so you could have written them yourself, but in an imperative language you could never write `while` yourself.)
+So where imperative languages have loops, functional languages have recursion, and expect you to use that to recreate loops yourself. (I'm being a little mean, for lists you can use `map` and `fold` which are always in the standard library, and you in Haksell can use `deriving` to automatically write equivalent functions for any custom type you make. The point is in a functional language the complexity is in userspace so you could have written them yourself, but in an imperative language you could never write `while` yourself.)
 
 Having a simple core language might sound like something only ivory tower academics really care about. But it does come in handy! In Haskell for example, the _only_ thing a function can do is return a value computed from its inputs. Same inputs, same value, no side effects. <Note>Short of functions intended to aid debugging, there are no exceptions to this that a normal Haskell programmer will ever have to think about.</Note> And this simplicity allows you to write abstractions that would comparatively be a nightmare to write any other way. Undo/redo is the obvious example, because without mutation it's easy to keep a reference to an old version (and persistent data structures make that not as ineffecient as it sounds). Purity also enables [Software Transactional Memory](https://hackage.haskell.org/package/stm) and Tweag's amazing [Funflow library](https://github.com/tweag/funflow) (which actually uses Arrows, which are like Monads on steroids). With purity you can create expressive type systems which enable formal proofs about your code, like how Haskell and Rust code never encounters null reference exceptions (because `Maybe`/`Option` force you to prove you've checked and handled that case explicitly), or like how Haskell's [`Data.Justified`](https://hackage.haskell.org/package/justified-containers-0.3.0.0/docs/Data-Map-Justified.html) allows you to prove a key exists in a dictionary so accessing it is safe.
 
-Despite that, I think functional languages have been stuck in an uncanny valley, where they've simplified their core langauge but not explored most of the power that simplification enables. And without that exploration, FP ends up being more limiting and less convenient than imperative programming. There are four under-resarched avenues I think are really promising.
+Despite that, I think functional languages have been stuck in an uncanny valley, where they've simplified their core language but not explored most of the power that simplification enables. And without that exploration, FP ends up being more limiting and less convenient than imperative programming. There are four under-resarched avenues I think are really promising.
 
 ## 1: Debugging & Code editing
+
+These are a bit simpler and more surface-level.
 
 1. **Uniform Function Call Syntax** (UFCS). This adds an alternative syntax for invoking functions.
 
@@ -27,14 +29,33 @@ Despite that, I think functional languages have been stuck in an uncanny valley,
 
    It also makes manipulating values in a functional style much easier, because it removes the nesting that comes when using functions to iteratively tranform a piece of data. Compare `average(drop(sort(take(mylist, 10), 5)))` vs `mylist.take(10).sort.drop(5).average`.
 
-2. Don't rerun tests if the code doesn't change (Unison does this)
+   One disadvantage of this is that it makes namespacing trickier. If you have a function `serialization::to_json`, would you write `myvalue.serialization::to_json`? I think the solution here is simply to add syntax highlighting that makes `serialization::` dimmer than the surrounding code.
 
-3. Functional debugging
+2. Don't rerun tests if the code doesn't change. [Unison](https://www.unisonweb.org/) does this right. If the code hasn't changed, and the test hasn't changed, don't rerun the test! This kind of analysis is much easier in a functional language, because the only thing that can affect a function's execution is its code and its inputs.
+
+3. Functional debugging.
+
+   This is something that's always annoyed me - debugging in functional language is usually _so bad_, but in principle it could actually be much better than in any imperative language. Imagine this preudocode:
+
+   ```reason
+   let handle_request =
+      (request, path, old_state) => {
+        let f = path.get_handler;
+        let request = request.of_json;
+        switch (old_state.f(request)) {
+        | Ok((new_state, response)) =>
+          (new_state, Response200 response.to_json);
+        | Error(err) =>
+          print_error(err);
+          (new_state, (Response500 "Internal server error!"));
+        };
+      };
+   ```
+
+## Effect systems (shout out to unison again)
 
 ## Recursion schemes (I want to attempt to explain them)
 
 ## Row polymorphism + Refinement types
-
-## Effect systems (shout out to unison again)
 
 </Layout>
