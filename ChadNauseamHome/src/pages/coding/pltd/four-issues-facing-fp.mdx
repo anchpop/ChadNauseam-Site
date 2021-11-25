@@ -31,7 +31,7 @@ These are a bit simpler and more surface-level.
 
    One disadvantage of this is that it makes namespacing trickier. If you have a function `serialization::to_json`, would you write `myvalue.serialization::to_json`? I think the solution here is simply to add syntax highlighting that makes `serialization::` dimmer than the surrounding code.
 
-2. Don't rerun tests if the code doesn't change. [Unison](https://www.unisonweb.org/) does this right. If the code hasn't changed, and the test hasn't changed, don't rerun the test! This kind of analysis is much easier in a functional language, because the only thing that can affect a function's execution is its code and its inputs.
+2. Don't rerun tests if the code doesn't change. [Unison](https://www.unisonweb.org/) does this right. If the code hasn't changed, and the test hasn't changed, don't rerun the test! This kind of analysis is much easier in a functional language, because the only things that can affect a function's execution are its code and its inputs.
 
 3. Functional debugging.
 
