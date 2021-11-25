@@ -15,9 +15,17 @@ Having a simple core language might sound like something only ivory tower academ
 
 Despite that, I think functional languages have been stuck in an uncanny valley, where they've simplified their core langauge but not explored most of the power that simplification enables. And without that exploration, FP ends up being more limiting and less convenient than imperative programming. There are four under-resarched avenues I think are really promising.
 
-## Debugging & Code editing
+## 1: Debugging & Code editing
 
-1. UFCS
+1. **Uniform Function Call Syntax** (UFCS). This adds an alternative syntax for invoking functions.
+
+   Without UFCS: `foo(x, y z)` or `bar(x).
+
+   With UFCS: `x.foo(y, z)` or `x.bar`.
+
+   This enables _drastically_ better autocompletion in languages with good type systems. You just write `x.` and your IDE shows you every function whose first parameter could be `x`. <Note>That's much more useful than the other way around, where you type `foo` and then your IDE tells you every value could be the first parameter).</Note>
+
+   It also makes manipulating values in a functional style much easier, because it removes the nesting that comes when using functions to iteratively tranform a piece of data. Compare `average(drop(sort(take(mylist, 10), 5)))` vs `mylist.take(10).sort.drop(5).average`.
 
 2. Don't rerun tests if the code doesn't change (Unison does this)
 
