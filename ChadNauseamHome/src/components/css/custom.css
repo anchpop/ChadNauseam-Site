@@ -341,7 +341,37 @@ h6 {
   );
 }
 
+.Web3-Link {
+  position: fixed;
+  left: 20px;
+  top: 20px;
+  max-width: 15rem;
+  padding-top: 0.5rem;
+  border-top: 10px solid;
+  border-image: linear-gradient(
+      90deg,
+      rgb(96.81% 34.16% 29.66% / 88%) 0 calc(1 * 100% / 6),
+      rgb(100% 52.49% 27.5% / 88%) 0 calc(2 * 100% / 6),
+      rgb(95.69% 73.33% 28.24% / 88%) 0 calc(3 * 100% / 6),
+      rgb(35.15% 71.2% 39.39% / 88%) 0 calc(4 * 100% / 6),
+      rgb(18.06% 54.05% 81.79% / 88%) 0 calc(5 * 100% / 6),
+      rgb(67.32% 36.77% 95.86% / 88%) 0 calc(6 * 100% / 6)
+    )
+    10;
+  font-size: calc(var(--text-font-size) * 0.8);
+}
+
 @media only screen and (max-width: 1400px) {
+  .Web3-Link {
+    position: unset;
+    left: unset;
+    top: unset;
+    max-width: unset;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: calc(var(--text-font-size) * 0.9);
+    padding: 0.5rem;
+  }
   .socials-container {
     position: unset;
     right: unset;
@@ -353,6 +383,9 @@ h6 {
 }
 
 @media only screen and (max-width: 700px) {
+  .Web3-Link {
+    display: none;
+  }
   .social-button-text {
     display: none;
   }

@@ -45,11 +45,37 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
     query SiteTitleQuery {
       site {
         siteMetadata {
+          dwebUrl
+          siteUrl
           title
         }
       }
     }
   `);
+
+  const Web3 = ({ children }) => <div className="Web3-Link fadeIn">
+    {children}
+  </div>
+
+  const dwebUrlLimo = "https://" + data.site.siteMetadata.dwebUrl + ".limo"
+  const cwebUrlChopped = data.site.siteMetadata.siteUrl.split('://')[1]
+  const Dweb = () => <span style={{ fontFamily: "Pacifico" }}>dweb</span>
+
+  const web3Banner = window ?
+    (window.location.hostname.includes(data.site.siteMetadata.siteUrl) ?
+      <Web3>
+        You're viewing my site on the centralized web. Check me out on the <a target="_blank" href={dwebUrlLimo}><Dweb /></a> ! (Warning: it's slow.)
+      </Web3>
+      : window.location.hostname.includes(".eth") || window.location.hostname.includes("ipfs") ?
+        <Web3>
+          You're viewing us on the <Dweb />! You can always go back to the <a href={data.site.siteMetadata.siteUrl}>centralized version</a> if it's too slow.
+        </Web3>
+        : window.location.hostname.includes("127.0.0.1") || window.location.hostname.includes("codespace") ?
+          <Web3>
+            You seem to be developing locally. The centralized url is <a href={data.site.siteMetadata.siteUrl}>{cwebUrlChopped}</a> and the <Dweb /> url is <a target="_blank" href={dwebUrlLimo}>{data.site.siteMetadata.dwebUrl}</a>
+          </Web3>
+          : <></> /* not sure where they are */)
+    : <></> // building
 
   return (
     <>
@@ -59,6 +85,7 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
           href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&family=Source+Sans+Pro&display=swap"
           rel="stylesheet"
         ></link>
+        <link rel="canonical" href={`${data.site.siteMetadata.siteUrl}${location.pathname}`}></link>
       </Helmet>
 
       <Header
@@ -66,6 +93,7 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
         subtitle={subtitle}
         style={{}}
       />
+
       <div className="total-content">
 
         <ThemeContext.Provider
@@ -78,6 +106,9 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
             {children}
           </main>
         </ThemeContext.Provider>
+
+
+        {web3Banner}
 
         <div
           className="socials-container fadeIn"
@@ -101,6 +132,7 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
             href="/twitter"
           ></SocialButton>
         </div>
+
       </div>
     </>
   );
