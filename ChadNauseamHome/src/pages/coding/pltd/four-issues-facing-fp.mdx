@@ -84,7 +84,7 @@ These are a bit simpler and more surface-level.
              (0, Response500("Internal server error!"))
          }
        }  == (0, Response500("Internal server error!")),
-   expected (1, Response200("{'firstname': 'Chad', lastname: 'Nauseam'}"))
+    expected (1, Response200("{'firstname': 'Chad', lastname: 'Nauseam'}"))
    ```
 
    Then, if user wants to find the bug in `"/api/getuser".get_handler`, they can simply click it and see the same visualization shown here.
