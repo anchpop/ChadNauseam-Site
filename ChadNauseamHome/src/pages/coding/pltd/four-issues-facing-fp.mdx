@@ -99,9 +99,9 @@ These are a bit simpler and more surface-level.
 
    And then the user can click one of those arrows to see the execution visualization for `myfunc(value)`.
 
-   To handle `do` notation, I would give `>>=` the ability to output a value representing its "hidden state", and show that next to each line.
+   To handle `do` notation, I would give `>>=` the ability to output a value representing its "hidden state", and show that next to each line. That might be tricky for some lesser-used effects like the list monad, but I think it should get you 80% of the way there.
 
-   Combine this with some clever semantic highlighting to highlight the each variable in a unique color, and understanding of the execution trace to comment out (or otherwise make grey) any code that doesn't effect the output of the function, and I think you would end up with a debugging experience more ergonomic than anything an imperative programmer could ever dream of.
+   Combine this with some clever semantic highlighting to highlight the each variable in a unique color, and use an analysis of the execution trace to comment out (or otherwise make grey) any code that doesn't effect the output of the function, and I think you would end up with a debugging experience more ergonomic than anything an imperative programmer could ever dream of.
 
 ## Effect systems (shout out to unison again)
 
