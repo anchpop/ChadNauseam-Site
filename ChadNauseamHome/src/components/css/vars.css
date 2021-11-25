@@ -49,6 +49,12 @@
   --blast-color: #8a0808;
 }
 
+@media only screen and (max-width: 800px) {
+  :root {
+    --text-font-size: 1.1rem;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     --background-body: #fff;
