@@ -66,7 +66,7 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
         </>
         : locationProps.location.hostname.includes(".eth") || locationProps.location.hostname.includes("ipfs") ?
           <>
-            You're viewing us on the <Dweb />! You can always go back to the <a href={data.site.siteMetadata.siteUrl + locationProps.location.pathname}>centralized version</a> if it's too slow.
+            You're on the <Dweb />! You can always go back to the <a href={data.site.siteMetadata.siteUrl + locationProps.location.pathname}>centralized version</a> if it's too slow.
           </>
           : locationProps.location.hostname.includes("127.0.0.1") || locationProps.location.hostname.includes("codespace") ?
             <>
