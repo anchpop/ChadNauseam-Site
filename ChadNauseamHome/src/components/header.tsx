@@ -21,12 +21,7 @@ const Header = ({ subtitle, siteTitle, style }) => (
       }}
     >
       <h1
-        style={{
-          fontFamily: "Pacifico",
-          fontWeight: 400,
-          fontStyle: "normal",
-          fontSize: "2.6rem",
-        }}
+        className="Page-Subtitle"
       >
         {subtitle}
       </h1>

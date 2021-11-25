@@ -25,6 +25,13 @@
   background: unset;
 }
 
+.Page-Subtitle {
+  font-family: "Pacifico";
+  font-weight: 435000;
+  font-style: normal;
+  font-size: calc(var(--text-font-size) * 2.1);
+}
+
 h3,
 h4 {
   line-height: 1.4;
