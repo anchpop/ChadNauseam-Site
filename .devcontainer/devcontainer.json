@@ -20,7 +20,48 @@
 		"indentRainbow.ignoreErrorLanguages": [
 			"*"
 		],
-		"editor.wordWrap": "on"
+		"editor.wordWrap": "on",
+		"cSpell.words": [
+			"Blockchains",
+			"CMPEQ",
+			"CRDT",
+			"CRDTs",
+			"Cryptoeconomics",
+			"Cryptonote",
+			"Graphviz",
+			"Ligo",
+			"Litecoin",
+			"Nakamoto",
+			"Peercoin",
+			"Satoshi",
+			"Satoshi's",
+			"Tezo's",
+			"Tezos's",
+			"bgcolor",
+			"blocktree",
+			"chadnauseum",
+			"cryptocurrency",
+			"cryptoeconomic",
+			"cryptoeconomically",
+			"discretize",
+			"entrypoint",
+			"incentivized",
+			"katex",
+			"mathbf",
+			"mathcal",
+			"monoid",
+			"mutez",
+			"stakers",
+			"tezos",
+			"tezt",
+			"tippyjs",
+			"whoever's",
+			"pseudocode"
+		],
+		"cSpell.enabled": true,
+		"cSpell.enableFiletypes": [
+			"mdx"
+		]
 	},
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
@@ -30,9 +71,10 @@
 		"mhutchie.git-graph",
 		"github.vscode-pull-request-github",
 		"ms-vsliveshare.vsliveshare-pack",
-		"silvenon.mdx",
 		"esbenp.prettier-vscode",
-		"streetsidesoftware.code-spell-checker"
+		"streetsidesoftware.code-spell-checker",
+		"yzhang.markdown-all-in-one",
+		"silvenon.mdx"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

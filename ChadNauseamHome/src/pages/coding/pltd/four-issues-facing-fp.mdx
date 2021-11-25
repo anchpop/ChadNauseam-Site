@@ -15,13 +15,13 @@ Having a simple core language might sound like something only ivory tower academ
 
 Despite that, I think functional languages have been stuck in an uncanny valley, where they've simplified their core language but not explored most of the power that simplification enables. And without that exploration, FP ends up being more limiting and less convenient than imperative programming. There are four under-resarched avenues I think are really promising.
 
-## 1: Debugging & Code editing
+## Debugging & Code editing
 
 These are a bit simpler and more surface-level.
 
 1. **Uniform Function Call Syntax** (UFCS). This adds an alternative syntax for invoking functions.
 
-   Without UFCS: `foo(x, y z)` or `bar(x).
+   Without UFCS: `foo(x, y z)` or `bar(x)`.
 
    With UFCS: `x.foo(y, z)` or `x.bar`.
 
@@ -35,22 +35,73 @@ These are a bit simpler and more surface-level.
 
 3. Functional debugging.
 
-   This is something that's always annoyed me - debugging in functional language is usually _so bad_, but in principle it could actually be much better than in any imperative language. Imagine this preudocode:
+   This is something that's always annoyed me - debugging in functional language is usually _so bad_, but in principle it could actually be much better than in any imperative language. Take this pseudocode:
 
-   ```reason
-   let handle_request =
-      (request, path, old_state) => {
+   ```rust
+   let handle_request = (request, path, old_state) => {
         let f = path.get_handler;
         let request = request.of_json;
-        switch (old_state.f(request)) {
-        | Ok((new_state, response)) =>
-          (new_state, Response200 response.to_json);
-        | Error(err) =>
-          print_error(err);
-          (new_state, (Response500 "Internal server error!"));
-        };
-      };
+        match request.f(old_state) {
+          Ok((new_state, response)) =>
+            (new_state, Response200(response.to_json.to_string)),
+          Error(err) =>
+            (old_state, Response500("Internal server error!"))
+        }
+      }
    ```
+
+   What I want is to be able to write a test that calls this function. Then, if the test fails, I want to be able to click on it and enter a "debugging view". Say my test calls this function with `"{username: 'chad'}", "/api/getuser", 0`. I want to see:
+
+   ```rust
+   let handle_request = ("{username: 'chad'}", "/api/getuser", 0) => {
+        getProductHandler = "/api/getuser".get_handler;
+        { username: "chad" } = "{username: 'chad'}".of_json;
+        match { username: "chad" }.getProductHandler(0) {
+   //     Ok(new_state, response) =>
+   //       (new_state, Response200(response.to_json.to_string)),
+          Error(ProductNotFound("chad")) =>
+            (0, Response500("Internal server error!"))
+        }
+      }  == (0, Response500("Internal server error!")),
+   expected (1, Response200("{'firstname': 'Chad', lastname: 'Nauseam'}"))
+   ```
+
+   What I've done is replace every variable with its value. Because a functional language has no mutation, there's no need to have a step-by-step debugger, we can just view the whole execution at once. This lets us easily find the bug - `"/api/getuser".get_handler` is returning a function named `getProductHandler`, which is probably wrong.
+
+   The trickiest part here is how to visualize `let f = path.get_handler;`. Lets say `path.get_handler` returns a lambda like `(json, state) => Ok((state+1, whatever))` - my suggestion is that we look through the context for a binding of that lambda to a name, and if we find one we just show the name. Otherwise we'd probably just have to keep viewing it as `f` and add something like this:
+
+   ```rust
+   let handle_request = ("{username: 'chad'}", "/api/getuser", 0) => {
+
+         ╭──────────────────────────────────────────────────────── function
+         │                                                         goes here
+         f = "/api/getuser".get_handler;
+         { username: "chad" } = "{username: 'chad'}".of_json;
+         match { username: "chad" }.f(0) {
+   //     Ok(new_state, response) =>
+   //       (new_state, Response200(response.to_json.to_string)),
+           Error(ProductNotFound("chad")) =>
+             (0, Response500("Internal server error!"))
+         }
+       }  == (0, Response500("Internal server error!")),
+   expected (1, Response200("{'firstname': 'Chad', lastname: 'Nauseam'}"))
+   ```
+
+   Then, if user wants to find the bug in `"/api/getuser".get_handler`, they can simply click it and see the same visualization shown here.
+
+   I envision "custom function visualizations" for some built-in functions. For example `[1,2,3,4].map(myfunc)` could be visualized as
+
+   ```
+          [1, 2, 3,  4]
+   myfunc  ↓  ↓  ↓   ↓
+          [4, 8, 12, 16]
+   ```
+
+   And then the user can click one of those arrows to see the execution visualization for `myfunc(value)`.
+
+   To handle `do` notation, I would give `>>=` the ability to output a value representing its "hidden state", and show that next to each line.
+
+   Combine this with some clever semantic highlighting to highlight the each variable in a unique color, and understanding of the execution trace to comment out (or otherwise make grey) any code that doesn't effect the output of the function, and I think you would end up with a debugging experience more ergonomic than anything an imperative programmer could ever dream of.
 
 ## Effect systems (shout out to unison again)
 
@@ -59,3 +110,4 @@ These are a bit simpler and more surface-level.
 ## Row polymorphism + Refinement types
 
 </Layout>
+```
