@@ -64,7 +64,7 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
     const Dweb = () => <span style={{ fontFamily: "Pacifico" }}>dweb</span>
 
     return locationProps.location.hostname !== undefined ?
-      (locationProps.location.hostname.includes(data.site.siteMetadata.siteUrl) ?
+      (locationProps.location.hostname.includes(cwebUrlChopped) ?
         <Web3>
           You're viewing my site on the centralized web. Check me out on the <a target="_blank" href={dwebUrlLimo}><Dweb /></a> ! (Warning: it's slow.)
         </Web3>
