@@ -57,84 +57,89 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
     {children}
   </div>
 
-  const dwebUrlLimo = "https://" + data.site.siteMetadata.dwebUrl + ".limo" + location.pathname
-  const cwebUrlChopped = data.site.siteMetadata.siteUrl.split('://')[1]
-  const Dweb = () => <span style={{ fontFamily: "Pacifico" }}>dweb</span>
 
-  const web3Banner = window ?
-    (window.location.hostname.includes(data.site.siteMetadata.siteUrl) ?
-      <Web3>
-        You're viewing my site on the centralized web. Check me out on the <a target="_blank" href={dwebUrlLimo}><Dweb /></a> ! (Warning: it's slow.)
-      </Web3>
-      : window.location.hostname.includes(".eth") || window.location.hostname.includes("ipfs") ?
+  const Web3Banner = ({ locationProps }) => {
+    const dwebUrlLimo = "https://" + data.site.siteMetadata.dwebUrl + ".limo" + locationProps.location.pathname
+    const cwebUrlChopped = data.site.siteMetadata.siteUrl.split('://')[1]
+    const Dweb = () => <span style={{ fontFamily: "Pacifico" }}>dweb</span>
+
+    return locationProps.location.hostname !== undefined ?
+      (locationProps.location.hostname.includes(data.site.siteMetadata.siteUrl) ?
         <Web3>
-          You're viewing us on the <Dweb />! You can always go back to the <a href={data.site.siteMetadata.siteUrl + location.pathname}>centralized version</a> if it's too slow.
+          You're viewing my site on the centralized web. Check me out on the <a target="_blank" href={dwebUrlLimo}><Dweb /></a> ! (Warning: it's slow.)
         </Web3>
-        : window.location.hostname.includes("127.0.0.1") || window.location.hostname.includes("codespace") ?
+        : locationProps.location.hostname.includes(".eth") || locationProps.location.hostname.includes("ipfs") ?
           <Web3>
-            You seem to be developing locally. The centralized url is <a href={data.site.siteMetadata.siteUrl + location.pathname}>{cwebUrlChopped}</a> and the <Dweb /> url is <a target="_blank" href={dwebUrlLimo}>{data.site.siteMetadata.dwebUrl}</a>.
+            You're viewing us on the <Dweb />! You can always go back to the <a href={data.site.siteMetadata.siteUrl + locationProps.location.pathname}>centralized version</a> if it's too slow.
           </Web3>
-          : <></> /* not sure where they are */)
-    : <></> // building
+          : locationProps.location.hostname.includes("127.0.0.1") || locationProps.location.hostname.includes("codespace") ?
+            <Web3>
+              You seem to be developing locally. The centralized url is <a href={data.site.siteMetadata.siteUrl + locationProps.location.pathname}>{cwebUrlChopped}</a> and the <Dweb /> url is <a target="_blank" href={dwebUrlLimo}>{data.site.siteMetadata.dwebUrl}</a>.
+            </Web3>
+            : <></> /* not sure where they are */)
+      : <></> // building
+  }
 
   return (
-    <>
-      <SEO title={subtitle} description={description} />
-      <Helmet>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&family=Source+Sans+Pro&display=swap"
-          rel="stylesheet"
-        ></link>
-        <link rel="canonical" href={`${data.site.siteMetadata.siteUrl}${location.pathname}`}></link>
-      </Helmet>
+    <Location>
+      {(locationProps) => <>
+        <SEO title={subtitle} description={description} />
+        <Helmet>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&family=Source+Sans+Pro&display=swap"
+            rel="stylesheet"
+          ></link>
+          <link rel="canonical" href={`${data.site.siteMetadata.siteUrl}${locationProps.location.pathname}`}></link>
+        </Helmet>
 
-      <Header
-        siteTitle={data.site.siteMetadata.title}
-        subtitle={subtitle}
-        style={{}}
-      />
+        <Header
+          siteTitle={data.site.siteMetadata.title}
+          subtitle={subtitle}
+          style={{}}
+        />
 
-      <div className="total-content">
+        <div className="total-content">
 
-        <ThemeContext.Provider
-          value={{
-            lightTheme,
-            smallScreen,
-          }}
-        >
-          <main className="main-content fadeIn">
-            {children}
-          </main>
-        </ThemeContext.Provider>
+          <ThemeContext.Provider
+            value={{
+              lightTheme,
+              smallScreen,
+            }}
+          >
+            <main className="main-content fadeIn">
+              {children}
+            </main>
+          </ThemeContext.Provider>
 
+          <Web3Banner locationProps={locationProps} />
 
-        {web3Banner}
-
-        <div
-          className="socials-container fadeIn"
-        >
-          <SocialButton
-            text="My Discord"
-            color="#23272A"
-            icon={discord}
-            href="/discord"
-          ></SocialButton>
-          {/*<SocialButton
+          <div
+            className="socials-container fadeIn"
+          >
+            <SocialButton
+              text="My Discord"
+              color="#23272A"
+              icon={discord}
+              href="/discord"
+            ></SocialButton>
+            {/*<SocialButton
           text="...Or my Reddit"
           color="#FF4500"
           icon={reddit}
           href="/reddit"
         ></SocialButton>*/}
-          <SocialButton
-            text="My Twitter"
-            color="#1DA1F2"
-            icon={twitter}
-            href="/twitter"
-          ></SocialButton>
-        </div>
+            <SocialButton
+              text="My Twitter"
+              color="#1DA1F2"
+              icon={twitter}
+              href="/twitter"
+            ></SocialButton>
+          </div>
 
-      </div>
-    </>
+        </div>
+      </>
+      }
+    </Location>
   );
 };
 
