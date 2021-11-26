@@ -8,25 +8,33 @@ const CustomCodeBlock = (props) => {
 
   const { className, copy, children } = props;
 
+  const split_class = className?.split("-")
+  console.log(className, split_class);
   const language =
-    className?.split("-")[0] === "language"
-      ? className.split("-")[1]
+    split_class && split_class[0] === "language"
+      ? split_class[1]
       : "javascript";
+
+  const showLineNumbers = split_class !== undefined ?
+    split_class[0] === "language" && split_class.length == 3
+      ? split_class[2] !== "nolines" : true : true
+
 
 
   const theme = lightTheme ? github : dracula;
-  
+
 
   return copy ? (
     <CopyBlock
       text={children}
       language={language}
       theme={theme}
+      showLineNumbers={showLineNumbers}
       wrapLines
       codeBlock
     />
   ) : (
-    <CodeBlock text={children} language={language} theme={theme} wrapLines />
+    <CodeBlock showLineNumbers={showLineNumbers} text={children} language={language} theme={theme} wrapLines />
   );
 };
 

@@ -43,6 +43,7 @@ const shortcodes = {
       options={{ width: "100%", height: "auto", ...options }}
     />
   ),
+  a: (props) => <a target="_blank" {...props} />
 };
 
 export default ({ children }) => (

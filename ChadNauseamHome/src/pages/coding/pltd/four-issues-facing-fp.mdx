@@ -1,3 +1,5 @@
+import why_is_recursion_so from "../../../images/coding/screenshots/why_is_recursion_so.png";
+
 <Layout
   subtitle="Functional Programming Should Be More Complicated"
   description="My thoughts on the biggest pain points that I encounter when functional programming"
@@ -89,15 +91,15 @@ These are a bit simpler and more surface-level.
 
    Then, if user wants to find the bug in `"/api/getuser".get_handler`, they can simply click it and see the same visualization shown here.
 
-   I envision "custom function visualizations" for some built-in functions. For example `[1,2,3,4].map(myfunc)` could be visualized as
+   Another way we can easily beat imperative debuggers is with dedicated visualizations for higher order functions. For example `[1,2,3,4].map(myfunc)` could be visualized as
 
-   ```
+   ```haskell-nolines
           [1, 2, 3,  4]
    myfunc  ↓  ↓  ↓   ↓
           [4, 8, 12, 16]
    ```
 
-   And then the user can click one of those arrows to see the execution visualization for `myfunc(value)`.
+   And then the user can click one of those arrows to see the execution visualization for `myfunc(value)`. Because functions like `map`, `filter`, etc. express your intentions much more specifically than an equivalent `for` loop would, these functions would be trivial to visualize in a way that allows the programmer to see the transformation that's happening all at once (and identify what's going wrong).
 
    To handle `do` notation, I would give `>>=` the ability to output a value representing its "hidden state", and show that next to each line. That might be tricky for some lesser-used effects like the list monad, but I think it should get you 80% of the way there.
 
@@ -105,8 +107,160 @@ These are a bit simpler and more surface-level.
 
 ## Effect systems (shout out to unison again)
 
-## Recursion schemes (I want to attempt to explain them)
+Let's look at the type of Haskell's [`map`](https://hackage.haskell.org/package/base-4.16.0.0/docs/Prelude.html#v:map):
+
+```haskell-nolines
+map :: (a -> b) -> [a] -> [b]
+```
+
+And now let's look at [`mapM`](https://hackage.haskell.org/package/base-4.16.0.0/docs/Prelude.html#v:mapM). I've specialized it to `List` to make the analogy to `map` clearer:
+
+```haskell-nolines
+mapM :: (Monad m) => (a -> m b) -> [a] -> m [b]
+```
+
+They are very closely related. The difference is that `map` applies a "pure function", and `mapM` applies a "monadic function". (The monadic function is pure too, but the monad describes an effect.) For example, to increment every `Int` in a list you would use `map (+1)` (`+1` has the type `Int -> Int`), but to schedule an alarm for every `Int` in a list you would use `mapM scheduleAlarm` ([`scheduleAlarm`](https://hackage.haskell.org/package/unix-2.7.2.2/docs/System-Posix-Signals.html#v:scheduleAlarm) has the type `Int -> IO Int`). `scheduleAlarm` can be thought of as a function returning an `Int`, just like `+1`, except with a monadic effect stuck onto it.
+
+Monads are very nice but I think this abstraction is a bit too low-level for a high-level functional language. What we'd really like to be able to do is make a type that says:
+
+> If you give me a function with some effects `e` and a list, I'll apply that function to every value in the list and doing that will also have the effects `e`.
+
+To do that we need an _effect system_. And the best effect system around is [Koka](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/paper-20.pdf)'s.<Note>Also check out [Type Directed Compilation of Row-Typed Algebraic Effects](https://sci-hubtw.hkvisa.net/10.1145/3009837.3009872) by the same author.</Note>
+
+1. With an effect system, the type of a function that does IO stuff would be written like `a ->{IO} b`.
+
+2. The type of a function that does IO stuff and also interacts with some state would be `a ->{IO, State} b`.
+
+3. A function with no side effects would be `a ->{} b`, although any sensible language would add some sugar to allow you to just write `a -> b` and have the `{}` be inferred.
+
+Now we can represent what we wanted above! The _true_ type of map is `(a ->{e} b) -> [a] ->{e} [b]`. There's something a little subtle here: `e` is a variable representing a _list of effects_. More on this later.
+
+You don't lose any flexibility this way - it's basically just syntax sugar around monads, so you can add a language feature where users define a "custom effect" by giving the definition of a monad. <Note>The only difference is that effect systems typically require that the only way to actually apply an effect is by calling a function, so you'd have to replace `getLine :: IO String` with `getLine :: () ->{IO} String`, which I feel is slightly inelegant, but a price worth paying.</Note>
+
+Let's look back to our `map` example:
+
+```haskell-nolines
+(a ->{e} b) -> [a] ->{e} [b]
+```
+
+Now let's be good functional programmers and rewrite that to make the variables explicit:
+
+```haskell-nolines
+forall a b e. (a ->{e} b) -> [a] ->{e} [b]
+```
+
+`a` and `b` are type variables of the kind that any Haskell or Ocaml dev would be familiar with, but what's `e`? Well, it's a variable, but of a different kind than type. To really make this work, you need some special sauce that I'll get into in the the section on _row polymorphism_.
+
+Here are some common Koka functions in case you're curious about their types. (Koka uses `∀` in place of `forall`)
+
+```haskell-nolines
+random :: () ->{ndet} double
+print  :: string ->{io} ()
+error  :: forall α. string ->{exn} a
+id     :: forall α µ. α ->{µ} α
+```
+
+With this approach you can even represent effects like the ST monad, mutation, try/catch (which actually removes an effect from a function), and more.
+
+## Recursion schemes
+
+Functional languages don't have loops. What we _do_ have is recursion. Is that a good enough replacement?
+
+<CenteredImg src={why_is_recursion_so} style={{ maxWidth: "25em" }} />
+
+Let's just say there's room for improvement. Luckily, that improvement is here: it's called _recursion schemes_.
+
+The idea is that most recursive functions fit into a couple simple categories. The simplest and most common is called a _traversal_.<Note>Also known as a catamorphism.</Note> Instead of writing the actual recursive function yourself, you just have to specify what _scheme_ it belongs to, then declaratively fill in the blanks. But before I explain recursion schemes, first I want to point out something about recursive data structures.
+
+Let's say you have a recursively-defined tree like this:
+
+```haskell
+data Tree a = Branch (Tree a) (Tree a) | Node a
+```
+
+What I want to point out is that there are two conceptually different types of data here, _recursive_ and _not recursive_.
+
+```haskell-nolines
+data Tree a = Branch ( Tree a )   ( Tree a ) | Node  a
+                       ╰──┬──╯      ╰──┬──╯         ╰┬╯
+                      recursive    recursive    not recursive
+```
+
+Traversals are recursive functions where the only thing you ever do on recursive data is call the recursive function. Take `depth` as an example.
+
+```haskell
+depth :: Tree a -> Int
+depth = \case (Node _)     -> 1
+              (Branch a b) -> 1 + max (depth a) (depth b)
+```
+
+Our recursive function is `depth`. The recursive data is the `a` and `b` on line 2. The only thing we do with `a` and `b` is call `depth` on them, so `depth` is a traversal.
+
+To actually use recursion schemes, you need to mix up the data type a bit. Specifically, you need to add a new type parameter, and then replace the recursive data with that parameter.
+
+```haskell
+data Tree  a   = Branch  (Tree a) (Tree a) | Node  a
+data TreeF a f = BranchF f        f        | NodeF a
+```
+
+(It's tradition to use `f` for the extra parameter and add `F` everywhere to disambiguate the types and the constructors.)
+
+<Minisection>
+
+By the way, in theory you could actually reconstruct `Tree` from `TreeF` by doing some type magic like this:
+
+```haskell
+data Tree a = TreeF a Tree
+```
+
+But that's not necessary to use or understand recursion schemes.
+
+</Minisection>
+
+To write a function using recursion schemes, you'll need to use a standard helper function. We'll call it `fold`, but it's different from the `fold` in Haskell's prelude. I'll show you the type, but it's easier to just work through an example:
+
+```haskell
+fold :: (TreeF a f -> f) -> Tree a -> f
+```
+
+The only thing we needed to know to compute `depth` was the depth of the subtrees. `fold` allows us to just say what we would do if we _already knew_ the depth of the subtrees, then it takes care of doing the actual recursion for us.
+
+Here's how we'd rewrite `depth`. The rewritten version has the same type as before (`Tree a -> Int`), but internally it uses `fold` and a function `TreeF a Int -> Int`:
+
+```python
+# Before:
+depth =          \case (Node _)     -> 1
+                       (Branch a b) -> 1 + max (depth a) (depth b)
+# After:       ╭────────────────────────────────────╮
+depth = fold $   \case (NodeF _)    -> 1           #│
+                       (Branch a b) -> 1 + max a b #│ `a` and `b` are `Int`s
+#              ╰─────────────────┬──────────────────╯
+#              this function has type `TreeF a Int -> Int`
+```
+
+Notice here that there's _no more explicit recursion_ - instead we write a function of type `TreeF a Int -> Int` and pass it to `fold`, which turns it into a function of type `Tree a -> Int`.
+
+Now I'll forgive you if you feel like this has added a useless layer of indirection. They don't really make sense for a function as simple as `depth`, but for more complicated functions they're a lifesaver. `fold` here subsumes the traditional `foldr` you're used to using over lists, and there are even more powerful schemes that use the same framework. <Note>Unfortunately, they all have kind of silly names, but you get used to them. Although they're really not much more silly than the `map`, `fold`, `bind`, etc. that functional programmers are already used to.</Note>
+
+For example, while `fold` only gives you the result of recursing over the subtrees, `para` also gives you the original subtrees. And you're not limited to functions that take a recursive data structure and return a simple value - the reverse, taking a value and returning a data structure, is just as easy with functions like `unfold`.<Note>An example of when you'd want to do that is when writing functions like `repeat :: a -> Int -> [a]`.)</Note>
+
+To learn more about recursion schemes and their virtues, I highly recommend checking out [Sum Type Of Way](https://blog.sumtypeofway.com/posts/introduction-to-recursion-schemes.html)'s<Note numbered>very extensive</Note> guide, and the docs for the Haskell [recursion-schemes](https://hackage.haskell.org/package/recursion-schemes-5.2.2.2/docs/Data-Functor-Foldable.html#v:cata) library. But I'm not just interested in their convenience. Do you remember what I said earlier, about custom visualizations for higher order functions?
+
+> Another way we can easily beat imperative debuggers is with dedicated visualizations for higher order functions. For example `[1,2,3,4].map(myfunc)` could be visualized as
+>
+> ```haskell-nolines
+>        [1, 2, 3,  4]
+> myfunc  ↓  ↓  ↓   ↓
+>        [4, 8, 12, 16]
+> ```
+>
+> And then the user can click one of those arrows to see the execution visualization for `myfunc(value)`. Because functions like `map`, `filter`, etc. express your intentions much more specifically than an equivalent `for` loop would, these functions would be trivial to visualize in a way that allows the programmer to see the transformation that's happening all at once (and identify what's going wrong).
+
+Because recursion schemes are so much more declarative than plain recursion, you can easily imagine doing the same visualizations for `fold`, `unfold`, `para`, etc., and generalizing those visualization to trees and other data structures.
+
+I think it's kind of nice how it all fits together - functional programming makes your control flow more explicit, which makes it easier to visualize a program's execution, and recursion schemes make control flow even more explicit, which makes it even easier to visualize.
 
 ## Row polymorphism + Refinement types
 
 </Layout>
+```

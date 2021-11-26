@@ -193,7 +193,8 @@ code {
   font-size: calc(var(--text-font-size) * 0.8);
 }
 
-.Block-Code {
+.Block-Code,
+code {
   font-family: "Fira Code", monospace;
 }
 .Block-Code code {
@@ -279,6 +280,12 @@ blockquote .main-content {
 
 .img-container img {
   border-radius: 2em;
+}
+
+.img-container {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1.5rem;
 }
 
 .section-header-container {
