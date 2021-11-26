@@ -17,7 +17,7 @@ Having a simple core language might sound like something only ivory tower academ
 
 Despite that, I think functional languages have been stuck in an uncanny valley, where they've simplified their core language but not explored most of the power that simplification enables. And without that exploration, FP ends up being more limiting and less convenient than imperative programming. There are four under-resarched avenues I think are really promising.
 
-## Debugging & Code editing
+## Making Debugging & Code Editing Easy
 
 These are a bit simpler and more surface-level.
 
@@ -105,7 +105,7 @@ These are a bit simpler and more surface-level.
 
    Combine this with some clever semantic highlighting to highlight the each variable in a unique color, and use an analysis of the execution trace to comment out (or otherwise make grey) any code that doesn't effect the output of the function, and I think you would end up with a debugging experience more ergonomic than anything an imperative programmer could ever dream of.
 
-## Effect systems (shout out to unison again)
+## Making Monads Easy With Effect systems
 
 Let's look at the type of Haskell's [`map`](https://hackage.haskell.org/package/base-4.16.0.0/docs/Prelude.html#v:map):
 
@@ -138,15 +138,21 @@ Now we can represent what we wanted above! The _true_ type of map is `(a ->{e} b
 You don't lose any flexibility this way - it's basically just syntax sugar around monads, so you can add a language feature where users define a "custom effect" by giving the definition of a monad. <Note>The only difference is that effect systems typically require that the only way to actually apply an effect is by calling a function, so you'd have to replace `getLine :: IO String` with `getLine :: () ->{IO} String`, which I feel is slightly inelegant, but a price worth paying.</Note>
 
 <Minisection>
-  Actually, I think a really interesting research direction would be to convert
-  each function into a dataflow graph, and use that to model effects with arrows
-  rather than monads. Effects are on `->`, which means that (unlike with monads)
-  we know the input as well as the output, so we should take advantage of that.
-  Monads were actually introduced to FP because Haskell needed a way to
-  "flatten" the dataflow graph into a single line so there would be a sensible
-  order to execute effects in - but that was only needed because of laziness,
-  and with a strict language I think the greater expressivity of arrows makes
-  more sense.
+
+Actually, I think a really interesting research direction would be to convert
+each function into a dataflow graph, and use that to model effects with arrows
+rather than monads.
+
+Effects are on `->`, which means that (unlike with monads)
+we know the input as well as the output, so we should take advantage of that.
+Monads were actually introduced to FP because Haskell needed a way to
+"flatten" the dataflow graph into a single line so there would be a sensible
+order to execute effects in - but that was only needed because of laziness,
+and with a strict language I think the greater expressivity of arrows makes
+more sense. And you could probably annotate each edge in the graph with a
+number or something that would allow you to reconstruct a monad's order of
+execution anyway.
+
 </Minisection>
 
 Let's look back to our `map` example:
@@ -173,6 +179,8 @@ id     :: forall α µ. α ->{µ} α
 ```
 
 With this approach you can even represent effects like the ST monad, mutation, try/catch (which actually removes an effect from a function), and more.
+
+By the way, I feel compelled to mention that the Unison language gets this one right too. They're doing really good work over there.
 
 ## Recursion schemes
 
@@ -272,7 +280,64 @@ Because recursion schemes are so much more declarative than plain recursion, you
 
 I think it's kind of nice how it all fits together - functional programming makes your control flow more explicit, which makes it easier to visualize a program's execution, and recursion schemes make control flow even more explicit, which makes it even easier to visualize.
 
-## Row polymorphism + Refinement types
+## Reducing nesting with Row Polymorphism + Refinement Types
+
+Row polymorphism might not seem like they belong in the same section, but I'm combining them because for me they serve the same goal: reducing nesting levels.
+
+### Row Polymorphism
+
+You ever notice a similarity between product types and sum types? Take
+
+```
+data MyProduct = {a: Int, b: Bool}
+```
+
+and
+
+```
+data MySum = A Int | B Bool
+```
+
+I mean, obviously they're different, but the similarity I want to point out is that they could be described by a list of pairs of labels and types.
+
+<Minisection>
+
+In statically typed languages, values often have different types. In Haskell, it's possible to talk about things on the type level that aren't types - for example, `Maybe` isn't a type. `Maybe Int` is a type, but `Maybe` is a different _kind_. `Maybe`'s like a type-level function that takes a type and returns a new type. If you say that `Int` has kind `Type`, then `Maybe` has kind `Type -> Type`. (And `Maybe Int` has kind `Type` again.)
+
+</Minisection>
+
+A labeled type is a type annotated with a label. A _row_ is a type-level list of labeled types. By example:
+
+Labeled type: `a: Int`
+
+Row: `a: Int, b: Bool`
+
+You can then imagine type constructors that take a row and return a type - maybe you could write sum types as `{+ a: Int, b: Bool +}` and product types as `{* a: Int, b: Bool *}`. <Note>These are structural types, similar to `(Int, Bool)` and `Either Int Bool`.</Note> Let's write a simple function:
+
+```rust
+manhattan_distance :: {* x: Float, y: Float *} -> float
+manhattan_distance point = point.x + point.y
+```
+
+So this function takes a product type with fields `x: Float` and `y: Float`, then adds them together.
+
+The power comes in when you introduce _row variables_. Here's a function that takes a product and returns it:
+
+```rust
+record_id :: forall r. {* r *} -> {* r *}
+record_id r = r
+```
+
+Now let's introduce a `...` syntax to _extend_ records:
+
+```rust
+record_id :: forall r. {* r *} -> {* color: String, ...r *}
+record_id r = {* color: "red", ...r *}
+
+# record_id {* object: "ball" *} = {* color: "red", object: "ball" *}
+```
+
+### Refinement Types
 
 </Layout>
 ```
