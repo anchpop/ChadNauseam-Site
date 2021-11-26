@@ -13,7 +13,7 @@ You can imagine a sliding scale between _core-language-simplicity_ and _practica
 
 So where imperative languages have loops, functional languages have recursion, and expect you to use that to recreate loops yourself. (I'm being a little mean, for lists you can use `map` and `fold` which are always in the standard library, and you in Haksell can use `deriving` to automatically write equivalent functions for any custom type you make. The point is in a functional language the complexity is in userspace so you could have written them yourself, but in an imperative language you could never write `while` yourself.)
 
-Having a simple core language might sound like something only ivory tower academics really care about. But it does come in handy! In Haskell for example, the _only_ thing a function can do is return a value computed from its inputs. Same inputs, same value, no side effects. <Note>Short of functions intended to aid debugging, there are no exceptions to this that a normal Haskell programmer will ever have to think about.</Note> And this simplicity allows you to write abstractions that would comparatively be a nightmare to write any other way. Undo/redo is the obvious example, because without mutation it's easy to keep a reference to an old version (and persistent data structures make that not as ineffecient as it sounds). Purity also enables [Software Transactional Memory](https://hackage.haskell.org/package/stm) and Tweag's amazing [Funflow library](https://github.com/tweag/funflow) (which actually uses Arrows, which are like Monads on steroids). With purity you can create expressive type systems which enable formal proofs about your code, like how Haskell and Rust code never encounters null reference exceptions (because `Maybe`/`Option` force you to prove you've checked and handled that case explicitly), or like how Haskell's [`Data.Justified`](https://hackage.haskell.org/package/justified-containers-0.3.0.0/docs/Data-Map-Justified.html) allows you to prove a key exists in a dictionary so accessing it is safe.
+Having a simple core language might sound like something only ivory tower academics really care about. But it does come in handy! In Haskell for example, the _only_ thing a function can do is return a value computed from its inputs. Same inputs, same value, no side effects. <Note>Short of functions intended to aid debugging, there are no exceptions to this that a normal Haskell programmer will ever have to think about.</Note> And this simplicity allows you to write abstractions that would comparatively be a nightmare to write any other way. Undo/redo is the obvious example, because without mutation it's easy to keep a reference to an old version (and persistent data structures make that not as ineffecient as it sounds). Purity also enables [Software Transactional Memory](https://hackage.haskell.org/package/stm) and Tweag's amazing [Funflow library](https://github.com/tweag/funflow). With purity you can create expressive type systems which enable formal proofs about your code, like how Haskell and Rust code never encounters null reference exceptions (because `Maybe`/`Option` force you to prove you've checked and handled that case explicitly), or like how Haskell's [`Data.Justified`](https://hackage.haskell.org/package/justified-containers-0.3.0.0/docs/Data-Map-Justified.html) allows you to prove a key exists in a dictionary so accessing it is safe.
 
 Despite that, I think functional languages have been stuck in an uncanny valley, where they've simplified their core language but not explored most of the power that simplification enables. And without that exploration, FP ends up being more limiting and less convenient than imperative programming. There are four under-resarched avenues I think are really promising.
 
@@ -136,6 +136,18 @@ To do that we need an _effect system_. And the best effect system around is [Kok
 Now we can represent what we wanted above! The _true_ type of map is `(a ->{e} b) -> [a] ->{e} [b]`. There's something a little subtle here: `e` is a variable representing a _list of effects_. More on this later.
 
 You don't lose any flexibility this way - it's basically just syntax sugar around monads, so you can add a language feature where users define a "custom effect" by giving the definition of a monad. <Note>The only difference is that effect systems typically require that the only way to actually apply an effect is by calling a function, so you'd have to replace `getLine :: IO String` with `getLine :: () ->{IO} String`, which I feel is slightly inelegant, but a price worth paying.</Note>
+
+<Minisection>
+  Actually, I think a really interesting research direction would be to convert
+  each function into a dataflow graph, and use that to model effects with arrows
+  rather than monads. Effects are on `->`, which means that (unlike with monads)
+  we know the input as well as the output, so we should take advantage of that.
+  Monads were actually introduced to FP because Haskell needed a way to
+  "flatten" the dataflow graph into a single line so there would be a sensible
+  order to execute effects in - but that was only needed because of laziness,
+  and with a strict language I think the greater expressivity of arrows makes
+  more sense.
+</Minisection>
 
 Let's look back to our `map` example:
 
