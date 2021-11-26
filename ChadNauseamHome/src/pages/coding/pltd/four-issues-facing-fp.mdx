@@ -21,7 +21,9 @@ Despite that, I think functional languages have been stuck in an uncanny valley,
 
 These are a bit simpler and more surface-level.
 
-1. **Uniform Function Call Syntax** (UFCS). This adds an alternative syntax for invoking functions.
+1. ### Uniform Function Call Syntax (UFCS).
+
+   This adds an alternative syntax for invoking functions.
 
    Without UFCS: `foo(x, y z)` or `bar(x)`.
 
@@ -33,9 +35,11 @@ These are a bit simpler and more surface-level.
 
    One disadvantage of this is that it makes namespacing trickier. If you have a function `serialization::to_json`, would you write `myvalue.serialization::to_json`? I think the solution here is simply to add syntax highlighting that makes `serialization::` dimmer than the surrounding code.
 
-2. Don't rerun tests if the code doesn't change. [Unison](https://www.unisonweb.org/) does this right. If the code hasn't changed, and the test hasn't changed, don't rerun the test! This kind of analysis is much easier in a functional language, because the only things that can affect a function's execution are its code and its inputs.
+2. ### Don't rerun tests if the code doesn't change.
 
-3. Functional debugging.
+   [Unison](https://www.unisonweb.org/) does this right. If the code hasn't changed, and the test hasn't changed, don't rerun the test! This kind of analysis is much easier in a functional language, because the only things that can affect a function's execution are its code and its inputs.
+
+3. ### Functional debugging
 
    This is something that's always annoyed me - debugging in functional language is usually _so bad_, but in principle it could actually be much better than in any imperative language. Take this pseudocode:
 
@@ -186,7 +190,7 @@ By the way, I feel compelled to mention that the Unison language gets this one r
 
 Functional languages don't have loops. What we _do_ have is recursion. Is that a good enough replacement?
 
-<CenteredImg src={why_is_recursion_so} style={{ maxWidth: "25em" }} />
+<CenteredImg src={why_is_recursion_so} style={{ maxWidth: "21em" }} />
 
 Let's just say there's room for improvement. Luckily, that improvement is here: it's called _recursion schemes_.
 

@@ -196,9 +196,7 @@ code {
 .Block-Code,
 code {
   font-family: "Fira Code", monospace;
-}
-.Block-Code code {
-  font-size: calc(var(--text-font-size) * 0.8) !important;
+  font-size: calc(var(--text-font-size) * 0.75);
 }
 
 @supports (font-variation-settings: normal) {
@@ -395,6 +393,23 @@ h6 {
   }
   .social-button-text {
     display: none;
+  }
+  .text-content {
+    padding-left: calc(var(--body-content-padding) / 3);
+    padding-right: calc(var(--body-content-padding) / 3);
+  }
+  ol {
+    padding-left: calc(var(--body-content-padding) / 1.5);
+    padding-right: calc(var(--body-content-padding) / 1.5);
+    list-style: none;
+  }
+  h3 {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .Block-Code {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
