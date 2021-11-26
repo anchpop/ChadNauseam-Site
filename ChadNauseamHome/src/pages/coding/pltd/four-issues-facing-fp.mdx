@@ -328,7 +328,7 @@ record_id :: forall r. {* r *} -> {* r *}
 record_id r = r
 ```
 
-Now let's introduce a `...` syntax to _extend_ records:
+Now let's introduce a `...` syntax to _extend_ rows:
 
 ```rust
 record_id :: forall r. {* r *} -> {* color: String, ...r *}
