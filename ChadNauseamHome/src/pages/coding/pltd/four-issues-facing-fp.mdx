@@ -15,7 +15,9 @@ So where imperative languages have loops, functional languages have recursion, a
 
 Having a simple core language might sound like something only ivory tower academics really care about. But it does come in handy! In Haskell for example, the _only_ thing a function can do is return a value computed from its inputs. Same inputs, same value, no side effects. <Note>Short of functions intended to aid debugging, there are no exceptions to this that a normal Haskell programmer will ever have to think about.</Note> And this simplicity allows you to write abstractions that would comparatively be a nightmare to write any other way. Undo/redo is the obvious example, because without mutation it's easy to keep a reference to an old version (and persistent data structures make that not as ineffecient as it sounds). Purity also enables [Software Transactional Memory](https://hackage.haskell.org/package/stm) and Tweag's amazing [Funflow library](https://github.com/tweag/funflow). With purity you can create expressive type systems which enable formal proofs about your code, like how Haskell and Rust code never encounters null reference exceptions (because `Maybe`/`Option` force you to prove you've checked and handled that case explicitly), or like how Haskell's [`Data.Justified`](https://hackage.haskell.org/package/justified-containers-0.3.0.0/docs/Data-Map-Justified.html) allows you to prove a key exists in a dictionary so accessing it is safe.
 
-Despite that, I think functional languages have been stuck in an uncanny valley, where they've simplified their core language but not explored most of the power that simplification enables. And without that exploration, FP ends up being more limiting and less convenient than imperative programming. There are four under-resarched avenues I think are really promising.
+Another example of that additional power is [optics](https://hackage.haskell.org/package/optics-0.4/docs/Optics.html) - they massively simplify operations like "I have a list of people, and each person has a hair color field, and I want to set each of their hair colors to `Brown`" - it's not a complicated idea, but its implementation in an imperative language would tiresome mess of loops, but with optics it becomes as simple as just writing that sentence in the optics eDSL. <Note>Not that the optics eDSL is terribly easy to learn.</Note>
+
+Optics are well known, but they're still not used ubiquitously like I think they should be. And other forms of expressive power are used even less, or haven't been explored at all. And without that exploration, FP ends up being more limiting and less convenient than imperative programming. There are four under-resarched avenues I think are really promising.
 
 ## Making Debugging & Code Editing Easy
 
@@ -33,7 +35,7 @@ These are a bit simpler and more surface-level.
 
    It also makes manipulating values in a functional style much easier, because it removes the nesting that comes when using functions to iteratively tranform a piece of data. Compare `average(drop(sort(take(mylist, 10), 5)))` vs `mylist.take(10).sort.drop(5).average`.
 
-   One disadvantage of this is that it makes namespacing trickier. If you have a function `serialization::to_json`, would you write `myvalue.serialization::to_json`? I think the solution here is simply to add syntax highlighting that makes `serialization::` dimmer than the surrounding code.
+   One disadvantage of this is that it makes namespacing trickier. I really like the trick Ocaml uses. If you have a namespaced function like `serialization::tojson`, you could either write `serialization::tojson(foo)` or `serialization::(foo.tojson)`. Put another way, if you write `namespace::(...)`, that makes everything in `namespace` available inside `...`.
 
 2. ### Don't rerun tests if the code doesn't change.
 
@@ -141,24 +143,6 @@ Now we can represent what we wanted above! The _true_ type of map is `(a ->{e} b
 
 You don't lose any flexibility this way - it's basically just syntax sugar around monads, so you can add a language feature where users define a "custom effect" by giving the definition of a monad. <Note>The only difference is that effect systems typically require that the only way to actually apply an effect is by calling a function, so you'd have to replace `getLine :: IO String` with `getLine :: () ->{IO} String`, which I feel is slightly inelegant, but a price worth paying.</Note>
 
-<Minisection>
-
-Actually, I think a really interesting research direction would be to convert
-each function into a dataflow graph, and use that to model effects with arrows
-rather than monads.
-
-Effects are on `->`, which means that (unlike with monads)
-we know the input as well as the output, so we should take advantage of that.
-Monads were actually introduced to FP because Haskell needed a way to
-"flatten" the dataflow graph into a single line so there would be a sensible
-order to execute effects in - but that was only needed because of laziness,
-and with a strict language I think the greater expressivity of arrows makes
-more sense. And you could probably annotate each edge in the graph with a
-number or something that would allow you to reconstruct a monad's order of
-execution anyway.
-
-</Minisection>
-
 Let's look back to our `map` example:
 
 ```haskell-nolines
@@ -184,7 +168,48 @@ id     :: forall α µ. α ->{µ} α
 
 With this approach you can even represent effects like the ST monad, mutation, try/catch (which actually removes an effect from a function), and more.
 
-By the way, I feel compelled to mention that the Unison language gets this one right too. They're doing really good work over there.
+(By the way, I feel compelled to mention that the Unison language gets this one right too. They're doing really good work over there.)
+
+### Effect handlers
+
+Now, isn't this just side-effectful imperative programming with extra steps? It may seem that way but it's actually much more powerful, because of _effect handlers_. Let's say you have a function whose type is:
+
+```
+getUserInfo : Username ->{network} Userinfo
+```
+
+Obviously this function is intended to query the network, but how do you actually run it? Well, usually you have a special binding `main :: () ->{io} ()` which is run when your program starts, so we just need a way to convert a `a ->{network} b` to `a ->{io} b`.
+
+A function that does that is called an effect handler. So you might write
+
+```
+let network_code : () ->{network} () = ...
+let main : () ->{network} () = handle_network network_code
+```
+
+The beauty is that you can have multiple effect handlers for different use cases. For example, you could write a file system handler that simulates a filesystem in memory, so that you can write tests for file-system-affecting code without it actually editing files on your machine. And handlers are easy to write, they're probably just interpreters for freer monads or something. <Note>I understand that to many this sounds about as easy as "monoids in the category of endofunctors", but really they're not so bad.</Note>
+
+### Further research
+
+I think a really interesting research direction would be to convert
+each function into a dataflow graph, and use that to model effects with arrows
+rather than monads.
+
+Effects are on `->`, which means that (unlike with monads)
+we know the input as well as the output, so we should take advantage of that.
+Monads were actually introduced to FP because Haskell needed a way to
+"flatten" the dataflow graph into a single line so there would be a sensible
+order to execute effects in - but that was only needed because of laziness,
+and with a strict language I think the greater expressivity of arrows makes
+more sense. And you could probably annotate each edge in the graph with a
+number or something that would allow you to reconstruct a monad's order of
+execution anyway.
+
+Or maybe this is a bad idea, I'm not sure, but I really do want a more ergonomic way to write arrows.
+
+An example of when this would be useful would be writing a concept like "A new user's info is valid if their email must be a valid email, their password is a valid password, and their password isn't the same as the part before the @ of their email."
+
+This operation is kind of like a graph: You can't even check the last constraint unless the first two constraints are satisfied. (If the user's password is invalid there's no point in telling them it can't be the first part of their email, same if their email is invalid.) So even though it could easily be implemented with a couple if/elses, it's really a graph problem, and there's literally no good way to encode this operation as a graph in any mainstream language. <Note>The closest is Haskell arrows of course, but that doesn't quite qualify as "good" in my mind.</Note>
 
 ## Recursion schemes
 
@@ -302,7 +327,7 @@ and
 data MySum = A Int | B Bool
 ```
 
-I mean, obviously they're different, but the similarity I want to point out is that they could be described by a list of pairs of labels and types.
+I mean, obviously they're different, but the similarity I want to point out is that they could be described by a list of labels and types. That's the similarity that _rows_ exploit.
 
 <Minisection>
 
@@ -310,36 +335,98 @@ In statically typed languages, values often have different types. In Haskell, it
 
 </Minisection>
 
-A labeled type is a type annotated with a label. A _row_ is a type-level list of labeled types. By example:
+Basically, in addition to types, you now have a new kind called rows. A row is just a list of labeled types. For instance, a labeled type might look like `name: String`, and row might look like `name: String, location: Coordinate`.
 
-Labeled type: `a: Int`
+Rows and labeled types aren't types themselves, so it makes no sense to talk about "a value with type row" or anything like that. But what you _can_ do is use a special type constructor to convert a row to a sum or a variant:
 
-Row: `a: Int, b: Bool`
+1. **Product**: `{* name: String, location: Coordinate *}`. Here `{* *}` is a type constructor that takes a row and returns a product type.
 
-You can then imagine type constructors that take a row and return a type - maybe you could write sum types as `{+ a: Int, b: Bool +}` and product types as `{* a: Int, b: Bool *}`. <Note>These are structural types, similar to `(Int, Bool)` and `Either Int Bool`.</Note> Let's write a simple function:
+1. **Sum**: `{+ square: Float, rectangle: (float, float) +}`. Here `{+ +}` is a type constructor that takes a row and returns a sum type.
 
-```rust
-manhattan_distance :: {* x: Float, y: Float *} -> float
-manhattan_distance point = point.x + point.y
-```
-
-So this function takes a product type with fields `x: Float` and `y: Float`, then adds them together.
-
-The power comes in when you introduce _row variables_. Here's a function that takes a product and returns it:
+Here's a few different ways of writing the same function:
 
 ```rust
-record_id :: forall r. {* r *} -> {* r *}
-record_id r = r
+let manhattan =
+  (point : {* x: Float, y: Float *}) : Float =>
+    point::x + point::y // or `point::(x + y)`
+
+let manhattan = // let's try pattern matching
+  ({* x, y *} : {* x: Float, y: Float *}) : Float =>
+    x + y
+
+let manhattan =
+  ({* x, y *}}) : Float // type of `x` and `y` is inferred
+    => x + y
+
+// usage:
+
+manhattan({* x=3, y=4 *}) // 7
 ```
 
-Now let's introduce a `...` syntax to _extend_ rows:
+I already think this is cool, when used to make products they're like tuples, except you can give names to the types inside. But the real power comes when you introduce `row polymorphism`. The idea is that, like how you can introduce type variables, you can also introduce _row variables_. Let's modify `manhattan` to make it so you can pass _any product_ that has `x: Float, y: Float` in it:
 
 ```rust
-record_id :: forall r. {* r *} -> {* color: String, ...r *}
-record_id r = {* color: "red", ...r *}
+// `r, ...s` is the row with everything in `r` followed by `s`
+let manhattan =
+  forall r.
+  (point : {* x: Float, y: Float, ...r *}) : Float =>
+    point::x + point::y
 
-# record_id {* object: "ball" *} = {* color: "red", object: "ball" *}
+manhattan({* x=3, y=4, whatever=None *}) // 7
 ```
+
+Or let's change it so it _modifies_ the product:
+
+```rust
+let manhattan =
+  forall r.
+  ({* x, y, ...r *}) : {* manhattan: Float ...r *} =>
+    {* manhattan = x + y, ...r *}
+
+manhattan({* x=3, y=4, whatever=None *}) // {* manhattan=7, whatever=None *}
+```
+
+This solves the problem of "well, this type has everything I want, but I wish it had just one additional piece of data". Let's say the code looks like this:
+
+```rust
+alias person = name: String, home: Location
+
+let foo = (p: {* person, ...r *}) => ...
+```
+
+And you decide that in your code you want to add a `hair: Color` field too. You could just write:
+
+```rust
+alias person = name: String, home: Location
+alias personWithHair = hair: Color, ...person
+
+let myPerson = {* hair=Brown, name="Martin", location=Texas *}
+// and `foo(myPerson)` still works!
+```
+
+And of course, everything I've described also works with sum types too. It's actually even more useful with sum types because it allows you to _finally make error handling good_. The proof is in Purescript's [checked-expressions](https://github.com/natefaubion/purescript-checked-exceptions) library. I think its docs explain it does better than I could, so just go read those if you're curious.
+
+Ok, but here's the piece de resistance: \*rows are the natural way of representing effect systems`. Remember this, from the second section?
+
+> Now we can represent what we wanted above! The _true_ type of map is `(a ->{e} b) -> [a] ->{e} [b]`. There's something a little subtle here: `e` is a variable representing a _list of effects_. More on this later.
+
+An effect can be intuitively represented by a labelled type, so a function's effect is a list of labeled types:
+
+1. `readFile : Filename ->{io: (), error: FsError} String`
+
+1. `get : Url ->{network: (), error: HttpError} Response`
+
+1. `both : () ->{io: (), error: FsError, network: (), error: HttpError} ()`
+
+   (Yes, you can use the same label twice in the same row, it's not a problem and actually it's very convenient.)
+
+You can use aliases to allow the user to replace `io: ()` with `io` for simplicity, but for some effects like `error` you really want to be able to specify the type - it's just like the the error type from `Result`!
+
+#### Further research
+
+I actually have bigger and badder ideas for row. What I really want is a library that's like a mix of Pandas and [differential-dataflow](https://github.com/TimelyDataflow/differential-dataflow) for storing tables of product types. Its type would be something like `Database(r)` where `r` is a row.
+
+The goal is to make it easier to do database-like operations. Imagine doing an inner join on `Db (id: Id, name: String)` and `Db (id: Id, location: Location)]` - it's easy in a database, why isn't it easy everywhere?
 
 ### Refinement Types
 
