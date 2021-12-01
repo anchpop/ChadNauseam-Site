@@ -404,7 +404,9 @@ let myPerson = {* hair=Brown, name="Martin", location=Texas *}
 // and `foo(myPerson)` still works!
 ```
 
-And of course, everything I've described also works with sum types too. It's actually even more useful with sum types because it allows you to _finally make error handling good_. The proof is in Purescript's [checked-expressions](https://github.com/natefaubion/purescript-checked-exceptions) library. I think its docs explain it does better than I could, so just go read those if you're curious.
+Obviously you could also just make a new wrapper type around `person`, but that adds a hierarchy that's conceptually unnecessary - you should be able to express exactly what you want, which is "a person with an additional `hair: Color` field". Speaking from experience, having a bunch of wrapper types around products and (especially) sums gets old fast.
+
+And of course, everything I've described works with sum types too. It's actually even more useful with sum types because it allows you to _finally make error handling good_. The proof is in Purescript's [checked-expressions](https://github.com/natefaubion/purescript-checked-exceptions) library. I think its docs explain it does better than I could, so just go read those if you're curious.
 
 Ok, but here's the piece de resistance: \*rows are the natural way of representing effect systems`. Remember this, from the second section?
 
