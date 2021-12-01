@@ -91,7 +91,7 @@ const Layout: React.FC<{ subtitle: string; description: string, andre?: boolean 
         </Helmet>
 
         <Header
-          siteTitle={andre ? data.site.siteMetadata.author : data.site.siteMetadata.title}
+          siteTitle={andre ? `${data.site.siteMetadata.author} (aka Chad Nauseam)` : data.site.siteMetadata.title}
           subtitle={subtitle}
           style={{}}
         />
