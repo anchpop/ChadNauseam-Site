@@ -427,11 +427,13 @@ You can use aliases to allow the user to replace `io: ()` with `io` for simplici
 
 #### Further research
 
-I actually have bigger and badder ideas for row. What I really want is a library that's like a mix of Pandas and [differential-dataflow](https://github.com/TimelyDataflow/differential-dataflow) for storing tables of product types. Its type would be something like `Database(r)` where `r` is a row.
+1. I actually have bigger and badder ideas for row. What I really want is a library that's like a mix of Pandas and [differential-dataflow](https://github.com/TimelyDataflow/differential-dataflow) for storing tables of product types. Its type would be something like `Database(r)` where `r` is a row.
 
-The goal is to make it easier to do database-like operations. Imagine doing an inner join on `Db (id: Id, name: String)` and `Db (id: Id, location: Location)]` - it's easy in a database, why isn't it easy everywhere?
+   The goal is to make it easier to do database-like operations. Imagine doing an inner join on `Db (id: Id, name: String)` and `Db (id: Id, location: Location)]` - it's easy in a database, why isn't it easy everywhere?
 
-Another area that needs another look is making dependent records and rows work together. If you have any ideas for this let me know.
+1. Another area that needs another look is making dependent records and rows work together. If you have any ideas for this let me know.
+
+1. How should product access work? `x::y` to access `y` field from product `x` makes sense... but it would be nice if `y` was an optic so you could do cool optic stuff.
 
 ### Refinement Types
 
