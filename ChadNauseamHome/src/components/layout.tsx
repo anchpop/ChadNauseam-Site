@@ -31,10 +31,11 @@ import "./css/vars.css";
 import "./css/water.css";
 import "./css/custom.css";
 
-const Layout: React.FC<{ subtitle: string; description: string }> = ({
+const Layout: React.FC<{ subtitle: string; description: string, andre?: boolean }> = ({
   subtitle,
   description,
   children,
+  andre
 }) => {
   // Try to avoid using these.
   // You want to do as much in CSS as possible because these are obviously not accessible during server-side rendering
@@ -45,6 +46,7 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
     query SiteTitleQuery {
       site {
         siteMetadata {
+          author
           dwebUrl
           siteUrl
           title
@@ -89,7 +91,7 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
         </Helmet>
 
         <Header
-          siteTitle={data.site.siteMetadata.title}
+          siteTitle={andre ? data.site.siteMetadata.author : data.site.siteMetadata.title}
           subtitle={subtitle}
           style={{}}
         />
@@ -119,7 +121,7 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
               text="My Discord"
               color="#23272A"
               icon={discord}
-              href="/discord"
+              href={`${data.site.siteMetadata.siteUrl}/discord`}
             ></SocialButton>
             {/*<SocialButton
           text="...Or my Reddit"
@@ -131,7 +133,7 @@ const Layout: React.FC<{ subtitle: string; description: string }> = ({
               text="My Twitter"
               color="#1DA1F2"
               icon={twitter}
-              href="/twitter"
+              href={`${data.site.siteMetadata.siteUrl}/twitter`}
             ></SocialButton>
           </div>
 
