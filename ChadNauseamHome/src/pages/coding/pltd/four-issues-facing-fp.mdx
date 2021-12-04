@@ -437,4 +437,100 @@ You can use aliases to allow the user to replace `io: ()` with `io` for simplici
 
 ### Refinement Types
 
+Types are awesome. They're like documentation that the compiler guarantees are always up to date, make your code faster, make your IDE more helpful, and allow your compiler to warn you about your mistakes without even running your code. So if we can think of a way to make types more powerful, it's probably a good idea.
+
+Dependent types are one promising avenue, and I think they're a good idea, but they're starting to become well explored. I want to bring attention to _refinement types_, which I think are even more exciting. <Note>Refinement types and dependent types are orthogonal, so you can have one or the other or both or neither if you want.</Note>
+
+<Minisection>
+
+In my experience, dependent types feel like explaining something to a genius smart 4 year old, and refinement types feel like explaining something to an intelligent college - dependent types are probably technically more powerful, but refinement types give you 90% of the power for 10% of the effort. The reason refinement types have such a good power:effort ratio is because they're implemented under-the-hood with a powerful SAT solver.
+
+</Minisection>
+
+Refinement types allow you to "refine" a type. If `Int` is the type of integers, `Int thats > 0` is the type of integers that are greater than zero. A value of that type can be used anywhere `Int` can - the only restriction is that to create a value of that type, the compiler must be able to prove that the value is greater than zero.
+
+Sometimes someone sees that there's values inside the types and assumes that means these are scary dependent type, but it's actually a totally different (and conceptually much simpler) thing.
+
+I've been a big vague - let's break down `Int thats > 0`.
+
+1. The base type is `Int`.
+
+1. `thats` is a keyword that indicates that on the left is a base type, and the right is a refinement.
+
+1. `> 0` is a function that you're proving will return true when provided a value of this type - this function is also known as a predicate.
+
+So a refinement type is a type + a logical predicate.
+
+You can also imagine a different syntax where we give the value a name and pass it to the function explicitly, like `x: Int where x > 0`. These are equivalent and I might use them interchangeably - I prefer the nameless version when there's no obvious name, and the nameful version when there is (i.e. it's a function parameter).
+
+So if a refinement type is `<type> thats <predicate>` - what predicates are allowed? Unfortunately you can't just write any old function - for starters, the function should terminate, that way you can compile in a finite amount of time. But you also need some additional restrictions to make the predicate easy for the compiler to understand, that way it can try to prove as much as possible for you.
+
+In practice, your predicate can't use the full power of your programming language. You're restricted to just these features:
+
+1. **Simple constants**, like `1`, `2`, `True`, `[]` etc.
+
+2. **Variables**, if you use the `x: Int where x > 0` syntax.
+
+3. **Simple operators**, like addition and subtraction, or multiplication by a constant, and `if`/`then`/`else` expressions.
+
+4. **Relations** between simple types like numbers and booleans, like `>`, `==`, `and`, `not`, etc.
+
+5. **Any pure function you want**, with the catch that the refinement type system won't know anything about your function except that it's pure. (So it won't evaluate your function, but it will assume that if you call it twice with arguments that are the same, the output will be the same.)
+
+6. **Measures**, which are a subset of pure functions that can match, use these operators, and do structural recursion (so they're guaranteed to terminate).
+
+You can actually write a lot of properties this way. For example, you could say a nonempty list is `List(a) thats /= []`. You could imagine defining a "predicate alias" for this, like:
+
+```rust
+let not_empty = a: List =>{predicate} a /= []
+// I've made up a "predicate" effect that guarantees the function obeys our restrictions.
+```
+
+Then you could write `List(a) thats not_empty`.
+
+Ok, enough talk, let's see them in action:
+
+```rust
+let head = (l: List(a) thats not_empty): a =>
+  match l with {
+    (a :: _) => a
+  } // this match is exhaustive!
+```
+
+`List(a) thats not_empty` means that this function can only possibly be passed an empty list. So when matching, we don't need to match that case - the compiler can see that it would contradict the predicate.
+
+We can also add postconditions - this is how things get "proven".
+
+```rust
+abs = (n: Int): (Int thats >= 0) =>
+  if 0 < n
+    then n
+    else 0 - n
+```
+
+The job of proving that the output really is always `> 0` is done \_automatically by the compiler! Then, a function that has an argument that should not be negative, like `log`, can accept the result of `abs`. The compiler knows that if `0 < n`, then `0 - n` is always positive, so it doesn't require any work from you to add this proof. In fact, you could write:
+
+```
+abs = (n: Int): (Int thats _) =>
+  if 0 < n
+    then n
+    else 0 - n
+```
+
+And the compiler could _automatically_ infer out that `_` is a stand-in for `>= 0`.
+
+### More structural, more flat
+
+In addition to both starting with "r", something rows and refinements have in common is that they solve related problems. Rows solve the problem of extending a type, and refinements solve the problem of restricting a type. Specifically, they let you do this in a way that's _more structural_ and _more flat_.
+
+1. **More structural**:
+
+   Compare Haskell's `NonemptyList a` type with a hypothetical `List a thats not_empty`. The former is obviously nominal - you and I could both come up with our own `NonemptyList` types, which wouldn't be compatible with each other. `List a thats not_empty` doesn't have this problem - even if we define it independently or in different ways, SMT solvers are smart enough to understand that they're the same thing.
+
+   Similarly, rows let you write functions that are compatible with any product that has certain fields, or any sum that has certain variants, no matter who defined them. The variant/field names do have to be the same, so it's still kind of nominal, but the goal isn't to totally remove nominality, just reduce it.
+
+1. **More flat**: `List a thats not_empty` is known to be nonempty, but it still can be used anywhere that a `List a` can be used. `NonemptyList`s have to be converted to and fro all the time - not the end of the world, but it's ineffecient and boring. You should be able to say just what you mean - it's a list, and it's also not empty. Worse, things like `NonemptyList` don't compose - if you have `NondescendingList` and `NonemptyList`, how do you make `NonemptyNondescendingList`? It just doesn't work that well.
+
+   Some of these nice properties are given to us when we extend types with rows. `{* a: B, ...r *}` can probably be used in most places `{* r *}` can be used - no need to wrap and unwrap, or introduce some hierarchy that doesn't exist conceptually. And `{* a: B, ...r *}` and `{* c: D, ...r *}` can be easily merged to create `{* a: B, c: D ...r *}`, which is not always easy to do with wrapper types.
+
 </Layout>
