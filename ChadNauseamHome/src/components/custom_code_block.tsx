@@ -1,6 +1,8 @@
 import React from "react";
 import { CodeBlock, CopyBlock, dracula, github } from "react-code-blocks";
 import ThemeContext from "../utils/themeContext";
+import "@fontsource/fira-code"
+
 
 const CustomCodeBlock = (props) => {
   const { lightTheme } = React.useContext(ThemeContext);
