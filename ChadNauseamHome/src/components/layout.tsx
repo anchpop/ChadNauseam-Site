@@ -5,6 +5,10 @@
  * See: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
+import "@fontsource/comic-neue"
+import "@fontsource/pacifico"
+
+
 import React from "react";
 import { trim } from "lodash";
 
@@ -83,10 +87,6 @@ const Layout: React.FC<{ subtitle: string; description: string, andre?: boolean 
       {(locationProps) => <>
         <SEO title={subtitle} description={description} />
         <Helmet>
-          <link
-            href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&family=Pacifico&family=Source+Sans+Pro&display=swap"
-            rel="stylesheet"
-          ></link>
           <link rel="canonical" href={`${data.site.siteMetadata.siteUrl}${locationProps.location.pathname}`}></link>
         </Helmet>
 
