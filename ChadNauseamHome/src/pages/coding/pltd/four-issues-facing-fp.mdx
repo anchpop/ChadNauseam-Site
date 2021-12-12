@@ -431,6 +431,8 @@ You can use aliases to allow the user to replace `io: ()` with `io` for simplici
 
    The goal is to make it easier to do database-like operations. Imagine doing an inner join on `Db (id: Id, name: String)` and `Db (id: Id, location: Location)]` - it's easy in a database, why isn't it easy everywhere?
 
+   Further reading: [Types for Tables: A Language Design Benchmark](https://news.ycombinator.com/item?id=29509439)
+
 1. Another area that needs another look is making dependent records and rows work together. If you have any ideas for this let me know.
 
 1. How should product access work? `x::y` to access `y` field from product `x` makes sense... but it would be nice if `y` was an optic so you could do cool optic stuff.
