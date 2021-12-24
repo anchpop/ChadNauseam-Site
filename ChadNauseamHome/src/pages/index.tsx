@@ -6,50 +6,9 @@ import Image from "../components/image";
 
 const IndexPage = () => (
   <Layout subtitle="General Info" description="Your source for all things Chad">
-    <p>
-      Check out my{" "}
-      <Link to="/reasoning-quiz">Political Reasoning Style Quiz</Link>!
+    <p> I think <Link to="/economics/why-a-programmer-union/">a programmer union can save open-source</Link>. Also, check out my <Link to="/reasoning-quiz">Political Reasoning Style Quiz</Link>!
     </p>
-    <p>
-      Programming:
-      <ol>
-        <li> Wip:
-          <Link to="/ecnomics/why-a-programmer-union/">
-            A programmer union can save open-source
-          </Link>
-        </li>
-        <li>
-          <Link to="/coding/tips/git_collapse_commits/">
-            How to collapse git commits
-          </Link>
-        </li>
-        <li> Wip:
-          <Link to="/coding/pltd/four-issues-facing-fp/">
-            The four issues preventing FP adoption
-          </Link>
-        </li>
-      </ol>
-    </p>
-    <p>
-      I make <a href="/youtube">YouTube videos</a>. They're mostly about
-      politics so far but I don't know if they're going to stay that way
-      forever.
-    </p>
-    <p>
-      I also like programming, but only in zoomer languages like Rust and
-      Haskell. I actually think there's room in the market for a Haskell 2 - a
-      language with many of the benefits of Haskell, but with modern Programming
-      Language Theory knowledge used to make it easier to learn and use. Right
-      now it looks like the language Unison is our best hope for something like
-      that.
-    </p>
-    <p>
-      This website is a work in progress (like most things in my life). The only
-      reason it exists is because I wanted to tell people to follow me on
-      YouTube but I was worried they wouldn't know how to spell nauseam. For
-      that reason you can also find this site at{" "}
-      <a href="https://chadnauseum.com/">chadnauseum.com</a> as well.
-    </p>
+    <hr />
     <p>
       If you'd like to talk to me, message me on <a href="/twitter">Twitter</a>,
       or join <a href="/discord">my Discord</a>!
