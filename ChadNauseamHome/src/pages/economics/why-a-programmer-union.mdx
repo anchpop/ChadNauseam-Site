@@ -38,15 +38,17 @@ The counterargument to this is "well, someone should write a tool and sell it, a
 
 ### How Sectoral Unions Can Solve This
 
-Here's my suggestion. We make a union. Anyone can tell the union "I'd like to join". <Note>The list of people who have said this is kept secret.</Note> Once over 66% of employees at a company have said they'd like to join, a vote for unionization is automatically triggered. (And it will obviously pass, because such votes only need 50%+1 votes for the government to force them to unionize, and 66% of employees have already expressed that they'd like to join the union.)
+Here's my suggestion. We make a union. Anyone can tell the union "I'd like to join". <Note>The list of people who have said this is kept secret.</Note> Once over 66% of employees at a company have said they'd like to join, a vote for unionization is automatically triggered. (And it will obviously pass, because you only need 50%+1 votes for the government to force them to unionize.)
 
-Okay, but what are the consequences of unionization?
+Okay, but what are the consequences of a company unionizing?
 
 1. All employees are compelled to join the union, which means they pay 1% of their income to the union as dues.
 
 2. The company is now legally able to use code that's been licensed as union-only, if someone for some reason wrote code with that license.
 
-Let's set #2 aside for now. How is all the money from dues going to be spent? Simple. Programmers can donate money, out of their own pockets, to anyone they want. In return, the union will use dues as a subsidy pool, to "match" their donation according to [the quadratic funding system](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3243656):
+Let's set #2 aside for now. How is all the money from dues going to be spent?
+
+Simple. Programmers can donate money, out of their own pockets, to anyone they want. In return, the union will use dues as a subsidy pool, to "match" their donation according to [the quadratic funding mechanism](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3243656):
 
 > Citizens make public goods contributions to projects of value to them. The amount received by the project is (proportional to) the square of the sum of the square roots of contributions received. Under the "standard model" this yields first best public goods provision. Variations [of this design] can limit the cost, help protect against collusion and aid coordination.
 
@@ -56,7 +58,7 @@ This matching system has several nice properties.
 
 1. It doesn't need any complicated bureaucracy to decide where the money goes. Instead, the union's money goes only to where _each individual programmer_ is willing to put their personal money. I imagine these would likely be programming projects, but they could be whatever you want. (Givewell, the EFF, Blender, etc.)
 
-2. It actually does a good job at deciding where the money goes. Because programmers have to spend their own money to have the union fund "match" it, they probably won't donate money trivially. And the peculiar matching algorithm I mentioned has the nice property that it rewards projects in proportion to how big the donations are _and_ how many different people are donating.
+2. It actually does a good job at deciding where the money goes. Because programmers have to spend their own money to have the union fund "match" it, they probably won't donate money trivially. And the peculiar matching algorithm I mentioned has the nice property that it rewards projects in proportion to how big the donations are _and_ how many different people are donating. This rewards tools that many people use, like Log4j and openSSL.
 
 ### Sounds nice, but how can we actually make it happen?
 
@@ -66,11 +68,13 @@ I mentioned before that we'd introduce a way to license code as union-only. Spec
 
 It's obvious that if there's a lot of code licensed under UGPL, companies may benefit from unionizing (so they could use the code without having to follow the GPL's restrictions). How much the benefit is dependent on the amount of UGPL code in existence.
 
-Here's the feedback loop: we set aside some money from union dues (let's say 25%) into a separate subsidy pool.<Note>If you don't want your money going into the union pool, maybe you can elect for it to be donated to Givewell instead. Also, maybe it could be funded by unspent money from the main subsidy pool, if there is any.</Note> This pool is reserved for donations to UGPL-licensed projects. So if there's initially no UGPL-licensed projects, the first person who writes one and gets a donation would receive the entire subsidy pool. This would create a huge incentive for people to license their code as UGPL (which means also licensing it at GPL, since UGPL is a dual-license).
+Here's the feedback loop: The main subsidy pool may not actually spend all of its money - if it doesn't, we take that extra money and put it in a special pool that's will all go to donations to UGPL-licensed projects. (If there's no money left over, the pool is funded from, say, a 25% slice of union dues.<Note>If you object to your union dues going to this, we should provide the option for you to donate that 25% to Givewell instead.</Note>)
 
-This creates a pretty nice feedback loop - the more companies join the union, the more money goes to UGPL projects. The more UGPL projects, the greater the incentive is to join the union.
+Consider what happens if there's initially no UGPL-licensed projects. The first person who writes one and gets a donation would receive the _entire_ subsidy pool. This would create a huge incentive for people to license their code as UGPL. (Which means also licensing it at GPL, since UGPL is a dual-license).
 
-The most elegant part about this is that it would also make the GPL much more attractive. Any popular GPL project can now get a ton of cash from the union, in exchange for granting the union a permissive license.
+This creates a pretty nice feedback loop - the more companies join the union, the more money goes to UGPL projects. The more money goes to UGPL projects, the more UGPL projects there are. The more UGPL projects there are, the greater the incentive is to join the union.
+
+The most elegant part about this is that it would also make the GPL much more attractive. Any popular GPL project can now get a ton of cash from the union, in exchange for granting the union a permissive license. For the first time it may be more profitable to license your code under the GPL than it would be to make it proprietary.
 
 ### How much bureaucracy?
 
