@@ -1,7 +1,7 @@
 import quadratic_funding from "../../images/quadratic_funding_prime.png";
 
 <Layout
-  subtitle="Why we should have a programmer union"
+  subtitle="A Programmer Union Can Save Open Source"
   description="I think a programmer union would plausibly be good for everyone">
 
 First, let me be clear and say that I am _not_ arguing for company-specific unions. A company-specific union mostly exists to allow the employees to collectively bargain, for higher wages or things like that. I'm arguing for a sectoral union - a union that every programmer in the country would belong to. These are the three goals I have for this union:
@@ -38,15 +38,15 @@ The counterargument to this is "well, someone should write a tool and sell it, a
 
 ### How Sectoral Unions Can Solve This
 
-Here's my suggestion. We make a union. Any programmer can tell the union "I'd like to join". The list of people who have said this is kept secret. Once over 66% of programmers at a company have said they'd like to join, a vote for unionization is automatically triggered. (And it will obviously pass, because such votes only need 50%+1 votes for the government to force them to unionize, and 66% of employees have already expressed that they'd like to join the union.)
+Here's my suggestion. We make a union. Anyone can tell the union "I'd like to join". <Note>The list of people who have said this is kept secret.</Note> Once over 66% of employees at a company have said they'd like to join, a vote for unionization is automatically triggered. (And it will obviously pass, because such votes only need 50%+1 votes for the government to force them to unionize, and 66% of employees have already expressed that they'd like to join the union.)
 
 Okay, but what are the consequences of unionization?
 
-1. All employees are compelled to join the union, which means they pay 0.5% of their income to the union as dues.
+1. All employees are compelled to join the union, which means they pay 1% of their income to the union as dues.
 
-2. The company is now legally able to use code that's been licensed open-source-for-union-companies, if someone for some reason wrote code with that license.
+2. The company is now legally able to use code that's been licensed as union-only, if someone for some reason wrote code with that license.
 
-Ok, but how is all that money going to be spent? Simple. Programmers can donate money, out of their own pockets, to anyone they want. In return, the union will "match" their donation according to [this design](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3243656).
+Ok, but how is all that money going to be spent? Simple. Programmers can donate money, out of their own pockets, to anyone they want. In return, the union will use dues as a subsidy pool, to "match" their donation according to [this design](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3243656).
 
 > Citizens make public goods contributions to projects of value to them. The amount received by the project is (proportional to) the square of the sum of the square roots of contributions received. Under the "standard model" this yields first best public goods provision. Variations [of this design] can limit the cost, help protect against collusion and aid coordination.
 
@@ -58,12 +58,36 @@ This matching system has several nice properties.
 
 2. It actually does a good job at deciding where the money goes. Because programmers have to spend their own money to have the union fund "match" it, they probably won't donate money trivially. And the peculiar matching algorithm I mentioned has the nice property that it rewards projects in proportion to how big the donations are _and_ how many different people are donating.
 
-Previously I mentioned a new license: open-source-for-union-companies. If someone wanted to write code with this license, they could, and then only individuals and union companies could use it. No one would have an incentive to license code this way, unless they think that licensing their code that way would make union members more likely to donate to them, but nobody really has an incentive to license their code for open-source anyway.
+### Sounds nice, but how can we actually make it happen?
 
-The interesting thing is that, if being able to use code with this license made programmers more than 0.5% more productive, it would be in every company's financial self-interest to immediately unionize.
+I actually have a very pleasing design for a positive feedback loop that would lead to wide adoption of the union, once we get it started! Here's how it works:
 
-To enforce the license, union members could contribute to a "union legal defense fund", and these contributions would be matched from the subsidy pool, the same as any other project.
+I mentioned before that we'd introduce a way to license code as union-only. Specifically, I suggest that we make a new "UGPL" license, which permits anything that would be permitted by the GPL _and_ lets union companies do whatever they want.
 
-Some amount would have to be spent on the tooling to automatically record contributions and pay creators from the subsidy pool. This would have to be bootstrapped with some seed money, then could be funded in the same way as the legal defense fund.
+It's obvious that if there's a lot of code licensed under UGPL, companies may benefit from unionizing (so they could use the code without having to follow the GPL's restrictions). How much the benefit is dependent on the amount of UGPL code in existence.
+
+Here's the feedback loop: we set put some money from union dues (let's say 25%) into a separate subsidy pool. This pool is reserved for donations to UGPL-licensed projects. So if there's initially no UGPL-licensed projects, the first person who writes one and gets a donation would receive the entire subsidy pool. This would create a huge incentive for people to license their code as UGPL. <Note>All UGPL code can be used by GPL projects, since it's like a dual-license</Note>
+
+This creates a pretty nice feedback loop - the more companies join the union, the more money goes to UGPL projects. The more UGPL projects, the greater the incentive is to join the union.
+
+The most elegant part about this is that it would also make the GPL much more attractive. Any popular GPL project can now get a ton of cash from the union, in exchange for granting the union a permissive license.
+
+### How much bureaucracy?
+
+First of all, we'd need lawyers to enforce the UGPL. But I don't think of this as "bureaucracy" - we can just have the union's legal defense fund be a project that union members can contribute to. Then those contributions would be matched from the subsidy pool the same as any other project.
+
+It's a similar story for the tooling to automatically record contributions and pay creators from the subsidy pool. Once bootstrapped with some seed money, this could be funded the same way as the legal defense fund.
+
+These are the decisions the union would have to make:
+
+1. Setting union dues.
+
+2. Setting the size of the smaller subsidy-pool for union-licensed code.
+
+Since there's so few decisions to make, you wouldn't need any complicated union leadership election process or anything like that. There could just be an annual vote on what these numbers should be.
+
+### Everyone wins
+
+The best part about this union is that nobody loses. Companies get more productive programmers, programmers get better libraries and tooling, and projects that programmers are interested in get money to finance development. What's not to like?
 
 </Layout>
