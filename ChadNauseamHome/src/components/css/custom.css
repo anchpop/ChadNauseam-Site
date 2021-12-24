@@ -193,7 +193,7 @@ code {
 
 .Block-Code,
 code {
-  font-family: "Fira Code", monospace;
+  font-family: "re Code", monospace;
   font-size: calc(var(--text-font-size) * 0.75);
 }
 
