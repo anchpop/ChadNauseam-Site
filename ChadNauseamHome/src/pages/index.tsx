@@ -13,12 +13,16 @@ const IndexPage = () => (
     <p>
       Programming:
       <ol>
+        <li> Wip:
+          <Link to="/ecnomics/why-a-programmer-union/">
+            A programmer union can save open-source
+          </Link>
+        </li>
         <li>
           <Link to="/coding/tips/git_collapse_commits/">
             How to collapse git commits
           </Link>
         </li>
-        {/* */}
         <li> Wip:
           <Link to="/coding/pltd/four-issues-facing-fp/">
             The four issues preventing FP adoption
