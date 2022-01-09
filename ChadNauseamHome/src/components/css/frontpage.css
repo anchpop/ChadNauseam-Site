@@ -28,17 +28,14 @@ a.Post:hover {
 }
 
 @media (prefers-color-scheme: light) {
-  .Post {
+  a.Post {
     background-color: var(--attention);
-    filter: drop-shadow(2px 2px 5px rgb(0 0 0 / 0.2));
   }
-}
 
-@keyframes shad-anim {
-  0% {
-    background-position: 0 0;
+  a.Post:visited {
+    background-color: var(--attention-dark);
   }
-  0% {
-    background-position: 100% -100%;
+  a.Post:hover {
+    background-color: var(--attention-darker);
   }
 }
