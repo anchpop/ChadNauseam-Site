@@ -29,13 +29,13 @@ a.Post:hover {
 
 @media (prefers-color-scheme: light) {
   a.Post {
-    background-color: var(--attention);
+    background-color: var(--attention-pink);
   }
 
   a.Post:visited {
-    background-color: var(--attention-dark);
+    background-color: var(--attention-pink-dark);
   }
   a.Post:hover {
-    background-color: var(--attention-darker);
+    background-color: var(--attention-pink-darker);
   }
 }

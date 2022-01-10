@@ -37,7 +37,7 @@ const IndexPage = () => (
         posts.map((category) =>
           <li className="Topic">
             <section>
-              <h1 data-shadow={category.section} className="TopicHeading">{category.section}</h1>
+              <h2 data-shadow={category.section} className="TopicHeading">{category.section}</h2>
               <ol className="Posts">
                 {
                   category.posts.map((post) => (
@@ -53,8 +53,6 @@ const IndexPage = () => (
           </li>)
       }
     </ol>
-    <p> I think <Link to="/economics/why-a-programmer-union/">a programmer union can save open-source</Link>. Also, check out my <Link to="/reasoning-quiz">Political Reasoning Style Quiz</Link>!
-    </p>
     <hr />
 
 
