@@ -29,8 +29,7 @@ const posts = [
 const IndexPage = () => (
   <Layout subtitle="General Info" description="Your source for all things Chad">
     <p>
-      If you'd like to talk to me, message me on <a href="/twitter">Twitter</a>,
-      or join <a href="/discord">my Discord</a>!
+      Your source for all things chad :p
     </p>
     <ol className="Topics">
       {
