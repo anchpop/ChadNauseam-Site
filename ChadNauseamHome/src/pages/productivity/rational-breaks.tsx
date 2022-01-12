@@ -3,22 +3,127 @@ import Luxon, { DateTime, Interval, Duration } from "luxon"
 import { select, svg } from "d3";
 import { mapValues } from "lodash";
 
+import "../../components/css/rational-breaks.css";
+
 import Layout from "../../components/layout";
 
+type Action = "break" | "neither" | "work";
+const actions: Action[] = ["break", "neither", "work"]
+type Log = {
+  break: Luxon.Interval[];
+  work: Luxon.Interval[];
+}
+type Mode = { mode: "neither"; } | { mode: "break" | "work", start: DateTime }
 
-
-const exampleLog = {
+const exampleLog: Log = {
   break: [
     Interval.before(DateTime.now().minus(Duration.fromObject({ seconds: 72 })), Duration.fromObject({ seconds: 15 }))
   ],
   work: [
-    Interval.before(DateTime.now(), Duration.fromObject({ seconds: 52 })), Interval.before(DateTime.now().minus(Duration.fromObject({ seconds: 132 })), Duration.fromObject({ seconds: 22 }))
+    Interval.before(DateTime.now().minus(Duration.fromObject({ seconds: 132 })), Duration.fromObject({ seconds: 22 }))
   ]
 }
+const exampleMode: Mode =
+  true ? { mode: "break", start: DateTime.now().minus(Duration.fromObject({ seconds: 15 })) } : (false ? { mode: "work", start: DateTime.now().minus(Duration.fromObject({ seconds: 15 })) } : { mode: "neither" })
 
-const Content = ({ duration }: { duration: Duration }) => {
+function easeOutQuart(x: number): number {
+  return 1 - Math.pow(1 - x, 4);
+}
+function easeIn(x: number, p: number): number {
+  return Math.pow(x, p);
+}
+
+
+const processTimeLog = (
+  timelog: Log,
+  currentTime: DateTime,
+  mode: Mode,
+  buffer: Duration,
+  maxRange: Duration) => {
+  const maxTime = Interval.before(currentTime, maxRange);
+  const timelogMerged = mapValues(timelog, (entries) =>
+    Interval.merge(entries)
+      .map(entry => maxTime.intersection(entry))
+      .filter(entry => entry !== null));
+  const timelogLableled =
+    timelogMerged.break.map(i =>
+      ({ typ: "break", interval: i })).concat(timelogMerged.work.map(i =>
+        ({ typ: "work", interval: i }))).slice().sort((a, b) => a.interval.start.toMillis() - b.interval.start.toMillis())
+
+
+
+  const workInterval = timelogMerged.work.length !== 0 ?
+    timelogMerged.work.reduce((previousInterval, accumulatedInterval) => accumulatedInterval.union(previousInterval)) :
+    undefined;
+  const breakInterval = timelogMerged.break.length !== 0 ?
+    timelogMerged.break.reduce((previousInterval, accumulatedInterval) => accumulatedInterval.union(previousInterval)) :
+    undefined;
+  const intervalUnion =
+    workInterval ?
+      (breakInterval ? workInterval.union(breakInterval) : workInterval) :
+      (breakInterval ? breakInterval : undefined);
+  const intervalUnionExtended = intervalUnion ?
+    Interval.fromDateTimes(
+      intervalUnion.start.minus(buffer),
+      DateTime.max(intervalUnion.end, currentTime)) :
+    Interval.before(currentTime, (mode.mode !== "neither" ? Interval.fromDateTimes(mode.start, currentTime).toDuration() : Duration.fromObject({ seconds: 0 })).plus(buffer));
+  const combo: {
+    timelogLableled: {
+      typ: string;
+      interval: Luxon.Interval;
+    }[];
+    workInterval?: Luxon.Interval;
+    breakInterval?: Luxon.Interval;
+    intervalUnionExtended: Luxon.Interval;
+  } = {
+    timelogLableled: timelogLableled,
+    workInterval: workInterval,
+    breakInterval: breakInterval,
+    intervalUnionExtended: intervalUnionExtended
+  };
+  return combo;
+}
+const appendToTimelog = (timelog: Log, currentMode: Mode, currentTime: DateTime, seconds: Number) => {
+  let newLog: Log = currentMode.mode !== "neither" && Interval.fromDateTimes(currentMode.start, currentTime).toDuration().as("seconds") > seconds ? {
+    ...timelog,
+    [currentMode.mode]: [
+      ...timelog[currentMode.mode],
+      Interval.fromDateTimes(currentMode.start, currentTime)
+    ]
+  } : timelog;
+  return newLog;
+}
+
+const Content = ({ interval }: { interval: Interval }) => {
+
+  const duration = interval.toDuration()
+  const currentTime = interval.end;
   const svgRef = React.useRef();
-  const [timelog, setTimelog] = React.useState(exampleLog);
+  const boxesRef = React.useRef();
+  const currentRef = React.useRef();
+
+  const [{ timelog, currentMode }, update] =
+    React.useReducer(
+      (state: { timelog: Log, currentMode: Mode }, action: Action) => {
+        console.log({ log: state.timelog, action: action, statecurrentModemode: state.currentMode.mode });
+        if (action === state.currentMode.mode) {
+          return state;
+        }
+        else {
+          let timelog: Log = appendToTimelog(state.timelog, state.currentMode, currentTime, 5);
+          let currentMode: Mode = action !== "neither" ?
+            { mode: action, start: currentTime } :
+            { mode: "neither" };
+          let newState: { timelog: Log, currentMode: Mode } = {
+            timelog,
+            currentMode
+          }
+          return newState;
+        };
+      },
+      { timelog: exampleLog, currentMode: exampleMode }
+    );
+
 
   const width = 1000;
   const height = 300;
@@ -30,46 +135,60 @@ const Content = ({ duration }: { duration: Duration }) => {
   }, []);
 
   React.useEffect(() => {
-    const amountThrough = (interval: Interval, time: DateTime) => (
-      Interval.fromDateTimes(interval.start, time).toDuration().toMillis() / interval.toDuration().toMillis()
-    );
-    console.log(duration);
-    const timelogMerged = mapValues(timelog, Interval.merge);
-    const timelogLableled =
-      timelog.break.map(i =>
-        ({ typ: "break", interval: i })).concat(timelog.work.map(i =>
-          ({ typ: "work", interval: i })))
+    const {
+      timelogLableled,
+      workInterval,
+      breakInterval,
+      intervalUnionExtended
+    } = processTimeLog(
+      appendToTimelog(timelog, currentMode, currentTime, 0),
+      currentTime,
+      currentMode,
+      Duration.fromObject({ minutes: 1 }),
+      Duration.fromObject({ hours: 24 }));
+    const getBoxDims = (interval: Interval) => {
+      const amountThrough = (interval: Interval, time: DateTime) => (
+        Interval.fromDateTimes(interval.start, time).toDuration().toMillis() / interval.toDuration().toMillis()
+      );
 
-    const workInterval = timelogMerged.work.reduce((previousValue, currentValue) => currentValue.union(previousValue));
-    const breakInterval = timelogMerged.break.reduce((previousValue, currentValue) => currentValue.union(previousValue));
-    const allIntervals = workInterval.union(breakInterval);
-    const allIntervalsExtended =
-      Interval.fromDateTimes(allIntervals.start.minus(Duration.fromObject({ minutes: 1 })), DateTime.max(allIntervals.end, DateTime.now()));
-
-    const getx = (interval: Interval) => (
-      amountThrough(allIntervalsExtended, interval.start) * width
-    )
-    const getwidth = (interval: Interval) => (
-      (interval.toDuration().toMillis() / allIntervalsExtended.toDuration().toMillis()) * width
-    )
-
-    const svg = select(svgRef.current);
+      const getx = (interval: Interval) => (
+        easeIn(amountThrough(intervalUnionExtended, interval.start), 4) * width
+      )
+      const getx2 = (interval: Interval) => (
+        easeIn(amountThrough(intervalUnionExtended, interval.end), 4) * width
+      )
+      const getwidth = (interval: Interval) => (
+        getx2(interval) - getx(interval)
+      )
+      return { x: getx(interval), y: 10, width: getwidth(interval), height: height - 10 }
+    }
+    const svg = select(boxesRef.current);
+    const t = svg.transition()
+      .duration(200);
     svg
       .selectAll("rect")
       .data(timelogLableled)
       .join(
-        (enter) => enter.append("rect").attr("class", "new"),
-        (update) => update.attr("class", "updated"),
-        (exit) => exit.remove()
+        (enter) => enter.append("rect")
+          .attr('y', ({ typ, interval }, i) => getBoxDims(interval).y)
+          .attr('class', ({ typ, interval }, i) =>
+            `${typ}-window ${interval.toDuration().as("seconds") < 5 ? "short-window" : ""}`)
+          .attr('height', ({ typ, interval }, i) => getBoxDims(interval).height)
+          .attr('width', ({ typ, interval }, i) => getBoxDims(interval).width)
+          .attr('x', ({ typ, interval }, i) => getBoxDims(interval).x),
+        (update) => update
+          .attr('class', ({ typ, interval }, i) =>
+            `${typ}-window ${interval.toDuration().as("seconds") < 5 ? "short-window" : ""}`),
+        (exit) => exit
+          .call(exit => exit.transition(t)
+            .attr("opacity", 0)
+            .remove())
       )
-      .transition()
-      .duration(1000)
-      .attr('x', ({ typ, interval }, i) => getx(interval))
-      .attr('y', (d, i) => 0)
-      .attr('width', ({ typ, interval }, i) => getwidth(interval))
-      .attr('height', (d, i) => height)
-      .attr('stroke', (d, i) => 'black')
-      .attr('fill', (d, i) => '#69a3b2')
+      .transition(t)
+      .attr('x', ({ typ, interval }, i) => getBoxDims(interval).x)
+      .attr('y', ({ typ, interval }, i) => getBoxDims(interval).y)
+      .attr('width', ({ typ, interval }, i) => getBoxDims(interval).width)
+      .attr('height', ({ typ, interval }, i) => getBoxDims(interval).height)
       ;
   }, [timelog, duration]);
 
@@ -80,8 +199,21 @@ const Content = ({ duration }: { duration: Duration }) => {
     <p>
       <em>Ratio</em>nal breaks is a time-management system where you can work as long as you want, and take breaks whenever you want, as long as you always maintain a 3:1 <em>ratio</em> of worktime:breaktime.
     </p>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {
+        actions.map((action) => (
+          <button onClick={() => update(action)} disabled={action === currentMode.mode} className={`${action}-button`}>
+            {action}
+          </button>
+        ))
+      }
+
+    </div>
     <div key="svg-wrap" className="svg-wrap">
-      <svg ref={svgRef} style={{ width: "100%" }}></svg>
+      <svg ref={svgRef} style={{ width: "100%" }}>
+        <g ref={boxesRef} style={{ width: "100%", height: "100%" }}></g>
+        <g ref={currentRef} style={{ width: "100%", height: "100%" }}></g>
+      </svg>
     </div>
 
   </>
@@ -89,20 +221,19 @@ const Content = ({ duration }: { duration: Duration }) => {
 };
 
 export default () => {
-
   const [startingTime, setStartingTime] = React.useState(DateTime.now());
 
-  const getDuration = () => Duration.fromMillis(Interval.fromDateTimes(startingTime, DateTime.now()).toDuration().milliseconds)
-  const [duration, setDuration] = React.useState(getDuration());
+  const getInteravl = () => Interval.fromDateTimes(startingTime, DateTime.now())
+  const [interval, setDuration] = React.useState(getInteravl());
 
   React.useEffect(() => {
     setInterval(() => {
-      setDuration(getDuration());
+      setDuration(getInteravl());
     }, 1000);
   }, []);
   return (
     <Layout subtitle="Rational Breaks: a better way to work" description="404">
-      <Content duration={duration} />
+      <Content interval={interval} />
     </Layout>
   )
 }
