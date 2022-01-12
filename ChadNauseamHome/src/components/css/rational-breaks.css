@@ -1,6 +1,13 @@
 :root {
-  --color-break: #c7efcf;
-  --color-work: #fea9a6;
+  --color-break: #135227;
+  --color-work: #930428;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-break: #85fea4;
+    --color-work: #fea9a6;
+  }
 }
 
 .break-window {
@@ -28,7 +35,24 @@
 
 .break-time {
   background-color: var(--color-break);
+  border-radius: 3px;
+  padding: 0.1em;
 }
 .work-time {
   background-color: var(--color-work);
+  border-radius: 3px;
+  padding: 0.1em;
+}
+
+hr {
+  color: white;
+  width: 100%;
+}
+
+.ratioContainer {
+  font-family: "Inconsolata";
+  font-size: calc(
+    var(--text-font-size) * (1 + 0.1 * var(--header-font-size-scaling))
+  );
+  padding: 1em;
 }

@@ -3,6 +3,8 @@ import Luxon, { DateTime, Interval, Duration } from "luxon"
 import { select, svg } from "d3";
 import { mapValues, padStart } from "lodash";
 
+import "@fontsource/inconsolata"
+
 import "../../components/css/rational-breaks.css";
 
 import Layout from "../../components/layout";
@@ -205,25 +207,23 @@ const Content = ({ interval }: { interval: Interval }) => {
       <em>Ratio</em>nal breaks is a time-management system where you can work as long as you want, and take breaks whenever you want, as long as you always maintain a 3:1 <em>ratio</em> of worktime:breaktime.
     </p>
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }} className="ratioContainer">
         <div className="work-time">
-          {Math.floor(workDuration.as("hours"))}.
-          {padStart(workDuration.minutes.toString(), 2, "0")}.
-          {padStart(workDuration.seconds.toString(), 2, "0")}
+          {workDuration.toFormat('hh:mm:ss')}
         </div>
+        <hr />
         <div className="break-time">
-          {Math.floor(breakDuration.as("hours"))}.
-          {padStart(breakDuration.minutes.toString(), 2, "0")}.
-          {padStart(breakDuration.seconds.toString(), 2, "0")}
+          {breakDuration.toFormat('hh:mm:ss')}
         </div>
       </div>
       <div>
         =
       </div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }} className="ratioContainer">
         <div className="work-time">
           {(workDuration.as("seconds") / breakDuration.as("seconds")).toFixed(2)}
         </div>
+        <hr />
         <div className="break-time">
           1
         </div>
