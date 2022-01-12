@@ -1,26 +1,34 @@
 :root {
   --color-break: #c7efcf;
-  --color-work: #fe5f55;
+  --color-work: #fea9a6;
 }
 
 .break-window {
   fill: var(--color-break);
-  transition: 1s;
 }
 
 .work-window {
   fill: var(--color-work);
-  transition: 1s;
 }
 
 .short-window {
   filter: grayscale(50%);
-  transition: 0.2s;
+  transition: filter 0.2s;
 }
 
 .break-button {
+  background-color: var(--color-break);
 }
 .work-button {
+  background-color: var(--color-work);
 }
 .neither-button {
+  background-color: var(--form-background);
+}
+
+.break-time {
+  background-color: var(--color-break);
+}
+.work-time {
+  background-color: var(--color-work);
 }

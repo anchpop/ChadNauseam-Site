@@ -1,7 +1,7 @@
 import * as React from "react";
 import Luxon, { DateTime, Interval, Duration } from "luxon"
 import { select, svg } from "d3";
-import { mapValues } from "lodash";
+import { mapValues, padStart } from "lodash";
 
 import "../../components/css/rational-breaks.css";
 
@@ -17,14 +17,14 @@ type Mode = { mode: "neither"; } | { mode: "break" | "work", start: DateTime }
 
 const exampleLog: Log = {
   break: [
-    Interval.before(DateTime.now().minus(Duration.fromObject({ seconds: 72 })), Duration.fromObject({ seconds: 15 }))
+    Interval.before(DateTime.now().minus(Duration.fromObject({ seconds: 30 })), Duration.fromObject({ seconds: 22 }))
   ],
   work: [
-    Interval.before(DateTime.now().minus(Duration.fromObject({ seconds: 132 })), Duration.fromObject({ seconds: 22 }))
+    Interval.before(DateTime.now().minus(Duration.fromObject({ seconds: 82 })), Duration.fromObject({ seconds: 30 }))
   ]
 }
 const exampleMode: Mode =
-  true ? { mode: "break", start: DateTime.now().minus(Duration.fromObject({ seconds: 15 })) } : (false ? { mode: "work", start: DateTime.now().minus(Duration.fromObject({ seconds: 15 })) } : { mode: "neither" })
+  true ? { mode: "break", start: DateTime.now().minus(Duration.fromObject({ seconds: 1 })) } : (false ? { mode: "work", start: DateTime.now().minus(Duration.fromObject({ seconds: 15 })) } : { mode: "neither" })
 
 function easeOutQuart(x: number): number {
   return 1 - Math.pow(1 - x, 4);
@@ -62,6 +62,11 @@ const processTimeLog = (
     workInterval ?
       (breakInterval ? workInterval.union(breakInterval) : workInterval) :
       (breakInterval ? breakInterval : undefined);
+  const workDuration =
+    timelogMerged.work.reduce((accumulatedInterval, previousInterval) => accumulatedInterval.plus(previousInterval.toDuration()), Duration.fromObject({ seconds: 0 }));
+  const breakDuration =
+    timelogMerged.break.reduce((accumulatedInterval, previousInterval) => accumulatedInterval.plus(previousInterval.toDuration()), Duration.fromObject({ seconds: 0 }));
+
   const intervalUnionExtended = intervalUnion ?
     Interval.fromDateTimes(
       intervalUnion.start.minus(buffer),
@@ -72,13 +77,13 @@ const processTimeLog = (
       typ: string;
       interval: Luxon.Interval;
     }[];
-    workInterval?: Luxon.Interval;
-    breakInterval?: Luxon.Interval;
+    workDuration: Luxon.Duration;
+    breakDuration: Luxon.Duration;
     intervalUnionExtended: Luxon.Interval;
   } = {
     timelogLableled: timelogLableled,
-    workInterval: workInterval,
-    breakInterval: breakInterval,
+    workDuration: workDuration.normalize(),
+    breakDuration: breakDuration.normalize(),
     intervalUnionExtended: intervalUnionExtended
   };
   return combo;
@@ -95,7 +100,7 @@ const appendToTimelog = (timelog: Log, currentMode: Mode, currentTime: DateTime,
 }
 
 const Content = ({ interval }: { interval: Interval }) => {
-
+  const easing = 2;
   const duration = interval.toDuration()
   const currentTime = interval.end;
   const svgRef = React.useRef();
@@ -134,34 +139,34 @@ const Content = ({ interval }: { interval: Interval }) => {
       .attr("viewBox", `0 0 ${width} ${height}`);
   }, []);
 
-  React.useEffect(() => {
-    const {
-      timelogLableled,
-      workInterval,
-      breakInterval,
-      intervalUnionExtended
-    } = processTimeLog(
-      appendToTimelog(timelog, currentMode, currentTime, 0),
-      currentTime,
-      currentMode,
-      Duration.fromObject({ minutes: 1 }),
-      Duration.fromObject({ hours: 24 }));
-    const getBoxDims = (interval: Interval) => {
-      const amountThrough = (interval: Interval, time: DateTime) => (
-        Interval.fromDateTimes(interval.start, time).toDuration().toMillis() / interval.toDuration().toMillis()
-      );
+  const {
+    timelogLableled,
+    workDuration,
+    breakDuration,
+    intervalUnionExtended
+  } = processTimeLog(
+    appendToTimelog(timelog, currentMode, currentTime, 0),
+    currentTime,
+    currentMode,
+    Duration.fromObject({ minutes: 1 }),
+    Duration.fromObject({ hours: 24 }));
+  const getBoxDims = (interval: Interval) => {
+    const amountThrough = (interval: Interval, time: DateTime) => (
+      Interval.fromDateTimes(interval.start, time).toDuration().toMillis() / interval.toDuration().toMillis()
+    );
 
-      const getx = (interval: Interval) => (
-        easeIn(amountThrough(intervalUnionExtended, interval.start), 4) * width
-      )
-      const getx2 = (interval: Interval) => (
-        easeIn(amountThrough(intervalUnionExtended, interval.end), 4) * width
-      )
-      const getwidth = (interval: Interval) => (
-        getx2(interval) - getx(interval)
-      )
-      return { x: getx(interval), y: 10, width: getwidth(interval), height: height - 10 }
-    }
+    const getx = (interval: Interval) => (
+      easeIn(amountThrough(intervalUnionExtended, interval.start), easing) * width
+    )
+    const getx2 = (interval: Interval) => (
+      easeIn(amountThrough(intervalUnionExtended, interval.end), easing) * width
+    )
+    const getwidth = (interval: Interval) => (
+      getx2(interval) - getx(interval)
+    )
+    return { x: getx(interval), y: 10, width: getwidth(interval), height: height - 10 }
+  }
+  React.useEffect(() => {
     const svg = select(boxesRef.current);
     const t = svg.transition()
       .duration(200);
@@ -200,6 +205,31 @@ const Content = ({ interval }: { interval: Interval }) => {
       <em>Ratio</em>nal breaks is a time-management system where you can work as long as you want, and take breaks whenever you want, as long as you always maintain a 3:1 <em>ratio</em> of worktime:breaktime.
     </p>
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div className="work-time">
+          {Math.floor(workDuration.as("hours"))}.
+          {padStart(workDuration.minutes.toString(), 2, "0")}.
+          {padStart(workDuration.seconds.toString(), 2, "0")}
+        </div>
+        <div className="break-time">
+          {Math.floor(breakDuration.as("hours"))}.
+          {padStart(breakDuration.minutes.toString(), 2, "0")}.
+          {padStart(breakDuration.seconds.toString(), 2, "0")}
+        </div>
+      </div>
+      <div>
+        =
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div className="work-time">
+          {(workDuration.as("seconds") / breakDuration.as("seconds")).toFixed(2)}
+        </div>
+        <div className="break-time">
+          1
+        </div>
+      </div>
+    </div>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
       {
         actions.map((action) => (
           <button onClick={() => update(action)} disabled={action === currentMode.mode} className={`${action}-button`}>
@@ -207,7 +237,6 @@ const Content = ({ interval }: { interval: Interval }) => {
           </button>
         ))
       }
-
     </div>
     <div key="svg-wrap" className="svg-wrap">
       <svg ref={svgRef} style={{ width: "100%" }}>
@@ -229,7 +258,7 @@ export default () => {
   React.useEffect(() => {
     setInterval(() => {
       setDuration(getInteravl());
-    }, 1000);
+    }, 500);
   }, []);
   return (
     <Layout subtitle="Rational Breaks: a better way to work" description="404">
