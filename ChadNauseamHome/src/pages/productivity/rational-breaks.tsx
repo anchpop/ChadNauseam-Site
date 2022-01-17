@@ -261,7 +261,7 @@ export default () => {
     }, 500);
   }, []);
   return (
-    <Layout subtitle="Rational Breaks: a better way to work" description="404">
+    <Layout subtitle="Rational Breaks: a better way to work" description="A tool I made for using bfinn's rational breaks strategy">
       <Content interval={interval} />
     </Layout>
   )
