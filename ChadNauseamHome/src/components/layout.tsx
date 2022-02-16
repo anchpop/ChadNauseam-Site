@@ -74,7 +74,7 @@ const Layout: React.FC<{ subtitle: string; description: string, andre?: boolean 
           <>
             You're on the <Dweb />! You can always go back to the <a href={data.site.siteMetadata.siteUrl + locationProps.location.pathname}>centralized version</a> if it's too slow.
           </>
-          : locationProps.location.hostname.includes("127.0.0.1") || locationProps.location.hostname.includes("codespace") ?
+          : locationProps.location.hostname.includes("127.0.0.1") || locationProps.location.hostname.includes("codespace") || locationProps.location.hostname.includes("githubpreview") ?
             <>
               You seem to be developing locally. The centralized url is <a href={data.site.siteMetadata.siteUrl + locationProps.location.pathname}>{cwebUrlChopped}</a> and the <Dweb /> url is <a target="_blank" href={dwebUrlLimo}>{data.site.siteMetadata.dwebUrl}</a>.
             </>
