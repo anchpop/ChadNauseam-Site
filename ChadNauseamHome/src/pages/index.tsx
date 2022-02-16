@@ -7,8 +7,12 @@ import "../components/css/frontpage.css";
 
 const posts = [
   {
-    section: "programming",
+    section: "economics",
     posts: [
+      {
+        title: "My attempt at improving the US financial system",
+        link: "/economics/solving-macro/"
+      }, 
       {
         title: "Why a programmer union can save open source",
         link: "/economics/why-a-programmer-union/"

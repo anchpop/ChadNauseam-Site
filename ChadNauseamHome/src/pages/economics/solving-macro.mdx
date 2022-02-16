@@ -1,0 +1,87 @@
+<Layout
+  subtitle="My attempt at improving the US financial system"
+  description="Preventing recessions all day long">
+
+I like to listen to audiobooks to fall asleep, and I recently picked up Scott Sumner's [The Money Illusion](https://www.themoneyillusion.com/). This has turned out to be a mistake, since the book is so gripping every time I listen to it, it keeps me up until the morning light. I don't know much about macroeconomics, but it got me thinking and I think I've come up with a novel idea for how to dramatically improve the US banking system and prevent a large class of recessions from ever happening again.
+
+## What Causes (Demand) Recessions?
+
+There's the classic helicopter-drop thought experiment, where you double the money supply by dropping a ton of cash from a helicopter. It stands to reason that in the long run you won't have actually accomplished much if you attempt this - everyone will buy more stuff with all their new money, then prices will go up because everyone's buying so much stuff, then people start to demand more money from their jobs because everything just got more expensive and their company is making a lot more money, and then eventually everyone is making twice as much and everything costs as twice and really not much has changed except for the number in everyone's bank account is twice as high.
+
+You can do the reverse, a helicopter-suction thought experiment, where you halve the money supply, nobody has any money to buy things, prices go down, people get pay cuts, and in the long run everything is the same as before except the number in everyone's bank account is half as high.
+
+There's a complication though, which says that [prices are downwards sticky](https://www.investopedia.com/terms/s/sticky-down.asp). What this means is that companies irrationally _hate_ lowering prices and employees _hate_ getting pay cuts. So, after you do the helicopter vacuum, instead of just slashing everyone's wages by half, companies either go out of business or fire half their workforce or do anything except give everyone a 50% pay cut. This happens even if there was people's _real income_, i.e. their income after adjusting for inflation o deflation, doesn't change. If prices go down 50%, people are happy. But if that means your business now makes half as much money so you have to cut salaries by 50%, people will riot and your company will go out of business.
+
+This is why deflation is so bad for an economy. In the late 1800s there was "the great deflation" where prices kept going down and companies kept having to fire people and it was basically just an extended economic catastrophe. So now central banks try pretty hard to prevent deflation, and sometimes they even succeed.
+
+There are two main causes of deflation:
+
+1. Rapid economic growth.
+
+2. A nominal reduction in demand, possibly caused by people having less money.
+
+In 2008, there was some deflation, and this probably really contributed to the great recession. The toxic thing is, once you get a little bit of deflation, the natural tendency is for there to be more deflation. Once a company goes out of business, its employees have less money, which causes more deflation, which causes more companies to go out of business, etc.
+
+Furthermore, if you can't pay back your loans, you default, which means the people who loaned you money might default too, which adds up to a viscous cycle where a bunch of money that people thought they had (because they loaned it to someone, who loaned it to someone, etc.) turns out to not really exist. Most money in the economy is loaned in some form, either because it's sitting in a bank account or used to invest in the stock market and so on. Since this money "disappears", it leads to deflation, which causes businesses to fail, which means more businesses can't repay their loans, etc. It's a whole mess.
+
+So central banks really want to prevent deflation from happening. But they're not very good at it!
+
+## Why Central Banks Suck at Fighting Deflation
+
+Normally, central banks try to adjust the amount of money available to people by adjusting interest rates on loans. When you put money in the bank, the bank typically has a _reserve_ that's only some fraction of all the money people have in their bank accounts. If you put $10 in a bank account and the reserve requirement is one half, banks have to leave half of your money with the Fed and with the other half they can do whatever they want. The fraction of bank deposits that banks must leave with the Fed is called the reserve requirement. They can leave more in the Fed if they want to, but not less.
+
+If the reserve requirement is one half, and you make a bank deposit, that means they have to leave one half with the Fed, but they can take the other half of your money and loan it to someone to make money off interest. Let's say they loan it to someone looking to buy a house: The homebuyer borrows the money and gives it to the seller in exchange for the house, at which point the seller may deposit it back into the bank. The bank again leaves half of that money with the Fed and loans the other half to someone else, where it may end up in _another_ bank account, etc. This means that combined balances in everyone's bank account can be much higher than the actual amount of base money the government created! So loans create a kind of "virtual money" that contributes to inflation all the same as base money.
+
+How many people take loans is determined by the interest rate that banks are willing to charge for those loans. Higher interest rate = less money loaned = less virtual money created. Lower interest rate = more loans = more virtual money created. If the central bank can manage to lower interest rates, more people will borrow and there will be more inflation than there otherwise would be. One example of something the Fed can do to lower interest rates is to lower the reserve requirement.
+
+Unfortunately, interest rates suffer from the problem of the "zero bound", which is that it doesn't really make sense to have banks give loans at a negative interest rate. That would mean the bank is paying you money to take a loan!
+
+This sucks, because times when interest rates are low might be exactly the time your currency is most in need of inflation! Interest rates naturally become very low whenever there's deflation, and if the Fed is trying to lower interest rates when there's deflation and can't lower them past zero, that's an obvious problem.
+
+(You can get banks to lend even more by charging them to leave money with the Fed, but there are certain pitfalls with doing that. To prevent banks from acting irresponsibly, they have various requirements that they have to meet before they can lend money. An example is capital requirements that make it so they have to have a certain amount of capital before they can give loans, and in 2008 many banks were _undercapitalized_ which meant they were unable to make loans unless they somehow got more money. Banks were acting irresponsibly already so they didn't want to lower the capital requirement, and they probably couldn't just cut all the banks a check because with the Occupy Wall Street movement there there was bipartisan disdain towards banks and the finance industry. Many think this is why the Fed picked the, uh, unintuitive strategy of _paying_ banks interest on reserves, which is the exact opposite of what you'd want to do! By paying banks interest on reserves, banks had a risk-free way to make money without lending, so they actually lent less than before. By paying banks though, banks were able to get more capital, which plausibly allowed them to lend more in the future as they now met the capital requirement.)
+
+## The Banking System Is Upside-Down
+
+I propose **the Cash Account**. The federal government gives everyone a federal bank account for storing cash. For now let's assume the Cash Account pays no interest - it's just a digital equivalent to stuffing $100 bills under your mattress.
+
+This would give the government a fun power. Whenever they want to increase the supply of base money to increase inflation, they can just multiply everyone's cash account balance by some number >1. So if they think there should be 2% more base money, they can just multiply everyone's cash account balance by 1.02, and presto, the supply of base money just went up. Currently, the Fed also issues bonds called T-bills pay a small interest - in my system, the value of these would also be multiplied when the government multiplies Cash Accounts.
+
+If the Fed wanted to cause deflation for some reason, they could use the same mechanism except choosing a multiplier <1. This seems to me like a powerful approach to combating hyperinflation. And if people expect the Fed to actually use this capability if hyperinflation happens, it might mean hyperinflation never actually happens in the first place and they never have to use it.
+
+### Interest on cash accounts
+
+I suggest 3 separate cash accounts - a risk-free account that can hold an unlimited amount of money and bears no interest, a risk-free account that bears interest but has a limit of $250k (each person can only have one account), and a risk-bearing account with no limit.
+
+For the interest-bearing accounts, where does the interest come from? It's a simple XXXX step process:
+
+1. Anyone can pay $10M/year and become a bank, who the Fed may eventually lend to. This amount also scales up as the Fed lends them more.
+
+2. The Fed uses the $10M to set up a subsidized prediction market that predicts the chance the bank will default in the next 5 years. If they default, the Fed will be on the hook for all the money they promised was risk-free, so they'll use this number to compute their liability if they .
+
+3. and computes their liability to the interest-bearing risk-free account based on the chance of default the prediction market comes up with. The banks tell the government how much they're willing to borrow at every interest rate (a curve that they can update at any time), and government computes the "real" interest rate that includes the chance of default. Then the government simply lends the money from cash accounts to the bank with the highest risk-adjusted interest rate, provided the bank is willing to pay up front an amount equal to (the government's liability if the bank completely fails × the prediction market's opinion of the chance that the bank will default). Banks are required to give enough money to the government on an ongoing basis to keep the government's cost of reimbursing the risk-free interest-bearing account close to 0, in expectation.
+
+(If the bank does default, then some of the money in the interest-bearing risk-bearing accounts will disappear. That's life when you have more than $250k!)
+
+Is this endeavor safe for the government? Yes. The banks have to pay the government insurance, and as long as the insurance isn't underpriced, the government in expectation won't lose money having to reimburse people's risk-free accounts if the banks fail. The insurance is overpriced for two reasons:
+
+1. The bank may default after only being able to pay back, let's say, 98% of what they borrowed from the government. If this happens, the insurance was overpriced, because the the insurance assumed that when they defaulted they'd lose all of the government's money instead of only 98%.
+
+2. People will be tempted to buy "the bank will default" shares in the prediction market to hedge against the money in their risk-bearing account being lost. This adds a pressure on the market to be biased towards predicting that the bank will default, although the subsidization will reduce this.
+
+(It's possible that the first factor will cause the price of insurance to be dramatically higher than it should be. If this is a problem, the government can have the prediction market be one where predictors submit a probability distribution over the amounts the bank is expected not to be able to repay. But it's less obvious to me how to subsidize these so I hope this isn't a problem.)
+
+This is basically recreating a credit union except it's run by the government. So the government Cash Account interest rate should be competitive with the interest rate you can get from traditional bank accounts today.
+
+Note: When the government multiplies the value of the cash accounts, the debt the banks have to the government is left unchanged. The additional money is just loaned to the banks at their newest rates. If the bank reduces the value of the cash accounts, same deal.
+
+Banks that lend to average joes, like the ones of today, can continue to exist and be FDIC insured as usual. But since the money in cash accounts will increase when the fed increases the money supply, there should be a powerful demand for cash accounts.
+
+This has the pleasing property that if someone realizes that a bank will fail, they can buy a ton of "the bank will default" shares in the prediction market, and the government stop lending to them (since their default-adjusted interest rate is now lower) and increase the amount they must pay in liability insurance. Also, if just one bank fails, everyone will lose a fraction of the money in their risky cash accounts, rather than the current system where some people lose everything and others lose nothing.
+
+## When Should the Fed Increase the Money Supply?
+
+Market monetarists have a bunch of good ideas here. The short version is that every year the government should figure out the income of every American for that year, and the Fed does _path targeting_ to keep the average income rising along a path of about 4% per year. There's a pretty straightforward way to do this: set up two bonds, one that pays out of the fed undershoots this path, and one that pays out if the fed overshoots the path. Then: Every time a bond is bought that says the fed will undershoot, automatically increase the money supply. And every time a bond is bought that says the Fed will overshoot, decrease the money supply. What could be simpler? (Remember, the Fed can increase or decrease the money supply as much as they want by multiplying the value of people's cash accounts by some factor.)
+
+Pathing against average income is the market monetarist opinion, but it's not clear to me why average income is the thing to set your path against. Why not median income, or some combination?
+
+</Layout>
