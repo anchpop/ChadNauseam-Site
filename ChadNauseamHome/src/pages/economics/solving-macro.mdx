@@ -1,5 +1,5 @@
 <Layout
-  subtitle="My attempt at improving the US financial system"
+  subtitle="Improving the US financial system"
   description="Preventing recessions all day long">
 
 I like to listen to audiobooks to fall asleep, and I recently picked up Scott Sumner's [The Money Illusion](https://www.themoneyillusion.com/). This has turned out to be a mistake, since the book is so gripping every time I listen to it, it keeps me up until the morning light.
@@ -46,11 +46,11 @@ This sucks, because times when interest rates are low might be exactly the time 
 
 ## The Banking System Is Upside-Down
 
-I propose the Fed creates what I'll call **the Cash Account**. The Fed gives everyone an account for storing cash. For now let's assume the Cash Account pays no interest - it's just a digital equivalent to stuffing $100 bills under your mattress.
+I propose the Fed creates what I'll call **the Cash Account**. This acts like a normal bank account from which you can deposit or withdraw money. For now let's assume the Cash Account pays no interest - it's just a digital equivalent to stuffing $100 bills under your mattress.
 
-This would give the Fed a fun power. Whenever they want to increase inflation, they can just deposit money into everyone's cash account. The natural way to do this is to multiply the balance of everyone's cash account balance by some number >1. So if they think there should be 2% more base money and all cash is stored in cash accounts, they can just multiply everyone's cash account balance by 1.02, and presto, the supply of base money just went up 2%. Currently, the Fed also issues bonds called T-bills pay a small interest - in my system, the value of these would also be multiplied when the government multiplies Cash Accounts.
+Having the Cash Account would give the Fed a fun power. Whenever they want more inflation, they can just deposit money into everyone's cash account. The natural way to do this is to multiply the balance of everyone's cash account by some number >1. So if they think there should be 2% more base money and all cash is stored in cash accounts, they can just multiply everyone's cash account balance by 1.02, and presto, the supply of base money just went up 2%. Currently, the Fed also issues bonds called T-bills that pay a small interest - in my system, the value of these would also be multiplied when the government multiplies Cash Accounts.
 
-If the Fed wanted to cause deflation for some reason, they could use the same mechanism except choosing a multiplier <1. This seems to me like a powerful approach to combating hyperinflation. And if people expect the Fed to actually use this capability if hyperinflation happens, it might mean hyperinflation never actually happens in the first place and they never have to use it.
+Let's assume this initiative is a success and paper cash is phased out. If the Fed wanted to cause deflation for some reason, they could use the same mechanism, except they choose a multiplier <1. This seems to me like a powerful approach to combating hyperinflation. And if people expect the Fed to actually use this capability if hyperinflation happens, it might mean hyperinflation never actually happens in the first place and they never have to use it.
 
 ### Interest on cash accounts
 
@@ -58,13 +58,13 @@ I suggest 3 separate cash accounts - a risk-free account that can hold an unlimi
 
 For the interest-bearing accounts, where does the interest come from? It's a simple 3 step process:
 
-1. Anyone can pay $10M/year and become a bank, whom the Fed may eventually lend to. The amount the have to pay also scales up as the Fed lends them more.
+1. Anyone can pay $10M/year and become a bank, to whom the Fed may eventually lend money from Cash Accounts. The amount the have to pay also scales up as the Fed lends them more.
 
-2. The Fed uses the $10M to set up a subsidized prediction market that predicts the chance the bank will default in the next 5 years. If they default, the Fed will be on the hook for all the money they promised was risk-free, so they'll use this number to compute their liability in the case where the bank defaults.
+2. The Fed uses the $10M to set up a subsidized prediction market that predicts the chance the bank will default in the next 5 years. If they default, the Fed will be on the hook for all the money they promised was risk-free, so they'll use this probability to compute how much they need to charge for our equivalent of FDIC insurance. (The exact computation is: the government's liability if the bank completely fails × the prediction market's opinion of the chance that the bank will default)
 
-3. The banks tell the government how much they're willing to borrow at every interest rate (a curve that they can update at any time). The Fed computes the risk-adjusted interest rate so that it includes the chance of default. Then the government simply lends the money from cash accounts to whichever bank is offering the highest risk-adjusted interest rate, provided the bank is willing to pay up front an amount equal to: the government's liability if the bank completely fails × the prediction market's opinion of the chance that the bank will default. Banks are required to give enough money to the government on an ongoing basis to keep the government's cost of reimbursing the risk-free interest-bearing account close to 0, in expectation.
+3. The banks tell the government how much they're willing to borrow at every interest rate (a curve that they can update at any time). The Fed computes the risk-adjusted interest rate so that it includes the chance of default. Then the government simply lends the money from cash accounts to whichever bank is offering the highest risk-adjusted interest rate, provided the bank is willing to pay the cost of our bank-failure insurance. Every day following, banks make another insurance payment according to the prediction market's latest probabilities of bank failure.
 
-(If the bank does default, then some of the money in the interest-bearing risk-bearing accounts will disappear. That's life when you have more than $250k!)
+   (If the bank does default, then some of the money in the interest-bearing risk-bearing accounts will disappear. That's life when you have more than $250k!)
 
 Is this endeavor safe for the government? Yes. The money the banks pay upfront is a form of insurance, and as long as the insurance isn't underpriced, the government in expectation won't lose money having to reimburse people's risk-free accounts if the banks fail. Not only will the insurance not be underpriced, it'll be overpriced for two reasons:
 
@@ -80,11 +80,15 @@ Note: When the government multiplies the value of the cash accounts, the debt th
 
 Banks that lend to average joes, like the ones of today, can continue to exist and be FDIC insured as usual. But since the money in the Cash Account will increase when the fed increases the money supply, there should be a powerful demand for them.
 
-This system has the pleasing property that if someone realizes that a bank will fail, they can buy a ton of "the bank will default" shares in the prediction market, and the government lend to them less (since their default-adjusted interest rate is now lower) and increase the amount they must pay in liability insurance. Also, if just one bank fails, everyone will lose a fraction of the money in their risk-bearing cash accounts, rather than the current system where people who picked the wrong bank lose everything and others lose nothing.
+This system has the pleasing property that if someone realizes that a bank will fail, they can buy a ton of "the bank will default" shares in the prediction market and make a huge profit, while at the same time causing the government lend to them less and increase the amount they must pay in liability insurance. Also, if just one bank fails, everyone will lose a fraction of the money in their risk-bearing cash accounts, which seems better than the current system where people who picked the wrong bank lose everything and others lose nothing.
 
 ## When Should the Fed Increase the Money Supply?
 
-Market monetarists have a bunch of good ideas here. The short version is that every year the government should figure out the income of every American for that year, and the Fed does _path targeting_ to keep the average income rising along a path of about 4% per year. There's a pretty straightforward way to do this: set up two bonds, one that pays out of the fed undershoots this path, and one that pays out if the fed overshoots the path. Then: Every time a bond is bought that says the fed will undershoot, automatically increase the money supply. And every time a bond is bought that says the Fed will overshoot, decrease the money supply. What could be simpler? (Remember, the Fed can increase or decrease the money supply as much as they want by multiplying the value of people's cash accounts by some factor.)
+Market monetarists have a bunch of good ideas here. Here's the short version:
+
+Every year the government should figure out the income of every American for that year. The Fed's goal is _path targeting_ such that the average income rises along a path of increasing about 4% each year.
+
+There's a pretty straightforward way to do this: set up two bonds, one that pays out of the fed undershoots this path, and one that pays out if the fed overshoots the path. Then: Every time a bond is bought that says the fed will undershoot, automatically increase the money supply. And every time a bond is bought that says the Fed will overshoot, decrease the money supply. What could be simpler?
 
 Pathing against average income is the market monetarist opinion, but it's not clear to me why average income is the thing to set your path against. Why not median income, or some combination?
 

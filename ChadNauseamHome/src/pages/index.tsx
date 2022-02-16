@@ -10,7 +10,7 @@ const posts = [
     section: "economics",
     posts: [
       {
-        title: "My attempt at improving the US financial system",
+        title: "Improving the US financial system",
         link: "/economics/solving-macro/"
       }, 
       {
