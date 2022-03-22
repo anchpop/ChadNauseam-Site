@@ -19,7 +19,7 @@ y = bar(foo())
 z = bar(foo())
 ```
 
-Put explicitly: If you write `x = foo()`, that means you should be able to replace any occurrence of `x` with `foo()` without changing the meaning. No-mutation and no-side-effects follow from this idea.
+Put explicitly: If you write `x = foo()`, that means you should be able to replace any occurrence of `x` with `foo()` without changing the meaning. That you can't have mutation or side-effects follows from this principle.
 
 1. If `foo()` had side effects, then the first example (where we call `foo` once) would have different behavior than the second (where we call it twice).
 
@@ -97,18 +97,18 @@ With the restrictions of functional programming, it's not obvious how to express
    }
    ```
 
-   Now `Input`'s `then` parameter takes a function, instead of a plain action value. Which means we can write stuff like this:
+   Now `Input`'s `then` parameter takes a function of type `String -> ActionValue`, instead of a plain action value like `Print`'s does. Which means we can write something like this:
 
    ```js-nolines
    main = Input {
-     then = \what_the_user_typed -> Print {
+     then = |what_the_user_typed| Print {
        to_print = "Hello, " + what_the_user_typed,
        then = Done
       }
     }
    ```
 
-   Unlike before, `Input`'s `then` doesn't store an action value, it stores a function that takes a string and returns an action value. Whatever the user types will be passed to that function, and then the resulting action value will be executed.
+   First, the computer sees `Input`, so it gets a line of input from the user. Then it passes what the user typed to the `then` parameter, and executes the action value it returns. So the result is the classic program that allows the user to type their name and greets them.
 
 That's all we need! So why do languages like Haskell have their dreaded "monads"? Turns out all they do is simplify the construction of action values. (They're useful for other things too, but that's why they were introduced.) And it turns out with an sufficiently advanced compiler, it's not even that hard to convert an action value to pretty-efficient imperative code. So we gain equational reasoning without sacrificing any expressive power or even very much performance. Neat!
 
