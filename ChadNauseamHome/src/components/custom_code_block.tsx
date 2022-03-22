@@ -1,5 +1,5 @@
 import React from "react";
-import { CodeBlock, CopyBlock, dracula, github } from "react-code-blocks";
+import { CodeBlock, CopyBlock, dracula, github, solarizedLight } from "react-code-blocks";
 import ThemeContext from "../utils/themeContext";
 import "@fontsource/fira-code"
 
@@ -23,7 +23,7 @@ const CustomCodeBlock = (props) => {
 
 
 
-  const theme = lightTheme ? github : dracula;
+  const theme = lightTheme ? solarizedLight : dracula;
 
 
   return copy ? (

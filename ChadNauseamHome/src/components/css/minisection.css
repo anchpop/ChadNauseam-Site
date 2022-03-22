@@ -1,4 +1,16 @@
 .minisection-content {
-  padding-left: 0.5em;
-  filter: opacity(75%);
+  border-radius: 6px;
+  box-shadow: -1px 2px 4px rgba(0, 0, 0, 0.25), 1px 1px 3px rgba(0, 0, 0, 0.1);
+
+  padding: 0.5em;
+  filter: opacity(85%);
+
+  background: hsl(from var(--background-body) h s calc(l - 20%));
+}
+.minisection-content .wrapper {
+  font-size: calc(var(--text-font-size) * 0.9);
+}
+.minisection-content .Block-Code,
+.minisection-content code {
+  font-size: calc(var(--text-font-size) * 0.75);
 }

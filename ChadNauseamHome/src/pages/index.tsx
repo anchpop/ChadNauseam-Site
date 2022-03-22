@@ -7,12 +7,18 @@ import "../components/css/frontpage.css";
 
 const posts = [
   {
+    section: "coding",
+    posts: [
+      { title: "How side effects work in FP", link: "/coding/random/how-side-effects-work-in-fp" },
+    ]
+  },
+  {
     section: "economics",
     posts: [
       {
         title: "Improving the US financial system",
         link: "/economics/solving-macro/"
-      }, 
+      },
       {
         title: "Why a programmer union can save open source",
         link: "/economics/why-a-programmer-union/"
