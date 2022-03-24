@@ -112,9 +112,9 @@ With the restrictions of functional programming, it's not obvious how to express
 
 That's all we need! So why do languages like Haskell have their dreaded "monads"? Turns out all they do is simplify the construction of action values. (They're useful for other things too, but that's why they were introduced.) And it turns out with an sufficiently advanced compiler, it's not even that hard to convert an action value to pretty-efficient imperative code. So we gain equational reasoning without sacrificing any expressive power or even very much performance. Neat!
 
-## I don't know why people try to explain monads without explaining this first
+## I don't know why people try to explain the IO monad without explaining this first
 
-Monads really are just a convenient way to build up action values. In Haskell, the end result is that you can write code like this:
+Monads often are just a convenient way to build up action values. In Haskell, the end result is that you can write code like this:
 
 ```haskell-nolines
 main =
