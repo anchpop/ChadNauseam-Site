@@ -12,4 +12,24 @@
 
    1. When a device is trying to log into a wifi network, it should broadcast a "wifi credentials please" signal, and nearby devices should display a popup that says "this device is trying to log into your wifi, let it on?". If they accept, the device receives a key that gives it access to the network.
 
+   1. You should be able to tap your phone to the router, or to an nfc-tag that could be distributed with the router, to instantly log in.
+
+1. Git
+
+   1. My quality of life doubled when I realized I could I use vscode as my default difftool, but I still want more. Right now vscode uses boring textual diffs for every file, but some files (particularly source files) have a structure that could allow us to generate much more useful diffs. Consider [difftastic](https://github.com/Wilfred/difftastic), which converts source files to ASTs and highlights only the parts that changed. Could this be integrated into VSCode's diff viewer, automatically running when an appropriate file extension is detected?
+
+   1. I should be able to write `git undo` after any command to undo it (with some exceptions like push, reset --hard, etc.)
+
+1. TVs
+
+   1. When I turn on my PS5, my TV automatically turns on, but when I turn off my PS5 my TV doesn't automatically turn off. Why???
+
+   1. I should be able to have multiple TVs, e.g. one in the living room and one in my bedroom, and use my PS5 from either. (The Nintendo Switch gets this right.)
+
+1. The Internet
+
+   1. Services like YouTube are awesome because they're free. But they're not awesome because they show ads and you become dependent on YouTube's consent to continue communicating with your audience. Much better would be a system where you pay to host your own videos on your own platform (using some off-the-shelf code you can throw up on Cloudflare or whatever else you want.) Then you submit your API link to various some online directories, and users have an app that crawls those directories and shows them all the unwatched videos from people they subscribe to. That's quite similar to how podcasts work, so there's some prior art for this, but I don't see why this principle shouldn't be applied to every platform. (Things like recommender systems could be implemented through some kind of FLOC-type system.)
+
+   1. The previous does leave open the question of usernames - if there are multiple directories, what stops someone from registering the same name on one directory as a popular user on another directory? But we already have this problem, it's just that instead of with different directories, the problem exists when someone on a different site claims your username and pretends to be you. It would be nice if there were some kind of unified username system that worked between sites, so every person with @ChadNauseam could provably be me. [ENS](https://ens.domains/) is an attempt in this direction, but usernames cost money and it would be nice if they were free.
+
 </Layout>
