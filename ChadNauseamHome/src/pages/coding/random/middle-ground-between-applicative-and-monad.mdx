@@ -1,0 +1,21 @@
+import arrow_dataflow from "../../../images/coding/understanding_arrows_mean1_data_flow.svg";
+
+<Layout
+  andre
+  subtitle="Middle ground between applicative and monads"
+  description="I wish arrows were better"
+>
+
+Monads let you compose effectful functions any way you want. Applicatives let you compose effectful functions too, but the output of an effectful function can't be used to "choose" which effect to dispatch next. That's a big limitation, but with limitation comes strength: if you don't need the extra power, you can represent effectful computations using an Applicative and then other parts of your code can statically "inspect" any such computation and learn exactly what effects it will dispatch.
+
+This is an interesting tradeoff. My going from Applicative to Monad, you gain the ability to choose, but you lose the ability know what an effectful computation will do ahead of time. Are there other points in between that might be interesting? Turns out the answer is yes.
+
+## Arrows
+
+Applicatives don't really give you a dependency tree. They really just give you a dependency line. You know that if the effect A comes before the effect B, the output of effect B might depend on the output of effect A, but you don't really know for sure.
+
+Arrows enhance applicatives with the ability to create arbitrary graphs.
+
+<CenteredImg src={arrow_dataflow} style={{ maxWidth: "21em" }} />
+
+</Layout>
