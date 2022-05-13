@@ -3,33 +3,55 @@
   description="My perspective on blockchains, cryptocurrencies, etc."
 >
 
-So there's been a lot of people talking about cryptocurrency. but I noticed that the pro-cryptocurrency people focus on things I think are irrelevant, and the anti-cryptocurrency people are often unaware of what I consider to be the most exciting parts of cryptocurrencies.
+So there's been a lot of people talking about cryptocurrency. But I noticed that the pro-cryptocurrency people focus on things I think are irrelevant, and the anti-cryptocurrency people are often unaware of what I consider to be the most exciting parts of cryptocurrencies.
 
-So what are the exciting parts? I'll try to explain my perspective. The core is that I love the idea of just making a utility and distributing the source, so anyone who wants to can download and run it and (if they like) have complete control over what it does. If I die or get bored, I want the tool to live on in the SSDs of people who love it.
+So what are the exciting parts? I'll try to explain my perspective.
 
-That's why I like the build system [Nix](https://nixos.org/), which lets you precisely describe how to build your code so anyone who builds it for a given architecture is guaranteed to get the exact same binary. It's why I like git, which makes it easy for people to share and merge their changes with one another. But most of all, it's why I like bittorrent, which lets people share files with one another without the need for any intermediary or corporation beyond an ISP. If any of this is appealing to you, I think you might be able to be convinced to like cryptocurrencies for the same reasons I do.
+I love the idea of just making a utility and distributing the source, so anyone who wants to can download and run it and (if they like) have complete control over what it does. If I die or get bored, I want the tool to live on in the SSDs of people who love it.
 
-Let's think about the problem bittorrent solves. Bittorrent is a protocol that allows some people to "seed" a file. Anyone with the file's hash can use the bittorrent protocol to find that file's seeders and download it from them. So we can say it takes the problem of file distribution, which is quite easily solved with a central file server that you link people to, and makes it _decentralized_, so it doesn't depend on the continued good-faith of any particular person. Someone can pretend to seed a file and maliciously send you some other file, but the hash of their file wouldn't match the hash of the file you asked for, so your computer would automatically throw it away. This means that it only needs _one_ person to seed the file honestly, and all the evil in the world can't stop them from sending it to you. <Note>Well, they could DOS you or your ISP could cut off your internet connection or the government would arrest you, but this is still a much better security model than "let's just hope our guy keeps this link stays up forever".</Note>
+1. That's why I like the build system [Nix](https://nixos.org/), which lets you precisely describe how to build your code. Anyone who builds it for a given architecture is guaranteed to get the exact same binary.
+
+1. It's why I like git, which makes it easy for people to share and merge their changes with one another.
+
+1. But most of all, it's why I like BitTorrent, which lets people share files with one another without the need for any intermediary or corporation beyond an ISP.
+
+If any of this is appealing to you, I think you might be able to be convinced to like cryptocurrencies for the same reasons I do.
+
+## More about BitTorrent
+
+Let's think about the problem BitTorrent solves. BitTorrent is a protocol that allows some people to "seed" a file. Anyone with the file's hash can use the BitTorrent protocol to find that file's seeders and download it from them. So we can say it takes the problem of file distribution (which is quite easily solved with a central file server that you link people to) and makes it _decentralized_, so it doesn't depend on the continued good-faith of any particular person.
+
+Someone can pretend to seed a file and maliciously send you some other file, but the hash of their file wouldn't match the hash of the file you asked for, so your client would automatically throw it away. This means only _one_ person needs to seed the file honestly, and all the evil in the world can't stop them from sending it to you. <Note>Well, they could DOS you or your ISP could cut off your internet connection or the government could arrest you, but this is still a much better situation than "let's just hope our guy/corporation keeps this link stays up forever".</Note>
 
 This is actually a pretty complicated problem. How do you go from a hash to an IP address of people who are seeding a file without relying on a centralized server? Well this uses a pretty sophisticated bit of engineering called a [Distributed Hash Table](https://en.wikipedia.org/wiki/Distributed_hash_table), and it does technically involve connecting to at least one central sever to get the root of the table, but if that server starts misbehaving you can just switch to a different one without losing anything.
 
-So the effect is I can make a utility, throw it up on bittorrent, and that's all I have to do. As long as anyone likes it, they can seed it, and it'll be available for everyone no matter what I do. Even if powerful organizations like Disney don't like my utility, they can't stop me from releasing my tool or you from downloading it. Even the government can't stop me as long as they're not willing to block [Mullvad](https://mullvad.net/en/). That's cool!
+So the bottom line is I can make a utility, throw it up on BitTorrent, and that's all I have to do. Anyone who wants to can seed the file and it'll be available for everyone, no matter what I do. Even if powerful organizations like Disney don't like my utility, they can't stop me from releasing my tool or you from downloading it. Even the government can't stop us as long as they're not willing to block [Mullvad](https://mullvad.net/en/). That's cool!
 
-So the obvious question is: we've pretty much solved this problem in the context of serving files, but can we solve it in other domains? Even without cryptocurrency, the answer is yes. Any problem which can be expressed as a [CRDT](https://crdt.tech/), you can bittorrent-ize it. You can pretty simply modify bittorrent so that instead of identifying files with a hash, it identifies files signed with a private key. That means I can update my file and sign it with my private key and re-release it, and the same link will now point to both files instead of just the original. (Give every file a version number and add some tooling that automatically downloads whichever file has the latest version, and you're cooking with gas.) But it also means I can, for example, maintain a file with all of my tweets and share the link with my friends, and they can download my file and see my tweets, even ones I added after I shared the link with them. That's how you make a social network that no one controls, and you can do it without a spec of cryptocurrency. This is the idea behind Paul Frazee's [unwalled.garden](https://github.com/beakerbrowser/unwalled.garden), and it doesn't require a spec of cryptocurrency.
+## Beyond Torrents
 
-If you write the code for this, like Paul Frazee has, you've made a social network that truly belongs to the hackers. You can't change a thing about it without their consent – they'll just not download your change. It's like my dream of making a utility that lives on after I die, except it's a social utility instead of something that lives on your computer and doesn't talk to anyone else.
+So the obvious question is: in the context of decentralization, we've pretty much solved this problem of serving files, but can we solve anything else?
 
-Not bad, but there are things you might want to do that can't be expressed with a CRDT. You can make Twitter or Google Docs like this, but you can't make Reddit or Hacker News. Twitter is "easy" because you already know who you follow, so you can just download their tweets. But anyone can submit a post to Hacker News and ideally everyone would be able to see it.
+Even without cryptocurrency, the answer is yes. Any problem which can be expressed as a [CRDT](https://crdt.tech/) can be BitTorrent-ized. You can pretty simply modify BitTorrent so that instead of identifying files that have a certain hash, it identifies files that are signed with a certain private key.
 
-To solve _this_ problem, you need a distributed ledger. A ledger is basically a list of operations, like `["Chad posted link <X>", "Stacy upvoted post <Y>", ...]`. The ledger should be in the same order for everyone, and anyone should be able to add whatever they want to it<Note>up to bandwidth limits etc.)</Note>. Additonally, once something is in the ledger, its position in the ledger should never change.
+That means I can share a file, then update it and sign it with my private key, and re-share it. The same torrent link will now point to both files instead of just the original. (Give every file a version number and add some tooling that automatically downloads whichever file has the latest version, and you're cooking with gas.)
+
+But it also means I can, for example, maintain a file with all of my tweets and share the link with my friends. They can then download my file and see my tweets, even ones I added _after_ I shared the link with them. That's how you can make a social network that no one controls, and you can do it without a speck of cryptocurrency. This is the idea behind Paul Frazee's [unwalled.garden](https://github.com/beakerbrowser/unwalled.garden).
+
+If you write the code for this, like Paul Frazee has, you've made a social network that truly belongs to the hackers. You can't change a thing about it without their consent – they'll just not download your change. It's like my dream of making a utility that lives on after I die, except it's a social network instead of a utility that lives on your computer and doesn't talk to anyone else.
+
+## Beyond CRDTs
+
+You can make Twitter or Google Docs with a CRDT, but you can't make Reddit or Hacker News. Twitter is "easy" because you already know who you follow, so you can just download their tweets. But anyone can submit a post to Hacker News and ideally everyone would be able to see it even if they've never heard of one another.
+
+To solve _this_ problem, you need a distributed ledger. A ledger is basically a list of operations, like `["Chad posted link <X>", "Stacy upvoted post <Y>", ...]`. The ledger should be in the same order for everyone, and anyone should be able to add whatever they want to it<Note>up to bandwidth limits etc.</Note>. Additonally, once something is in the ledger, its position in the ledger should never change.
 
 Like how anyone can seed a torrent, anyone should be able to participate in distributing this ledger to people. It shouldn't be up to one person who might get hit by a bus or turn evil or be arrested at any time. It should be a community effort to keep the ledger up and keep sharing it with people who want it. And it should be very difficult for any organization, even a powerful one, to stop us.
 
 Unfortunately, you can't put a ledger like this into a CRDT, so that dream is almost impossible.
 
-## Almost impossible, but it can be done
+## It's almost impossible, but it can be done
 
-Everyone should agree on the ledger, which means this is a problem of "distributed consensus". We don't want one bad actor to be able to ruin it for everyone, which means we want our consensus protocol to be byzantine fault tolerant (BFT). Byzantine fault tolerance means that the consensus algorithm works correctly even if some nodes misbehave, no matter what they do. For bittorrent, you only need one honest seeder to get your file, so it's definitely byzantine fault tolerant, but there's no way to make our distributed ledger _that_ tolerant. Instead, the best we can do is take a threshold like 50% or 33% and say that as long as there are fewer correctly-behaving nodes than that threshold, our consensus algorithm will behave correctly.
+Everyone should agree on the ledger, which means this is a problem of "distributed consensus". We don't want one bad actor to be able to ruin it for everyone, which means we want our consensus protocol to be byzantine fault tolerant (BFT). Byzantine fault tolerance means that the consensus algorithm works correctly even if some nodes misbehave, no matter what they do. For BitTorrent, you only need one honest seeder to get your file, so it's definitely byzantine fault tolerant, but there's no way to make our distributed ledger _that_ tolerant. Instead, the best we can do is take a threshold like 50% or 33% and say that as long as there are fewer correctly-behaving nodes than that threshold, our consensus algorithm will behave correctly.
 
 This is a much worse situation. It means we need some barrier to making nodes, because otherwise an attacker would just spin up an arbitrary number of nodes until they hit our threshold. For "proof of work" currencies like Bitcoin and present-day Ethereum, that barrier is acquiring computing power. For "proof of stake" currencies like Algorand and someday-but-hopefully-soon Ethereum, that barrier is liquidity of some asset. (For those curious, proof of work gives you a 50% threshold, and proof of stake usually gives you 25% or 33%)
 
@@ -41,9 +63,17 @@ The resolution is to make everyone contribute something. If you want to use the 
 
 But that's just a practical consideration. Nothing stops you from taking any cryptocurrency design and removing the incentivization schemes. Your version will still benefit from all the other research that's being done.
 
-## Problems
+## But a centralized server would do this all way better!
 
-You might have noticed that it can cost tens of dollars to do a single transaction on Bitcoin or Ethereum, and that's a huge problem. The issue is that all distributed ledgers are limited in how many operations you can add per second, and there's a mini-bidding war to see how many tokens you're willing to lose to get your transaction in. If you want distributed ledgers to be usable for something like a social network, it's no good if it costs $60 to make a post! So the main problem that remains to be solved before we have practical distributed ledgers is scaling them up so the number of operations the ledger can support is much much higher. Remember, we want this to be a community effort where anyone can contribute to the network on their home computer, so we can't just buy a beefy server farm like Google can, we need something like bittorrent that works fine on a normal computer with a normal internet connection, but can scale to tens of thousands operations per second. Bitcoin currently supports about 5 operations per second, and Ethereum supports about 10, so we have a long way to go.
+Yeah, but I don't like centralized servers, I like BitTorrent.
+
+## But it's mostly just used for crime!
+
+So is BitTorrent. Even encryption is used for crime. Both are useful for crime because they take power away from powerful organizations and give it to individuals, and sometimes individuals do bad things. That doesn't mean we should give up on giving power to individuals.
+
+## But it's too expensive!
+
+Yeah it is. The issue is that all distributed ledgers are limited in how many operations you can add per second, and there's a mini-bidding war to see how many tokens you're willing to lose to get your transaction in. If you want distributed ledgers to be usable for something like a social network, it's no good if it costs $60 to make a post! So the main problem that remains to be solved before we have practical distributed ledgers is scaling them up so the number of operations the ledger can support is much much higher. Remember, we want this to be a community effort where anyone can contribute to the network on their home computer, so we can't just buy a beefy server farm like Google can, we need something like BitTorrent that works fine on a normal computer with a normal internet connection, but can scale to tens of thousands operations per second. Bitcoin currently supports about 5 operations per second, and Ethereum supports about 10, so we have a long way to go.
 
 It's been 13 years (or something like that) since the original bitcoin whitepaper and this still isn't solved, but scaling is really hard! I swear that we're working on it! Let's briefly go over some of the problems and their solutions.
 
@@ -61,7 +91,7 @@ There are ZK-based layers on top of Ethereum _today_ that increase the operation
 
 It's not theoretically necessary for every node to store the full ledger, and if you want to support a lot of operations per second you quickly run into bandwidth problems of just sending the ledger around. As a matter of fact, bandwidth is the current bottleneck for bitcoin and ethereum. That's why the current biggest research area is _data sharding_, which allows you to split up the ledger between multiple nodes.
 
-It's harder than it sounds because, just like how you can check that a file you get from Bittorrent is the right one, you want to be able to check that someone is really storing the part of the ledger they're claiming to. The obvious way to check that is to just download the ledger, but that defeats the whole point of reducing bandwidth requirements! The trick is to use [data availability sampling](https://notes.ethereum.org/@vbuterin/r1v8VCULP), which allows you to check that someone is storing a whole piece of data while only downloading a tiny fraction of it.
+It's harder than it sounds because, just like how you can check that a file you get from BitTorrent is the right one, you want to be able to check that someone is really storing the part of the ledger they're claiming to. The obvious way to check that is to just download the ledger, but that defeats the whole point of reducing bandwidth requirements! The trick is to use [data availability sampling](https://notes.ethereum.org/@vbuterin/r1v8VCULP), which allows you to check that someone is storing a whole piece of data while only downloading a tiny fraction of it.
 
 This is being implemented on Ethereum with a project called [danksharding](https://notes.ethereum.org/@vbuterin/proto_danksharding_faq).
 
