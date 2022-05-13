@@ -1,0 +1,70 @@
+<Layout
+  subtitle="A Hacker's Case For Crypto"
+  description="My perspective on blockchains, cryptocurrencies, etc."
+>
+
+Disclosure: I'm a protocol developer for a major cryptocurrency (not any of the ones mentioned in this post though). But I'm a protocol developer because I like cryptocurrencies, not the other way around.
+
+So there's been a lot of people talking about cryptocurrency. but I noticed that the pro-cryptocurrency people focus on things I think are irrelevant, and the anti-cryptocurrency people are often unaware of what I consider to be the most exciting parts of cryptocurrencies.
+
+So what are the exciting parts? I'll try to explain my perspective. The core is that I love the idea of just making a utility and distributing the source, so anyone who wants to can download and run it and (if they like) have complete control over what it does. If I die or get bored, I want the tool to live on in the SSDs of people who love it.
+
+That's why I like the build system [Nix](https://nixos.org/), which lets you precisely describe how to build your code so anyone who builds it for a given architecture is guaranteed to get the exact same binary. It's why I like git, which makes it easy for people to share and merge their changes with one another. But most of all, it's why I like bittorrent, which lets people share files with one another without the need for any intermediary or corporation beyond an ISP. If any of this is appealing to you, I think you might be able to be convinced to like cryptocurrencies for the same reasons I do.
+
+Let's think about the problem bittorrent solves. Bittorrent is a protocol that allows some people to "seed" a file. Anyone with the file's hash can use the bittorrent protocol to find that file's seeders and download it from them. So we can say it takes the problem of file distribution, which is quite easily solved with a central file server that you link people to, and makes it _decentralized_, so it doesn't depend on the continued good-faith of any particular person. Someone can pretend to seed a file and maliciously send you some other file, but the hash of their file wouldn't match the hash of the file you asked for, so your computer would automatically throw it away. This means that it only needs _one_ person to seed the file honestly, and all the evil in the world can't stop them from sending it to you. <Note>Well, they could DOS you or your ISP could cut off your internet connection or the government would arrest you, but this is still a much better security model than "let's just hope our guy keeps this link stays up forever".</Note>
+
+This is actually a pretty complicated problem. How do you go from a hash to an IP address of people who are seeding a file without relying on a centralized server? Well this uses a pretty sophisticated bit of engineering called a [Distributed Hash Table](https://en.wikipedia.org/wiki/Distributed_hash_table), and it does technically involve connecting to at least one central sever to get the root of the table, but if that server starts misbehaving you can just switch to a different one without losing anything.
+
+So the effect is I can make a utility, throw it up on bittorrent, and that's all I have to do. As long as anyone likes it, they can seed it, and it'll be available for everyone no matter what I do. Even if powerful organizations like Disney don't like my utility, they can't stop me from releasing my tool or you from downloading it. Even the government can't stop me as long as they're not willing to block [Mullvad](https://mullvad.net/en/). That's cool!
+
+So the obvious question is: we've pretty much solved this problem in the context of serving files, but can we solve it in other domains? Even without cryptocurrency, the answer is yes. Any problem which can be expressed as a [CRDT](https://crdt.tech/), you can bittorrent-ize it. You can pretty simply modify bittorrent so that instead of identifying files with a hash, it identifies files signed with a private key. That means I can update my file and sign it with my private key and re-release it, and the same link will now point to both files instead of just the original. (Give every file a version number and add some tooling that automatically downloads whichever file has the latest version, and you're cooking with gas.) But it also means I can, for example, maintain a file with all of my tweets and share the link with my friends, and they can download my file and see my tweets, even ones I added after I shared the link with them. That's how you make a social network that no one controls, and you can do it without a spec of cryptocurrency. This is the idea behind Paul Frazee's [unwalled.garden](https://github.com/beakerbrowser/unwalled.garden), and it doesn't require a spec of cryptocurrency.
+
+If you write the code for this, like Paul Frazee has, you've made a social network that truly belongs to the hackers. You can't change a thing about it without their consent – they'll just not download your change. It's like my dream of making a utility that lives on after I die, except it's a social utility instead of something that lives on your computer and doesn't talk to anyone else.
+
+Not bad, but there are things you might want to do that can't be expressed with a CRDT. You can make Twitter or Google Docs like this, but you can't make Reddit or Hacker News. Twitter is "easy" because you already know who you follow, so you can just download their tweets. But anyone can submit a post to Hacker News and ideally everyone would be able to see it.
+
+To solve _this_ problem, you need a distributed ledger. A ledger is basically a list of operations, like `["Chad posted link <X>", "Stacy upvoted post <Y>", ...]`. The ledger should be in the same order for everyone, and anyone should be able to add whatever they want to it<Note>up to bandwidth limits etc.)</Note>. Additonally, once something is in the ledger, its position in the ledger should never change.
+
+Like how anyone can seed a torrent, anyone should be able to participate in distributing this ledger to people. It shouldn't be up to one person who might get hit by a bus or turn evil or be arrested at any time. It should be a community effort to keep the ledger up and keep sharing it with people who want it. And it should be very difficult for any organization, even a powerful one, to stop us.
+
+Unfortunately, you can't put a ledger like this into a CRDT, so that dream is almost impossible.
+
+## "Almost"
+
+Everyone should agree on the ledger, which means this is a problem of "distributed consensus". We don't want one bad actor to be able to ruin it for everyone, which means we want our consensus protocol to be byzantine-fault-tolerant.
+
+Bitcoin and PoW not really, but the core idea of cryptocurrency stuff is distributed byzantine-fault-tolerant consensus where honest behavior is economically incentivized. That sounds kind of abstract and bitcoin itself is not very useful because the throughput is too low and latency is too high, and it's really hard to scale those up, but if it can be made to scale it’s very powerful. First of all, it allows computation that no one can control, which is most obviously applicable to finance with things like automatic market makers.
+
+But more compelling to me is that it allows you to do what bittorrent did but in general - with bittorrent anyone can host a file and a static link can help you find those people and download the file (with no need to trust that the person serving the file hasn’t replaced it with some other file). This is possible because of cryptographic primitives like hashes that let you use a few bytes to uniquely identify the contents of any file, distributed hash tables that let you come to agreement on which IP addresses are serving which files, etc. (If you don’t think bittorrent is useful, that’s fine, but me and many others think it is.)
+
+So what are pepole working on?
+
+There’s still a lot of work to be done, but we’re approaching a point where you can “bittorrent-ize” a much broader class of services. Bittorrent works only for serving files whose hashes you already know, but doing the same for a service like HN is **much** more difficult. You need to allow posts from many different people and know when they were submitted, and maintain vote counts, but a distributed ledger is perfect for this. It’s not practical to do this on any decentralized cryptocurrency right now, but we’re slowly getting there.
+
+the ledger is an list of everything everyone does (in order). so if I submit a post and you submit a post, the ledger would have "andre submitted a post" then "nick submitted a post"
+
+Like I said, scaling this is a very difficult problem. for example you need to have data sharding so that not every node has to store the full ledger, but over the last few years cryptocurrency people have come up with very good data sharding systems like danksharding (which will hopefully be implemented on Ethereum in the next decade).
+
+you don't want everyone to have to store the whole ledger because it might be too big for one person to store cheaply, so you want to split it up (called "sharding")
+
+You also don’t want every node to have to redo all the computation, but ZK-proofs (which were basically only used in academia before cryptocurrencies came along and poured billions of dollars of funding into making them practical) make that unnecessary at the cost of some significant overhead when performing the computation. Despite that cost, we already have really good layers on top of Ethereum called ZK-rollups that lower the transaction cost to almost zero and introduce no new trust assumptions.
+
+if there's some computation you have to do (for example, if the ledger is "andre sent nick $1", "patrick sent nick $1", the computation might be something like "compute everyone's balance"), you don't really want everyone to do that themselves because that's a lot of wasted work. but you can't just have one person do it and tell everyone else because you don't want to have to trust that one person not to lie.
+
+zk-snarks let one person do that computation, and share the result _along with_ a mathematical proof that the result is really the result of doing that computation. That way you just check the proof and you don't have to trust them.
+
+You also want state expiry or state rent so the network state doesn’t grow monotonically, but that’s also being developed and in the past few years we’ve also developed some really good state expiry schemes.
+
+state expiry/state rent are ways of deleting old stuff from the ledger, that way it doesn't get infinitely big as time goes on
+
+for example you might want to only store the last 2 months of stuff on the ledger
+
+You also want fast finality so that you don’t have to wait 10 minutes for the contents of the ledger to stabilize, but we finally have scalable permissionless byzantine fault tolerant consensus schemes that have very fast finality (<30s), one of which is being implemented on ethereum (called casper).
+
+Finality is how long it takes after you do something like "submit a post" for it to show up in the ledger. Technically it shows up in the ledger a bit before finality, but until finality it might disappear or the order might change.
+
+There’s other cool stuff too, but I think this direction is one of the most exciting ones.
+
+Disclosure: I’m a protocol developer for a major cryptocurrency (although not ethereum or bitcoin)
+
+</Layout>

@@ -10,11 +10,23 @@ Monads let you compose effectful functions any way you want. Applicatives let yo
 
 This is an interesting tradeoff. My going from Applicative to Monad, you gain the ability to choose, but you lose the ability know what an effectful computation will do ahead of time. Are there other points in between that might be interesting? Turns out the answer is yes.
 
+## Categories
+
+Categories are a pretty simple concept for such an intimidating term. Categories are anything that look like functions – they're only required to have `id` and `(.)`.
+
+```
+class Category cat where
+  id :: cat a a
+  (.) :: cat b c -> cat a b -> cat a c
+```
+
+So if you have function-like things, categories let you compose them and call `id` on them. But it's kind of interesting t
+
 ## Arrows
 
 Applicatives don't really give you a dependency tree. They really just give you a dependency line. You know that if the effect A comes before the effect B, the output of effect B might depend on the output of effect A, but you don't really know for sure.
 
-Arrows enhance applicatives with the ability to create arbitrary graphs.
+Arrows enhance applicatives with the ability to represent arbitrary dependency.
 
 <CenteredImg src={arrow_dataflow} style={{ maxWidth: "21em" }} />
 
