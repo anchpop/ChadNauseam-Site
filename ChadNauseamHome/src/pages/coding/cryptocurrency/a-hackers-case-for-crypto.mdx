@@ -29,42 +29,58 @@ Like how anyone can seed a torrent, anyone should be able to participate in dist
 
 Unfortunately, you can't put a ledger like this into a CRDT, so that dream is almost impossible.
 
-## "Almost"
+## Almost impossible, but it can be done
 
-Everyone should agree on the ledger, which means this is a problem of "distributed consensus". We don't want one bad actor to be able to ruin it for everyone, which means we want our consensus protocol to be byzantine-fault-tolerant.
+Everyone should agree on the ledger, which means this is a problem of "distributed consensus". We don't want one bad actor to be able to ruin it for everyone, which means we want our consensus protocol to be byzantine fault tolerant (BFT). Byzantine fault tolerance means that the consensus algorithm works correctly even if some nodes misbehave, no matter what they do. For bittorrent, you only need one honest seeder to get your file, so it's definitely byzantine fault tolerant, but there's no way to make our distributed ledger _that_ tolerant. Instead, the best we can do is take a threshold like 50% or 33% and say that as long as there are fewer correctly-behaving nodes than that threshold, our consensus algorithm will behave correctly.
 
-Bitcoin and PoW not really, but the core idea of cryptocurrency stuff is distributed byzantine-fault-tolerant consensus where honest behavior is economically incentivized. That sounds kind of abstract and bitcoin itself is not very useful because the throughput is too low and latency is too high, and it's really hard to scale those up, but if it can be made to scale it’s very powerful. First of all, it allows computation that no one can control, which is most obviously applicable to finance with things like automatic market makers.
+This is a much worse situation. It means we need some barrier to making nodes, because otherwise an attacker would just spin up an arbitrary number of nodes until they hit our threshold. For "proof of work" currencies like Bitcoin and present-day Ethereum, that barrier is acquiring computing power. For "proof of stake" currencies like Algorand and someday-but-hopefully-soon Ethereum, that barrier is liquidity of some asset. (For those curious, proof of work gives you a 50% threshold, and proof of stake usually gives you 25% or 33%)
 
-But more compelling to me is that it allows you to do what bittorrent did but in general - with bittorrent anyone can host a file and a static link can help you find those people and download the file (with no need to trust that the person serving the file hasn’t replaced it with some other file). This is possible because of cryptographic primitives like hashes that let you use a few bytes to uniquely identify the contents of any file, distributed hash tables that let you come to agreement on which IP addresses are serving which files, etc. (If you don’t think bittorrent is useful, that’s fine, but me and many others think it is.)
+## Why do these have to be currencies though?
 
-So what are pepole working on?
+Couldn't they just be distributed systems that hackers spin up as needed? Well, nothing stops you from doing that, but the fear is that not enough people will volunteer their computing power or their liquidity for it to be difficult for a powerful attacker to reach that threshold.
 
-There’s still a lot of work to be done, but we’re approaching a point where you can “bittorrent-ize” a much broader class of services. Bittorrent works only for serving files whose hashes you already know, but doing the same for a service like HN is **much** more difficult. You need to allow posts from many different people and know when they were submitted, and maintain vote counts, but a distributed ledger is perfect for this. It’s not practical to do this on any decentralized cryptocurrency right now, but we’re slowly getting there.
+The resolution is to make everyone contribute something. If you want to use the network, you have to put money in. If you add security to the network by running an honest node, you take money out. In practice, you do this by creating a token and tracking who owns the token on the network. When someone runs an honest node the network mints tokens from nothing and gives it to them. They then sell that token to people who want to use the network, because to use the network you need to have a token and destroy it. This token is what makes it a "currency", although it's not really a currency anyone would want to use – it's just a roundabout way to get people who use the network to pay the people who make it work.
 
-the ledger is an list of everything everyone does (in order). so if I submit a post and you submit a post, the ledger would have "andre submitted a post" then "nick submitted a post"
+But that's just a practical consideration. Nothing stops you from taking any cryptocurrency design and removing the incentivization schemes. Your version will still benefit from all the other research that's being done.
 
-Like I said, scaling this is a very difficult problem. for example you need to have data sharding so that not every node has to store the full ledger, but over the last few years cryptocurrency people have come up with very good data sharding systems like danksharding (which will hopefully be implemented on Ethereum in the next decade).
+## Problems
 
-you don't want everyone to have to store the whole ledger because it might be too big for one person to store cheaply, so you want to split it up (called "sharding")
+You might have noticed that it can cost tens of dollars to do a single transaction on Bitcoin or Ethereum, and that's a huge problem. The issue is that all distributed ledgers are limited in how many operations you can add per second, and there's a mini-bidding war to see how many tokens you're willing to lose to get your transaction in. If you want distributed ledgers to be usable for something like a social network, it's no good if it costs $60 to make a post! So the main problem that remains to be solved before we have practical distributed ledgers is scaling them up so the number of operations the ledger can support is much much higher. Remember, we want this to be a community effort where anyone can contribute to the network on their home computer, so we can't just buy a beefy server farm like Google can, we need something like bittorrent that works fine on a normal computer with a normal internet connection, but can scale to tens of thousands operations per second. Bitcoin currently supports about 5 operations per second, and Ethereum supports about 10, so we have a long way to go.
 
-You also don’t want every node to have to redo all the computation, but ZK-proofs (which were basically only used in academia before cryptocurrencies came along and poured billions of dollars of funding into making them practical) make that unnecessary at the cost of some significant overhead when performing the computation. Despite that cost, we already have really good layers on top of Ethereum called ZK-rollups that lower the transaction cost to almost zero and introduce no new trust assumptions.
+It's been 13 years (or something like that) since the original bitcoin whitepaper and this still isn't solved, but scaling is really hard! I swear that we're working on it! Let's briefly go over some of the problems and their solutions.
 
-if there's some computation you have to do (for example, if the ledger is "andre sent nick $1", "patrick sent nick $1", the computation might be something like "compute everyone's balance"), you don't really want everyone to do that themselves because that's a lot of wasted work. but you can't just have one person do it and tell everyone else because you don't want to have to trust that one person not to lie.
+### There's a lot of redundant computation
 
-zk-snarks let one person do that computation, and share the result _along with_ a mathematical proof that the result is really the result of doing that computation. That way you just check the proof and you don't have to trust them.
+Let's say the ledger has operations like `["Alice paid Bob $1", "Carol paid Danny $5", ...]`. You might want to compute everyone's balance, but if the ledger is very large, that might take a while. In general, the ledger is a list of operations that modify a state, but what you're really interested in is the current state. Currently, every cryptocurrency has everyone recompute the entire state themselves, but that leads to a lot of redundant work!
 
-You also want state expiry or state rent so the network state doesn’t grow monotonically, but that’s also being developed and in the past few years we’ve also developed some really good state expiry schemes.
+The obvious solution is to have one person compute it and ask them, but then you'd have to trust that they weren't lying. The trick here is to use a technology called ZK-snarks/starks/etc. that let you run an arbitrary computation and compute its result along with a _cryptographic proof_ that that result really is the result of running the computation. The beautiful thing is that this proof is small, a few bytes for snarks to a few kilobytes to starks, and can be checked in a snap. So you can let anyone calculate and share `(balance, proof)` and as long as one person is willing to do that, no one else needs to redo their work.
 
-state expiry/state rent are ways of deleting old stuff from the ledger, that way it doesn't get infinitely big as time goes on
+The problem was, although the proof can be checked almost instantly, the overhead of generating the proof used to be enormous. If it takes 100,000x longer to generate the proof than it does to run the computation, you're not really saving that much work compared to having everyone do the computation themselves! However, this is such an important problem that the cryptocurrency industry has poured billions of dollars into optimizing the proof-generation process, and we now have awesome tools like [Plonky2](https://blog.polygon.technology/introducing-plonky2/) and [Kimchi](https://minaprotocol.com/blog/kimchi-the-latest-update-to-minas-proof-system) that make the overhead more like 100x than 100,000x.
 
-for example you might want to only store the last 2 months of stuff on the ledger
+There are ZK-based layers on top of Ethereum _today_ that increase the operations per second dramatically, so this isn't some hypothetical solution. Making a fully-general solution is really hard, but despite that [zkSync](https://zksync.io/) has a very fast public test network that you can try out today.
 
-You also want fast finality so that you don’t have to wait 10 minutes for the contents of the ledger to stabilize, but we finally have scalable permissionless byzantine fault tolerant consensus schemes that have very fast finality (<30s), one of which is being implemented on ethereum (called casper).
+### Everyone redundantly stores the full ledger
 
-Finality is how long it takes after you do something like "submit a post" for it to show up in the ledger. Technically it shows up in the ledger a bit before finality, but until finality it might disappear or the order might change.
+It's not theoretically necessary for every node to store the full ledger, and if you want to support a lot of operations per second you quickly run into bandwidth problems of just sending the ledger around. As a matter of fact, bandwidth is the current bottleneck for bitcoin and ethereum. That's why the current biggest research area is _data sharding_, which allows you to split up the ledger between multiple nodes.
 
-There’s other cool stuff too, but I think this direction is one of the most exciting ones.
+It's harder than it sounds because, just like how you can check that a file you get from Bittorrent is the right one, you want to be able to check that someone is really storing the part of the ledger they're claiming to. The obvious way to check that is to just download the ledger, but that defeats the whole point of reducing bandwidth requirements! The trick is to use [data availability sampling](https://notes.ethereum.org/@vbuterin/r1v8VCULP), which allows you to check that someone is storing a whole piece of data while only downloading a tiny fraction of it.
 
-Disclosure: I’m a protocol developer for a major cryptocurrency (although not ethereum or bitcoin)
+This is being implemented on Ethereum with a project called [danksharding](https://notes.ethereum.org/@vbuterin/proto_danksharding_faq).
+
+### The ledger just keeps getting bigger
+
+Usually you care more about what's happening now than what happened 10 years ago. For example, instead of storing everyone who ever up- or downvoted a 10 year old post, it's much more efficient to compute a total upvote and downvote count and discard the individual votes. Despite how inefficient it is to keep the full history, that's how current blockchains are designed, because it keeps things much simpler. Simplifying a little, we have now have really good schemes for:
+
+1. "State rent", where you have to continuously pay to keep something stored in the network.
+
+1. "State expiry", where old stuff is deleted after a time.
+
+In both cases, a hash of the deleted data is kept, and if it's important anyone who has the data saved can restore it later.
+
+### Finality is too slow and is only probabilistic
+
+On modern chains, operations get added to the ledger pretty quick (usually a few seconds for Ethereum, but 5 minutes for Bitcoin), but there a small period where they might disappear or get reordered. That period is called _finality_ – as long as there's not too many dishonest nodes, once an operation has been in the ledger for longer than the finality period it's either very unlikely or impossible for it to be reordered or removed. The issue is that this finality period is too long! If something important rests on a transaction having gone though, it's really annoying to have to wait for finality. On Ethereum, the finality period is about a minute and on Bitcoin it's about an hour, and in both cases this is only _probabilistic_ finality which means there's still some small chance that it'll disappear in the future even if all nodes are honest.
+
+Luckily, if you use proof of stake, we have lots of consensus algorithms for _deterministic_ finality these days. Once Ethereum switches to proof of stake (any day now...), they'll have pretty-good finality after just one block (and there will be a new block every 12 seconds), and guaranteed<Note> Guaranteed so long as less than 33% of the nodes are dishonest, that is.</Note> finality after two blocks.
 
 </Layout>
