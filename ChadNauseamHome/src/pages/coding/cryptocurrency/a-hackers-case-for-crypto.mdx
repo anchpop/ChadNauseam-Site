@@ -41,7 +41,7 @@ If you write the code for this, like Paul Frazee has, you've made a social netwo
 
 ## Beyond CRDTs
 
-You can make Twitter or Google Docs with a CRDT, but you can't make Reddit or Hacker News. Twitter is "easy" because you already know who you follow, so you can just download their tweets. But anyone can submit a post to Hacker News and ideally everyone would be able to see it even if they've never heard of one another.
+You can make Twitter or Google Docs with a CRDT, but you can't make Reddit or Hacker News. Twitter is "easy" because you already know who you follow, so you can just download their tweets. But anyone can submit a post to Hacker News and ideally everyone would be able to see it even if they've never heard of one another. And the order of the posts is important and you can't trust that people won't lie.
 
 To solve _this_ problem, you need a distributed ledger. A ledger is basically a list of operations, like `["Chad posted link <X>", "Stacy upvoted post <Y>", ...]`. The ledger should be in the same order for everyone, and anyone should be able to add whatever they want to it<Note>up to bandwidth limits etc.</Note>. Additionally, once something is in the ledger, its position in the ledger should never change.
 
