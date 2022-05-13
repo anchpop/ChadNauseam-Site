@@ -43,7 +43,7 @@ If you write the code for this, like Paul Frazee has, you've made a social netwo
 
 You can make Twitter or Google Docs with a CRDT, but you can't make Reddit or Hacker News. Twitter is "easy" because you already know who you follow, so you can just download their tweets. But anyone can submit a post to Hacker News and ideally everyone would be able to see it even if they've never heard of one another.
 
-To solve _this_ problem, you need a distributed ledger. A ledger is basically a list of operations, like `["Chad posted link <X>", "Stacy upvoted post <Y>", ...]`. The ledger should be in the same order for everyone, and anyone should be able to add whatever they want to it<Note>up to bandwidth limits etc.</Note>. Additonally, once something is in the ledger, its position in the ledger should never change.
+To solve _this_ problem, you need a distributed ledger. A ledger is basically a list of operations, like `["Chad posted link <X>", "Stacy upvoted post <Y>", ...]`. The ledger should be in the same order for everyone, and anyone should be able to add whatever they want to it<Note>up to bandwidth limits etc.</Note>. Additionally, once something is in the ledger, its position in the ledger should never change.
 
 Like how anyone can seed a torrent, anyone should be able to participate in distributing this ledger to people. It shouldn't be up to one person who might get hit by a bus or turn evil or be arrested at any time. It should be a community effort to keep the ledger up and keep sharing it with people who want it. And it should be very difficult for any organization, even a powerful one, to stop us.
 
