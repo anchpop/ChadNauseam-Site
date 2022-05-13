@@ -3,8 +3,6 @@
   description="My perspective on blockchains, cryptocurrencies, etc."
 >
 
-Disclosure: I'm a protocol developer for a major cryptocurrency (not any of the ones mentioned in this post though). But I'm a protocol developer because I like cryptocurrencies, not the other way around.
-
 So there's been a lot of people talking about cryptocurrency. but I noticed that the pro-cryptocurrency people focus on things I think are irrelevant, and the anti-cryptocurrency people are often unaware of what I consider to be the most exciting parts of cryptocurrencies.
 
 So what are the exciting parts? I'll try to explain my perspective. The core is that I love the idea of just making a utility and distributing the source, so anyone who wants to can download and run it and (if they like) have complete control over what it does. If I die or get bored, I want the tool to live on in the SSDs of people who love it.
@@ -82,5 +80,11 @@ In both cases, a hash of the deleted data is kept, and if it's important anyone 
 On modern chains, operations get added to the ledger pretty quick (usually a few seconds for Ethereum, but 5 minutes for Bitcoin), but there a small period where they might disappear or get reordered. That period is called _finality_ – as long as there's not too many dishonest nodes, once an operation has been in the ledger for longer than the finality period it's either very unlikely or impossible for it to be reordered or removed. The issue is that this finality period is too long! If something important rests on a transaction having gone though, it's really annoying to have to wait for finality. On Ethereum, the finality period is about a minute and on Bitcoin it's about an hour, and in both cases this is only _probabilistic_ finality which means there's still some small chance that it'll disappear in the future even if all nodes are honest.
 
 Luckily, if you use proof of stake, we have lots of consensus algorithms for _deterministic_ finality these days. Once Ethereum switches to proof of stake (any day now...), they'll have pretty-good finality after just one block (and there will be a new block every 12 seconds), and guaranteed<Note> Guaranteed so long as less than 33% of the nodes are dishonest, that is.</Note> finality after two blocks.
+
+<Minisection>
+
+Disclosure: I'm a protocol developer for a major cryptocurrency (not any of the ones mentioned in this post though). But I'm a protocol developer because I like cryptocurrencies, not the other way around.
+
+</Minisection>
 
 </Layout>
