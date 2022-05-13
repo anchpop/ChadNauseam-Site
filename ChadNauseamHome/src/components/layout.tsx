@@ -68,7 +68,7 @@ const Layout: React.FC<{ subtitle: string; description: string, andre?: boolean 
     return locationProps.location.hostname !== undefined ?
       (locationProps.location.hostname.includes(cwebUrlChopped) ?
         <>
-          You're viewing my site on the centralized web. Check me out on the <a target="_blank" href={dwebUrlLimo}><Dweb /></a> ! (Warning: it's slow.)
+          You're viewing my site via a centralized server. Check me out on the <a target="_blank" href={dwebUrlLimo}><Dweb /></a> ! (Warning: it's slow.)
         </>
         : locationProps.location.hostname.includes(".eth") || locationProps.location.hostname.includes("ipfs") ?
           <>
