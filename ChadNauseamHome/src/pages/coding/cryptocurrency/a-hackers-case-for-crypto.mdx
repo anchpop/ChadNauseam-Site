@@ -103,7 +103,7 @@ There are ZK-based layers on top of Ethereum _today_ that increase the operation
 
 ### Everyone redundantly stores the full ledger
 
-It's not theoretically necessary for every node to store the full ledger, and if you want to support a lot of operations per second you quickly run into storage problems. That's why one of the biggest research areasis _data sharding_, which allows you to split up the ledger between multiple nodes.
+It's not theoretically necessary for every node to store the full ledger, and if you want to support a lot of operations per second you quickly run into storage problems. That's why one of the biggest research area is _data sharding_, which allows you to split up the ledger between multiple nodes.
 
 It's harder than it sounds because, just like how you can check that a file you get from BitTorrent is the right one, you want to be able to check that someone is really storing the part of the ledger they're claiming to. The obvious way to check that is to just download the ledger, but that defeats the whole point of reducing bandwidth requirements! The trick is to use [data availability sampling](https://notes.ethereum.org/@vbuterin/r1v8VCULP), which allows you to check that someone is storing a whole piece of data while only downloading a tiny fraction of it.
 
@@ -111,7 +111,7 @@ This is being implemented on Ethereum with a project called [danksharding](https
 
 ### The ledger just keeps getting bigger
 
-Usually you care more about what's happening now than what happened 10 years ago. For example, instead of storing everyone who ever up- or downvoted a 10 year old post, it's much more efficient to compute a total upvote and downvote count and discard the individual votes. Despite how inefficient it is to keep the full history, that's how current blockchains are designed, because it keeps things much simpler. Simplifying a little, we have now have really good schemes for:
+Usually you care more about what's happening now than what happened 10 years ago. For example, instead of storing everyone who ever up- or down-voted a 10 year old post, it's much more efficient to compute a total upvote and downvote count and discard the individual votes. Despite how inefficient it is to keep the full history, that's how current blockchains are designed, because it keeps things much simpler. Simplifying a little, we have now have really good schemes for:
 
 1. "State rent", where you have to continuously pay to keep something stored in the network.
 
@@ -121,9 +121,13 @@ In both cases, a hash of the deleted data is kept, and if it's important anyone 
 
 ### Finality is too slow and is only probabilistic
 
-On modern chains, operations get added to the ledger pretty quick (usually a few seconds for Ethereum, but 5 minutes for Bitcoin), but there a small period where they might disappear or get reordered. That period is called _finality_ – as long as there's not too many dishonest nodes, once an operation has been in the ledger for longer than the finality period it's either very unlikely or impossible for it to be reordered or removed. The issue is that this finality period is too long! If something important rests on a transaction having gone though, it's really annoying to have to wait for finality. On Ethereum, the finality period is about a minute and on Bitcoin it's about an hour, and in both cases this is only _probabilistic_ finality which means there's still some small chance that it'll disappear in the future even if all nodes are honest.
+On modern chains, operations get added to the ledger pretty quick (usually a few seconds for Ethereum, but 5 minutes for Bitcoin). But there's a small period where newly-added operations in the ledger might disappear or get reordered. That period is called _finality_ – as long as there's not too many dishonest nodes, once an operation has been in the ledger for longer than the finality period it's either very unlikely or impossible for it to be reordered or disappear.
 
-But luckily, we now have lots of scalable proof-of-stake consensus algorithms for _deterministic_ finality. That's not an easy problem to solve, but it's solved now. Once Ethereum switches to proof of stake (any day now...), they'll have pretty-good finality after just one block (and there will be a new block every 12 seconds), and guaranteed<Note> Guaranteed so long as less than 33% of the nodes are dishonest, that is.</Note> finality after two blocks. And proof of stake has other advantages too, like having basically no energy consumption and not driving up the cost of graphics cards.
+The issue is that this finality period is too long! If something important rests on a transaction having gone though, it's really annoying to have to wait for a long finality. On Ethereum, the finality period is about a minute and on Bitcoin it's about an hour, and in both cases this is only _probabilistic_ finality which means there's still some small chance that it'll disappear in the future even if all nodes are honest.
+
+But luckily, we now have lots of scalable proof-of-stake consensus algorithms for _deterministic_ finality. That's not an easy problem to solve, but it's solved now. Once Ethereum switches to proof of stake<Note numbered>any day now...</Note>, they'll have pretty-good finality after just one block (and there will be a new block every 12 seconds). And they'll have guaranteed<Note> Guaranteed so long as less than 33% of the nodes are dishonest, that is.</Note> finality after two blocks.
+
+And proof of stake has other advantages too, like having basically no energy consumption and not driving up the cost of graphics cards.
 
 ## What about replacing USD or the gold standard?
 
