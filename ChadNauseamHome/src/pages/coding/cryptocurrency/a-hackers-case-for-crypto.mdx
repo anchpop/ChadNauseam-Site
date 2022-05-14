@@ -105,7 +105,7 @@ There are ZK-based layers on top of Ethereum _today_ that increase the operation
 
 ### Everyone redundantly stores the full ledger
 
-It's not theoretically necessary for every node to store the full ledger, and if you want to support a lot of operations per second you quickly run into storage problems. That's why one of the biggest research area is _data sharding_, which allows you to split up the ledger between multiple nodes.
+If you want to support a lot of operations per second you quickly run into storage problems if you ask every node to store the full ledger. That's why one of the biggest research area is _data sharding_, which allows you to split up the ledger between multiple nodes.
 
 It's harder than it sounds because, just like how you can check that a file you get from BitTorrent is the right one, you want to be able to check that someone is really storing the part of the ledger they're claiming to. The obvious way to check that is to just download the ledger, but then you run into serious bandwidth problems! The trick is to use [data availability sampling](https://notes.ethereum.org/@vbuterin/r1v8VCULP), which allows you to check that someone is storing a whole piece of data while only downloading a tiny fraction of it.
 
