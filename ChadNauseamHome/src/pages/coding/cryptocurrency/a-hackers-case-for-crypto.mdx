@@ -41,25 +41,37 @@ If you write the code for this, like Paul Frazee has, you've made a social netwo
 
 ## Beyond CRDTs
 
-You can make Twitter or Google Docs with a CRDT, but you can't make Reddit or Hacker News. Twitter is "easy" because you already know who you follow, so you can just download their tweets. But anyone can submit a post to Hacker News and ideally everyone would be able to see it even if they've never heard of one another. And the order of the posts is important and you can't trust that people won't lie.
+Twitter is "easy" because you already know who you follow and can mostly trust them to be honest about their tweets' timestamps, so you can just download their tweets. But anything that really requires an objective and unfakable operation order (like say, a digital currency) can't be implemented with a CRDT<Note>If you're curious to know more, the [CALM theorem](https://rise.cs.berkeley.edu/blog/an-overview-of-the-calm-theorem/) precisely specifies what can be implemented with a CRDT and what can't.</Note>.
 
-To solve _this_ problem, you need a distributed ledger. A ledger is basically a list of operations, like `["Chad posted link <X>", "Stacy upvoted post <Y>", ...]`. The ledger should be in the same order for everyone, and anyone should be able to add whatever they want to it<Note>up to bandwidth limits etc.</Note>. Additionally, once something is in the ledger, its position in the ledger should never change.
+As a simple example of something that _can't_ be done with a CRDT, let's say we want an app that allows people to create polls, allow others to fill them out, and allows the poll creator to close the poll to ignore further voting.
 
-Like how anyone can seed a torrent, anyone should be able to participate in distributing this ledger to people. It shouldn't be up to one person who might get hit by a bus or turn evil or be arrested at any time. It should be a community effort to keep the ledger up and keep sharing it with people who want it. And it should be very difficult for any organization, even a powerful one, to stop us.
+To solve _this_ problem, you need a distributed ledger. A ledger is basically a list of operations, like `["Virgil created a poll", "Chad voted for cats", "Stacy voted for dogs", "Virgil closed the poll", ...]`. To have a general ledger that can support any app, we want the following properties:
 
-Unfortunately, you can't put a ledger like this into a CRDT, so that dream is almost impossible.
+1. The contents of the ledger should be in the same order for everyone.
+
+1. Once something is in the ledger, it should never disappear and its position in the ledger should never change.
+
+1. Anyone should be able to add whatever they want to the ledger, up to bandwidth limits etc.
+
+1. Like how anyone can seed a torrent, anyone should be able to participate in the process of coming to consensus about the contents and order of the ledger. And it should be very difficult for any organization (even a powerful one) to stop disrupt the consensus process.
+
+Everyone should agree on the ledger state, which means this is a problem of "distributed consensus". We don't want a small number of bad nodes to be able to ruin it for everyone, which means we want our consensus protocol to be byzantine fault tolerant (BFT). Byzantine fault tolerance means that the consensus algorithm works correctly even if some nodes misbehave, no matter what they do.
+
+Unfortunately, the first two of our desired properties mean a CRDT won't work, because CRDTs can't give an objective order to events that come from different users. The fourth requirement means we can't use Paxos, because then any misbehaving node could mess up the consensus process. And you can't just use a simple byzantine fault tolerant consensus protocol, because an attacker could just spin up a ton of sybil nodes and get past the byzantine threshold.
+
+So it seems like our dream is almost impossible...
 
 ## It's almost impossible, but it can be done
 
-Everyone should agree on the ledger, which means this is a problem of "distributed consensus". We don't want one bad actor to be able to ruin it for everyone, which means we want our consensus protocol to be byzantine fault tolerant (BFT). Byzantine fault tolerance means that the consensus algorithm works correctly even if some nodes misbehave, no matter what they do. For BitTorrent, you only need one honest seeder to get your file, so it's definitely byzantine fault tolerant, but there's no way to make our distributed ledger _that_ tolerant. Instead, the best we can do is take a threshold like 50% or 33% and say that as long as there are fewer correctly-behaving nodes than that threshold, our consensus algorithm will behave correctly.
+We're going to start with a regular byzantine fault tolerant consensus protocol. BitTorrent is _very_ fault tolerant, you only need one honest node seeding the file for a file to be available. We can't quite live up to that standard, but we can take a threshold like 50% or 33% and say that our consensus algorithm will behave correctly as long as there are fewer dishonest nodes than that threshold.
 
-This is a much worse situation. It means we need some barrier to making nodes, because otherwise an attacker would just spin up an arbitrary number of nodes until they hit our threshold. For "proof of work" currencies like Bitcoin and present-day Ethereum, that barrier is acquiring computing power. For "proof of stake" currencies like Algorand and someday-but-hopefully-soon Ethereum, that barrier is liquidity of some asset. (For those curious, proof of work gives you a 50% threshold, and proof of stake usually gives you 25% or 33%)
+"No more than 33% of nodes can be dishonest" is a bit of a worse situation than "we only need one honest node". It means we need some barrier to making nodes, because otherwise an attacker would just spin up an arbitrary number of nodes until they hit our threshold. For "proof of work" currencies like Bitcoin and present-day Ethereum, that barrier is acquiring computing power. For "proof of stake" currencies like Algorand and someday-but-hopefully-soon Ethereum, that barrier is liquidity of some asset. (For those curious, proof of work gives you a 50% threshold, and proof of stake usually gives you 25% or 33%)
 
 ## Why do these have to be currencies though?
 
-Couldn't they just be distributed systems that hackers spin up as needed? Well, nothing stops you from doing that, but the fear is that not enough people will volunteer their computing power or their liquidity for it to be difficult for a powerful attacker to reach that threshold.
+Couldn't we just have distributed systems that hackers spin up as needed? Well Well, nothing stops you from doing that, but remember, being in the network has to _cost_ something or it can be trivially taken over, and the fear is that not enough people will volunteer to pay that cost. There has to be more honest people paying the cost than dishonest people for the network to work.
 
-The resolution is to make everyone contribute something. If you want to use the network, you have to put money in. If you add security to the network by running an honest node, you take money out. In practice, you do this by creating a token and tracking who owns the token on the network. When someone runs an honest node the network mints tokens from nothing and gives it to them. They then sell that token to people who want to use the network, because to use the network you need to have a token and destroy it. This token is what makes it a "currency", although it's not really a currency anyone would want to use – it's just a roundabout way to get people who use the network to pay the people who make it work.
+The resolution is to make _users_ of the network pay the honest nodes. In practice, you do this by creating a token, and maybe even using the network to track who owns the token. When someone runs an honest node, the network mints tokens from nothing and gives it to them. To use the network you need to have a token and destroy it, so people who want to use the network have to buy the tokens from people running honest nodes. This token is what makes it a "currency", although it's not really a currency anyone would want to use – it's just a roundabout way to get people who use the network to pay the people who make it work.
 
 But that's just a practical consideration. Nothing stops you from taking any cryptocurrency design and removing the incentivization schemes. Your version will still benefit from all the other research that's being done.
 
@@ -109,7 +121,23 @@ In both cases, a hash of the deleted data is kept, and if it's important anyone 
 
 On modern chains, operations get added to the ledger pretty quick (usually a few seconds for Ethereum, but 5 minutes for Bitcoin), but there a small period where they might disappear or get reordered. That period is called _finality_ – as long as there's not too many dishonest nodes, once an operation has been in the ledger for longer than the finality period it's either very unlikely or impossible for it to be reordered or removed. The issue is that this finality period is too long! If something important rests on a transaction having gone though, it's really annoying to have to wait for finality. On Ethereum, the finality period is about a minute and on Bitcoin it's about an hour, and in both cases this is only _probabilistic_ finality which means there's still some small chance that it'll disappear in the future even if all nodes are honest.
 
-Luckily, if you use proof of stake, we have lots of consensus algorithms for _deterministic_ finality these days. Once Ethereum switches to proof of stake (any day now...), they'll have pretty-good finality after just one block (and there will be a new block every 12 seconds), and guaranteed<Note> Guaranteed so long as less than 33% of the nodes are dishonest, that is.</Note> finality after two blocks.
+But luckily, we now have lots of scalable proof-of-stake consensus algorithms for _deterministic_ finality. That's not an easy problem to solve, but it's solved now. Once Ethereum switches to proof of stake (any day now...), they'll have pretty-good finality after just one block (and there will be a new block every 12 seconds), and guaranteed<Note> Guaranteed so long as less than 33% of the nodes are dishonest, that is.</Note> finality after two blocks. And proof of stake has other advantages too, like having basically no energy consumption and not driving up the cost of graphics cards.
+
+## What about replacing USD or the gold standard?
+
+Trying to replace USD is dumb, and the gold standard was dumb. Those have nothing to do with why I like cryptocurrency.
+
+## What about carbon emissions?
+
+Like I said, proof of stake is the future and requires orders of magnitude less energy consumption, and zero graphics cards.
+
+## What about all the scams?
+
+The scams really suck :( but I don't think they take away from how cool the technology is.
+
+## Isn't cryptocurrency all about getting rich quick?
+
+That's definitely why 99% of people are into cryptocurrency, but we're hackers and we don't have to be interested in cryptocurrency for the same reason as everyone else. We can be into it just because it's cool!
 
 <Minisection>
 
