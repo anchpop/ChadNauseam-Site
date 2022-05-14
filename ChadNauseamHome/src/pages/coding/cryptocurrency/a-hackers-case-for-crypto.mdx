@@ -65,7 +65,9 @@ So it seems like our dream is almost impossible...
 
 We're going to start with a regular byzantine fault tolerant consensus protocol. BitTorrent is _very_ fault tolerant, you only need one honest node seeding the file for a file to be available. We can't quite live up to that standard, but we can take a threshold like 50% or 33% and say that our consensus algorithm will behave correctly as long as there are fewer dishonest nodes than that threshold.
 
-"No more than 33% of nodes can be dishonest" is a bit of a worse situation than "we only need one honest node". It means we need some barrier to making nodes, because otherwise an attacker would just spin up an arbitrary number of nodes until they hit our threshold. For "proof of work" currencies like Bitcoin and present-day Ethereum, that barrier is acquiring computing power. For "proof of stake" currencies like Algorand and someday-but-hopefully-soon Ethereum, that barrier is liquidity of some asset. (For those curious, proof of work gives you a 50% threshold, and proof of stake usually gives you 25% or 33%)
+"No more than 33% of nodes can be dishonest" is a bit of a worse situation than "we only need one honest node". It means we need some barrier to making nodes, because otherwise an attacker would just spin up an arbitrary number of nodes until they hit our threshold. For "proof of work" currencies like Bitcoin and present-day Ethereum, that barrier is acquiring computing power. For "proof of stake" currencies like Algorand and someday-but-hopefully-soon Ethereum, that barrier is liquidity of some asset.
+
+(For those curious, proof of work gives you a 50% byzantine threshold, and proof of stake usually gives you 25% or 33%)
 
 ## Why do these have to be currencies though?
 
