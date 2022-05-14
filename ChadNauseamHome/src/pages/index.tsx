@@ -10,6 +10,7 @@ const posts = [
     section: "coding",
     posts: [
       { title: "How side effects work in FP", link: "/coding/random/how-side-effects-work-in-fp" },
+      { title: "A hacker's case for cryptocurrency", link: "/coding/cryptocurrency/a-hackers-case-for-crypto/" }
     ]
   },
   {
