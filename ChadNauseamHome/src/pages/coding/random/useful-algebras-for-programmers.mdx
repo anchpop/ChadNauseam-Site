@@ -1,0 +1,32 @@
+<Layout
+  subtitle="Useful Algebras for Programmers"
+  description="Algebras are a way of writing good APIs, but they can be hard to find"
+>
+
+## The Tile Algebra
+
+[Functional Geometry, Peter Henderso, 2002](https://link.springer.com/article/10.1023/A:1022986521797). [Github mirror](https://github.com/anchpop/ChadNauseam-Site/blob/4f684f3c9a96695e23151beedb685a9ea6db6b17/ChadNauseamHome/src/static/Henderson2002_Article_FunctionalGeometry.pdf).
+
+> An algebra of pictures is described that is sufficiently powerful to denote the structure of a well-known Escher woodcut, Square Limit. A decomposition of the picture that is reasonably faithful to Escher's original design is given. This illustrates how a suitably chosen algebraic specification can be both a clear description and a practical implementation method. It also allows us to address some of the criteria that make a good algebraic description.
+
+This isn't a super useful algebra, but I'm putting it here because it was my first and you should always remember your first algebra.
+
+## The Graph Algebra
+
+[Alga](https://github.com/snowleopard/alga)
+
+> **Alga** is a library for algebraic construction and manipulation of graphs in Haskell. See [this Haskell Symposium paper](https://github.com/snowleopard/alga-paper) and the corresponding [talk](https://www.youtube.com/watch?v=EdQGLewU-8k) for the motivation behind the library, the underlying theory and implementation details. There is also a [Haskell eXchange talk](https://skillsmatter.com/skillscasts/10635-algebraic-graphs), and a [tutorial](https://nobrakal.github.io/alga-tutorial) by Alexandre Moine.
+
+The basic idea is to represent graphs with the following algebra:
+
+```haskell
+data Graph a = Empty | Vertex a | Overlay (Graph a) (Graph a) | Connect (Graph a) (Graph a)
+```
+
+Which gives you all kinds of nice laws.
+
+> Here Empty and Vertex construct the empty and single-vertex graphs, respectively; Overlay composes two graphs by taking the union of their vertices and edges, and Connect is similar to Overlay but also creates edges between vertices of the two graphs [...]. The overlay and connect operations have two important properties: (i) they are closed on the set of graphs, i.e. are total functions, and (ii) they can be used to construct any graph starting from the empty and single-vertex graphs. For example, Connect (Vertex 1) (Vertex 2) is the graph with two vertices {1, 2} and a single edge (1, 2). Malformed graphs, such as G [1] [(1,2)], cannot be expressed in this core language.
+>
+> [This] core is a safe, flexible and elegant foundation for working with graphs that have no edge labels.
+
+</Layout>
