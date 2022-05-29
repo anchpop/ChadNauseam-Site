@@ -6,16 +6,16 @@ import { select } from "d3";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
 
-import Layout from "../../components/layout";
-import Image from "../../components/image";
-import Tip, { MusicTheoryTip } from "../../components/tip";
-import Sn from "../../components/sn";
-import Note from "../../components/note";
-import { I } from "../../components/typography";
+import Layout from "../../../components/layout";
+import Image from "../../../components/image";
+import Tip, { MusicTheoryTip } from "../../../components/tip";
+import Sn from "../../../components/sn";
+import Note from "../../../components/note";
+import { I } from "../../../components/typography";
 
-import useResizeObserver from "../../utils/resizeObserver";
+import useResizeObserver from "../../../utils/resizeObserver";
 
-import ThemeContext from "../../utils/themeContext";
+import ThemeContext from "../../../utils/themeContext";
 
 const currentTime = () => new Date().getTime() / 1000;
 
