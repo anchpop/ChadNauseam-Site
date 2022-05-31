@@ -1,0 +1,67 @@
+import lagrange from "../../images/lagrange-points.jpeg";
+import stability from "../../images/lagrange-points-stability.jpeg";
+
+<Layout
+  subtitle="DWeb stuff has some incentives that are better than traditional alternatives"
+  description="More stability, fewer ads"
+>
+
+Something is said to be in equilibrium when all the forces being applied to it cancel out. One example of equilibrium is satellites at the Lagrange Points. From [NASA](https://solarsystem.nasa.gov/resources/754/what-is-a-lagrange-point/):
+
+> There are five special points where a small mass can orbit in a constant pattern with two larger masses. The Lagrange Points are positions where the gravitational pull of two large masses precisely equals the centripetal force required for a small object to move with them.
+
+> <CenteredImg src={lagrange} />
+
+Satellites at other parts of the solar system require continuous active correction, or they'll lose their orbit. That's why Starlink satellites, which are in low earth orbit very far from any Lagrange Point, will fall into the atmosphere and burn up about 18 months after being "decommissioned". But not all the Lagrange Points are created equal! From NASA again:
+
+> Of the five Lagrange points, three are unstable and two are stable. The unstable Lagrange points - labeled L1, L2 and L3 - lie along the line connecting the two large masses. The stable Lagrange points - labeled L4 and L5 - form the apex of two equilateral triangles that have the large masses at their vertices. L4 leads the orbit of earth and L5 follows.
+
+The James Webb Space Telescope happens to be at L2, an unstable point. But what is the difference between a stable and an unstable point?
+
+> The easiest way to understand Lagrange points is to think of them in much the same way that wind speeds can be inferred from a weather map. The forces are strongest when the contours of the effective potential are closest together and weakest when the contours are far apart.
+
+> <CenteredImg src={stability} />
+
+> L4 and L5 correspond to hilltops and L1, L2 and L3 correspond to saddles (i.e. points where the potential is curving up in one direction and down in the other). This suggests that satellites placed at the Lagrange points will have a tendency to wander off (try sitting a marble on top of a watermelon or on top of a real saddle and you get the idea). But when a satellite parked at L4 or L5 starts to roll off the hill it picks up speed. At this point the Coriolis force comes into play - the same force that causes hurricanes to spin up on the earth - and sends the satellite into a stable orbit around the Lagrange point.
+
+The short version is:
+
+1. An equilibrium is stable if the object will tend to go back into equilibrium after a small perturbation. Imagine nudging a ball at the bottom of a valley – the force of gravity will pull the ball back down to the bottom.
+
+2. An equilibrium is unstable if a small perturbation will cause the object to escape equilibrium completely. Imagine nudging a ball perfectly balanced at the top of a hill – it might have been perfectly balanced before, but now that you've nudged it, it will start to roll down the hill until it reaches a new equilibrium.
+
+## What does this have to do with the dweb/web3?
+
+I'm not a huge fan of the term "Web3", but I'm using it because I want to refer to cryptocurrency-related stuff in general, not just cryptocurrencies. The term "dweb" used to be floating around but it seems to have fallen out of favor for some reason.
+
+Let's imagine someone is hosting a very useful website. The site has no ads and makes very little money from donations, so the owner eats the hosting and domain name cost, and does all the maintenance themselves. This is an equilibrium – the website owner's joy from maintaining their website "cancels out" the costs they have to pay for maintaining the site's presence.
+
+Now let's imagine a small perturbation, like the owner getting hit by a bus. What happens to the website?
+
+Well, their credit cards probably stop working, so their hosting service will probably kick them off. If that somehow doesn't happen, his domain name will expire eventually and the website will no longer be available to users who don't want to type in an IP and forego HTTPS (i.e. all of them). And if that somehow doesn't happen, probably no one will update the software running on their server and it's likely to get taken over by hackers, at which point it will definitely get kicked off their hosting service.
+
+So "website owners hosting stuff out of the goodness of their heart" is not really a stable equilibrium.
+
+One thing that attracts me to IPFS and ENS is that it is genuinely much more stable. A website hosted with IPFS will not disappear just because the owner stops caring – it will remain up as long as _anyone_ seeds it, including random people like you or me that might not even know the owner.
+
+<Minisection>
+
+As an aside, for those curious: IPFS is basically the same technology as BitTorrent. It's designed to work well for the purpose of hosting websites, which necessitates some different design decisions for lower latency.
+
+It also has other neat features – for example, on Bittorrent, if you take a file that other people are seeding and change one byte, then seed the modified file yourself, you'll be the only seeder for the whole file. But IPFS "chunks" each file, so if you do that same thing on IPFS the result will be that you're the only seeder for that chunk, but people requesting to download the file will be able to get all the other chunks from anyone who was seeding the original file.
+
+This is pretty cool because it allows things like _aggregate torrents_. Imagine 1000 books being seeded by 1 person apiece, and you want to create an _aggregate torrent_ that contains all 1000 books. On BitTorrent, you'd be the only seeder for the new torrent, but on IPFS each person seeding one of the individual books would automatically contribute to seeding your aggregate torrent. Another benefit is that it speeds up loading websites that share files with other sites – for example, if many sites use React, visitors to your site will probably have React in their IPFS cache already and won't redownload it, or they'll be able to download it from any nearby node instead of having to download it from you.
+
+They also have "IPNS", which is a layer on top of IPFS that adds the ability to update your torrent. So you can have just one "torrent link" that you can update at any time without changing the link. (Old versions are never deleted, but the UI will show you the latest version by default.)
+
+</Minisection>
+
+What about the domain name? This one is a bit tricker, but when using ENS (a version of DNS built on Ethereum), _anyone_ can pay the $5/year+gas to prevent the name from expiring, not just the owner. If I care enough about a site to seed it, I might also care enough to throw a few bucks to keep it up if it's going to expire soon.
+
+This could be improved further with [Filecoin](https://filecoin.io/), which _incentivizes_ people to store files by charging for the initial storage and then charging again for retrieval. That would mean you wouldn't require anyone to host the files out of the goodness of their hearts, as long as users are willing to pay a fee to access the files.
+
+But speaking frankly, Filecoin sucks. If it was possible for a regular person to run a node, they could use Filecoin to host others' files on their unused disk space for close to zero marginal cost, which would be a huge advantage for the network. But it's not possible for a regular person to run a node, because the minimum hardware requirements impose a cost of nearly $10k. That might still be acceptable if Filecoin was actually useful, but the storage retrieval latency is measured in minutes, not milliseconds.
+
+IPFS latency isn't amazing either, but it's at least usable. And it's been improving – not long ago, it would take upwards of 30 seconds to fetch a file through IPNS, but their new resolver is much faster and loads my site in less than a couple seconds.
+
+</Layout>
