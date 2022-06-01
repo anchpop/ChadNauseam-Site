@@ -1,8 +1,8 @@
-import lagrange from "../../images/lagrange-points.jpeg";
-import stability from "../../images/lagrange-points-stability.jpeg";
+import lagrange from "../../../images/lagrange-points.jpg";
+import stability from "../../../images/lagrange-points-stability.jpg";
 
 <Layout
-  subtitle="DWeb stuff has some incentives that are better than traditional alternatives"
+  subtitle="Cryptocurrency-based websites have fundamentally better incentives than traditional alternatives"
   description="More stability, fewer ads"
 >
 
@@ -63,5 +63,35 @@ This could be improved further with [Filecoin](https://filecoin.io/), which _inc
 But speaking frankly, Filecoin sucks. If it was possible for a regular person to run a node, they could use Filecoin to host others' files on their unused disk space for close to zero marginal cost, which would be a huge advantage for the network. But it's not possible for a regular person to run a node, because the minimum hardware requirements impose a cost of nearly $10k. That might still be acceptable if Filecoin was actually useful, but the storage retrieval latency is measured in minutes, not milliseconds.
 
 IPFS latency isn't amazing either, but it's at least usable. And it's been improving – not long ago, it would take upwards of 30 seconds to fetch a file through IPNS, but their new resolver is much faster and loads my site in less than a couple seconds.
+
+## It should be easy to pay for what you use
+
+Let's say you host a website, and I use it. Every time I use the site, _you_ pay for the server costs. I can upload a video to YouTube for free because Google eats the cost of video storage. That's a really wonderful thing Google is doing, but they're not doing it out of charity and the fact is that they need to recoup their costs somehow. For example, [YouTube blocked Blender's videos](https://www.blender.org/media-exposure/youtube-blocks-blender-videos-worldwide/) because they were widely-viewed and not monetized, so Google was paying for all that hosting and bandwidth and not getting directly paid for it. It's not only within their legal rights to tell Blender to monetize their videos or go find somewhere else to host, they're incentivized to do that.
+
+Now, Google could ask Blender to pay for hosting, but that requires a substantial amount of work on their end for a feature very few people are likely to ever use. One thing I like about cryptocurrency is that the default is the _user_ paying, not the service. Almost every cryptocurrency includes a notion of "gas" that the person interacting with a smart contract has to pay.
+
+When you want to trade on Uniswap, the backend of the site is implemented as an Ethereum smart contract, so not only can you look at the code and see exactly what it's going to do, _you pay the gas_. Of course, hosting any backend on Ethereum is a million times more inefficient than hosting it on AWS, which is a downside that far outweighs any upside. But there is an upside, and making Ethereum less inefficient is an active area of effort.
+
+### Quick aside about rollups and the high cost of transactions
+
+I outline the scaling strategies that are most promising in [A Hacker's Case For Crypto](/coding/cryptocurrency/a-hackers-case-for-crypto/), but the short version is that _today_ you can use rollups to reduce the cost of gas 50x, for a subset of Ethereum operations. And in the very near future we'll have ZK-rollups that can run any Ethereum operation. (We actually already have one, but it's not deployed on the mainnet yet because it's still being tested.) The best part is that rollups introduce no new trust assumptions.
+
+If making transactions 50x cheaper with no new trust assumptions sounds too good to be true, let me explain how rollups work. There are two main costs for executing an operation on Ethereum:
+
+1. Every node needs to execute your operation to compute the new state. There are 300,000 nodes on Ethereum, so you have to pay for all of them to run your operation, which obviously will be more expensive than paying one server on AWS to do it.
+
+1. The operation needs to be sent to and stored by every validator on the Ethereum network, which means you're also paying for the bandwidth and storage costs to replicate your operation on 300,000 nodes.
+
+That is horrible! We're looking at a 300,000x efficiency penalty compared to AWS right off the bat. Rollups mitigate this in an interesting way. Using a rollup, every operation is still posted to the Ethereum, but the problem of computing the state is outsourced to a big computer somewhere. Obviously, the big computer could lie, which is why you need some way to keep them honest.
+
+ZK-Rollups are kept honest by the use of "validity proofs". This is basically a cryptographic proof that the new state of the chain is the result of applying some specific operations to the old state. Since the main chain knows what operations were applied, it just has to check that its transactions are the same as the ones that proof refers to, and then verify the proof. Checking that the transactions are the same is just a bunch of hashes, which is super fast, and checking the validity of the proof is _pretty much constant time no matter how many operations there were_.
+
+That means the main chain can get the new state from the big computer, then check the proof, and know with mathematical certainty that the new state is correct. There's no way that the big computer could lie without the Ethereum network detecting it and ignoring what they say. The main problem is that computing the proof is very expensive, maybe 100x more expensive than the computation it's proving. But it's a cost only the prover has to pay – the proof is small and can be verified in a snap.
+
+It's extremely nontrivial to efficiently compute a validity proof for arbitrary computations, but ZKSync has a [working testnet](https://blog.matter-labs.io/zksync-2-0-hello-ethereum-ca48588de179) that does just that for any operation that can be done on Ethereum.
+
+Ok, that solves the problem with everyone redoing the executions, but you still have to pay for the bandwidth and storage of _storing_ the operations on the main chain, right? Well, because the computation is hundreds or thousands of times cheaper now, you can trade some bandwidth/storage for computation by compressing the operation data.
+
+And 50x better is still not the best we can do. That cost is still dominated by bandwidth and storage, but [EIP-4488](https://www.coindesk.com/business/2021/12/08/scaling-ethereum-without-trade-offs-inside-eip-4488/) is a very simple change to reduce those costs by about 5x, and will hopefully be merged soon. And on the horizon we have [proto-danksharding](https://notes.ethereum.org/@vbuterin/proto_danksharding_faq) which will reduce those costs by 10x again. So, in the next couple years you'll be able to do a transaction on a ZK-rollup for around 2500x less gas than on Ethereum, with _zero_ new trust assumptions.
 
 </Layout>
