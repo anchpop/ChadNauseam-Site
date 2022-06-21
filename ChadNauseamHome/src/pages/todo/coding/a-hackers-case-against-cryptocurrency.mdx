@@ -1,0 +1,118 @@
+<Layout
+  subtitle="A Hacker's Case Against Cryptocurrency"
+  description="Perfectly balanced, as all things should be."
+>
+
+I wrote [A Hacker's Case For Cryptocurrency](/coding/cryptocurrency/a-hackers-case-for-crypto/), and my day job is working on cryptocurrency protocol development. 
+So it's fair to say I'm a bit of a cryptocurrency fanboy. However, the field is not without problems.
+(in the interest of neutrality, nothing I write in here will be related to what I do at work.)
+
+So, what are the goals of cryptonetworks how are they falling short? 
+The basic sales pitch is really compelling to me. 
+You know how you can write a game or utility and put the source online, and in doing so "give it to the world" and let anyone do whatever they want with it and make it their own?
+That might not be something you care about, but I do.
+
+The promise of cryptocurrencies is to hugely increase the class of programs you can do this for. You should be able to make a social network that's run and paid for by the people who use it, instead of run by you. Whenever you want to interact with the social network, a micropayment (ideally less than a cent) should be sent out to compensate whoever happens to be running the backend. 
+And it should be open, so anyone can write their own frontend, or a script that interacts with the backend automatically, etc. 
+
+If that were possible, it would be a dream come true for me. So this post is mostly going to be me complaining about the problems. 
+
+(By the way, I only care about proof-of-stake, assume that's what I'm talking about for the rest of the post.)
+
+## The network security is dependent on the demand for the token
+
+A cryptonetwork maintains a list of operations to some state. The main thing you don't want to happen is for this list of operations to be reordered (or past operations being inserted or deleted).
+This can only happen enough of the nodes are dishonest, usually 66%. When it happens, it's called forking the chain.
+
+So you need two things: 
+
+1) A barrier to starting nodes, so an attacker can't just spin up a billion nodes in an afternoon and get to 66%.
+
+2) A way to reward people who run honest nodes, so there are a lot of honest nodes and the attacker has to meet that barrier from #1 a lot of times to get to 66%.
+
+#1 is dependent on the demand for the token, because the barrier to starting a node is that you have to buy the token and lock it up for 6 months. (This is called the deposit period.)
+So in effect, you have to pay for 6 months of liquidity of the token. 
+
+#2 is also dependent on the demand for the token. 
+That's because the only way you can reward people is by paying them in the token, and if demand for the token is low that's not much of a reward. 
+
+If an attacker controls 66% of the stake and attack the network for longer than the deposit period, the chain is in their hands. They can reorder and delete operations however they want, and add new operations of their own (although they can't forge an operation that appears to be from someone else). What about attacks that don't last as long as the deposit period?
+
+If you just want to start a small proof-of-stake chain, you can use something called Exponential Subjective Scoring to make the chain more secure even if the token price is low. 
+But the cost is that you now have to have a high degree of "subjectivity". 
+Subjectivity means there's no way for new nodes who are just entering the network (maybe after being offline for a while) to tell which of two forks is the "real" one. 
+So they need to find someone they trust and ask them. 
+
+The important question here is: how long can you be offline without having to trust someone to tell you which of the forks is the true chain? That's called the *subjectivity period*, and it's nice and tunable. A long subjectivity period is nice, because it means nodes can be offline for along time and still reenter the network without having to trust anyone.
+
+But a short subjectivity period has other advantages too. If you're willing to make the subjectivity period one day, you can sustain an attack where 99% of the nodes are dishonest, as long as the attack lasts less long than the deposit period. (These are just rough numbers to build an intuition, don't quote me.)
+
+If you've ever wondered how tiny chains prevent themselves from being attacked all the time, they all do something just like this. Actually, most go even harder and basically set the subjectivity period to 0, which means they're immune from all history-editing attacks that don't last as long as the deposit period. If they make the deposits permenant (effectively setting the deposit period to infinity), they're immune to all history-editing attacks. 
+
+But still, this sucks. Nobody wants a permenant deposit period, and too much subjectivity is really annoying. In an ideal world, compromises like that would be unecessary and your chain would be secure even if the token price was zero. It leads to network effects, where not enough people using the chain means its token price is too low to be secure, and the chain being insecure discourages people from using it. 
+
+## Storing data is still way too hard
+
+Let's say you want to make a decentralized Instagram clone, and you want it to be secure. Security requires a lot of nodes running. Any information that's required for the chain to run needs to be replicated on the nodes, usually all of them. Even replicating that information on 400 nodes is still going to be orders of magnitude more expensive than just storing it on AWS. 
+
+Right now, there are like 300*k* Ethereum nodes, and all of them replicate everything. That's a truly insane amount of replication, so storing people's Instagram pics on the chain itself is clearly right out. There are projects like [Celestia](https://celestia.org/) and [Danksharding](https://notes.ethereum.org/@vbuterin/proto_danksharding_faq) that make it so not every node has to replicate *everything*, but even on these, storing a lot of images on-chain is not going to be practical.
+
+Luckily, you don't actually need to store that stuff on chain. You just need to store the hash on chain, and give people some other way to download images given the hash, like BitTorrent or [IPFS](https://ipfs.io/). 
+
+But that's not a magic solution. Someone still needs to store the images. It'd be nice if there was a way to, like, pay people on-chain to store the images off-chain, and have some complex system of incentives so that anyone can be a storage node and they only get paid if they actually store your images etc. 
+
+There's no good solution for that. There's Filecoin, which tries to enable that, but retrieving data on Filecoin takes minutes, when it needs to be less than a second to compete with traditional apps.
+
+Additionally, you need a nice API for interacting with data stored this way, implementing things like access control, etc. The group that develops Filecoin and IPFS made something called Textile that was actually pretty nice, but they stopped development because no one used it.
+
+There's also [Ceramic](https://ceramic.network/), which seems to do the same thing. Data is stored on IPFS, and it supports Filecoin and S3 as storage providers. I think something interesting might come of it, but we'll see.
+
+## Mobile and browser
+
+So, I respect Metamask and related projects for being a huge improvement over what came before. These are browser extensions that hold your keys, and when you want to interact with the chain, you get a little popup saying "do you want to sign this message?" or "do you want to approve this operation?" and if you click "confirm" it goes through.
+
+But most people don't have metamask, and if you want to support this same workflow on an iOS or Android app, as far as I can tell, you're screwed. 
+
+Also, remember how I talked about storing images off-chain, and finding them via a hash that's been posted on-chain? Well, the "finding them" process requires going through IPFS. IPFS doesn't work in a browser or a mobile app, so you need a server running somewhere as an intermediary. Kind of annoying! 
+
+## Frontend vs backend
+
+Here you have the problem of "web3 gateways". That is to say, how do users find and interact with your app? It kind of defeats the point if you just set up a server on AWS to serve the frontend. Even if cryptonetworks were great at decentralizing the backend, you'd still need something more to decentralize the frontend. Metamask has this issue, where to find your NFTs it just asks OpenSea. And when OpenSea lies about which NFTs you own (which they do, a lot) Metamask has no way to tell. 
+
+There are some possible solutions here. You can host your site on [IPFS](https://ipfs.io/) and get a human-readable domain name with [ENS](https://ens.domains/). But no browser supports this, so you're stuck using websites like eth.limo as a wrapper around your site, that does the name resolution server-side. 
+
+Also, IPFS is slow. Check out https://nauseam.eth.limo to see for yourself.
+
+## Usernames cost money
+
+Decentralized apps can't really depend on spam-detection, phone number verification, and things like that. So the most effective antispam technique is just to make usernames cost money. I don't think I should need to explain why this is a barrier for adoption. 
+
+You can pay for a username once and reuse it across sites, which is actually neat, but it's still a barrier.
+
+## Fiat on-ramps are annoying
+
+Before, I said this:
+
+> Whenever you want to interact with the social network, a micropayment (ideally less than a cent) should be sent out to compensate whoever happens to be running the backend. 
+
+Well, that micropayment is going to be a *cryptocurrency* micropayment. So people need to get cryptocurrency somehow. It's not that hard, but selling cryptocurrency requires following Know-Your-Customer regulations. That means exchanges need you to show them your ID to make an account, and then wait for verification. That's another huge barrier to this concept.
+
+
+</Layout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
