@@ -65,13 +65,14 @@ There's no good solution for that. There's Filecoin, which tries to enable that,
 
 Additionally, you need a nice API for interacting with data stored this way, implementing things like access control, etc. The group that develops Filecoin and IPFS made something called Textile that was actually pretty nice, but they stopped development because no one used it.
 
-There's also [Ceramic](https://ceramic.network/), which seems to do the same thing. Data is stored on IPFS, and it supports Filecoin and S3 as storage providers. I think something interesting might come of it, but we'll see.
+There's also [Ceramic](https://ceramic.network/), which seems to do the same thing. Data is stored on IPFS. They do the annoying thing where they advertise a lot of cool features on their website, and then when you go to use them you find out they're not implemented yet (sadly common in the blockchain space). But they seem to have the right ideas in general, and I think something interesting might come of it.
 
 ## Mobile and browser
 
-So, I respect Metamask and related projects for being a huge improvement over what came before. These are browser extensions that hold your keys, and when you want to interact with the chain, you get a little popup saying "do you want to sign this message?" or "do you want to approve this operation?" and if you click "confirm" it goes through.
+I respect Metamask and related projects for being a huge improvement over what came before. 
+These are browser extensions that hold your keys, and when you want to interact with the chain, you get a little popup saying "do you want to sign this message?" or "do you want to approve this operation?" and if you click "confirm" it goes through.
 
-But most people don't have metamask, and if you want to support this same workflow on an iOS or Android app, as far as I can tell, you're screwed. 
+But most people don't have Metamask, and if you want to support this same workflow on an iOS or Android app, as far as I can tell you're just totally screwed. 
 
 Also, remember how I talked about storing images off-chain, and finding them via a hash that's been posted on-chain? Well, the "finding them" process requires going through IPFS. IPFS doesn't work in a browser or a mobile app, so you need a server running somewhere as an intermediary. Kind of annoying! 
 
