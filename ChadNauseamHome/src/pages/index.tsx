@@ -27,6 +27,12 @@ const posts = [
     ]
   },
   {
+    section: "Advice",
+    posts: [
+      { title: "focusing", link: "/advice/focusing" },
+    ]
+  },
+  {
     section: "politics",
     posts: [
       {
