@@ -21,7 +21,7 @@ const posts = [
         link: "/economics/solving-macro/"
       },
       {
-        title: "Why a programmer union can save open source",
+        title: "Why a programmer's association can save open source",
         link: "/economics/why-a-programmer-union/"
       }
     ]
