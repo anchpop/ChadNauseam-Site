@@ -9,7 +9,8 @@ const posts = [
   {
     section: "coding",
     posts: [
-      { title: "How side effects work in FP", link: "/coding/random/how-side-effects-work-in-fp" },
+      { title: "How side effects work in FP", link: "/coding/random/how-side-effects-work-in-fp/" },
+      { title: "Git-branchless is totally cracked", link: "/coding/random/git-branchless-cracked/" },
       { title: "A hacker's case for cryptocurrency", link: "/coding/cryptocurrency/a-hackers-case-for-crypto/" }
     ]
   },

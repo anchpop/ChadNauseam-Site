@@ -1,0 +1,64 @@
+<Layout
+  andre
+  subtitle="Git-branchless is Totally Cracked"
+  description="An awesome extension for git"
+>
+
+`git-branchless` adds a bunch of commands to git that make it a real joy to use. The best one is [`git undo`](https://blog.waleedkhan.name/git-undo/), which just undoes whatever you just did. The blog post says:
+
+> For example, it can undo bad merges and rebases with ease, and there are even some rare operations that git undo can undo [which can’t be undone with `git reflog`](https://github.com/arxanas/git-branchless/wiki/Architecture#comparison-with-the-reflog). 
+
+What a great idea. 
+
+## A brief note on installation
+
+The official installation page is [here](https://github.com/arxanas/git-branchless/wiki/Installation), but I'll restate it briefly here. Assuming you have cargo, installation is just one `cargo install --locked git-branchless` away. If you use nix like me (which you should!), you can also install `git-branchless` [that way](https://search.nixos.org/packages?channel=22.05&show=git-branchless&from=0&size=50&sort=relevance&type=packages&query=git-branchless).
+
+Once you have it installed, you need to run `git branchless init` inside a git repo, and `git-branchless` will be set up for that clone of that repo.
+
+You should also set up this alias:
+
+```
+# git-branchless
+git = "git-branchless wrap --";
+```
+
+If you already have git aliases, you probably want to add `git-branchless wrap --` to them. These are the aliases I use:
+
+```
+# git aliases
+# standard git
+gs = "git-branchless wrap -- status";
+gp = "git-branchless wrap -- push";
+gpf = "git-branchless wrap -- push --force-with-lease";
+# git-branchless
+gsync = "git-branchless sync";
+gbinit = "git-branchless init";
+gsl = "git sl";
+gamend = "git-branchless amend";
+greword = "git-branchless reword";
+```
+
+## What you can do with `git-branchless`
+
+I already mentioned my favorite command, `git undo`. But these are close contenders for the top:
+
+1. My most used command is probably [`git sync`](https://github.com/arxanas/git-branchless/wiki/Command:-git-sync). This tries to find the `master` branch (or the `main` branch, etc.) in your repo, and rebases your branch so all the new commits are on top of the commits in the master branch. 
+
+   Note that it won't pull changes from origin or anything like that, so make sure to pull on the master branch first if that's what you want.
+
+   Also, the git-branchless implementation of rebasing is way faster than the stock one! It will also abort without doing anything if the rebase requires merge conflict resolution, so you can run `git sync` often without fear of being stuck in a weird merge conflict. 
+   
+   If you're okay with fixing the conflicts, run `git sync -m`.
+
+2. After that, [`git amend`](https://github.com/arxanas/git-branchless/wiki/Command:-git-amend) is a clasic. What it does is just add the changes from your working directory to the commit that HEAD is on. It comes in particularly handy when you want to edit a commit that happened a bit in the past, because it automatically rebases branches to include the new, modified commit. 
+
+3. `git sl` is a new-and-improved version of `git log` that focuses on your commits, which is usually what I'm interested in anyway.
+
+4. [`git move -s <commit> -d <commit>`](https://github.com/arxanas/git-branchless/wiki/Command:-git-move) moves a **s**source commit (and all its desecendents) to a **d**estination, editing the history if necessary (it's like a better version of `git rebase`).
+
+   If you want to use a branch as your source instead of passing a commit, you should use `-b`. It's something of a defect in my opinion that git-branchless will actually let you pass a branch to `-s`, but this is almost never what you want - it'll only move the tip of the branch to the destination, not the whole branch history from where it diverged.
+
+One command that git-branchless lacks that I wish it had, would be to rebase all branches that descend from an a commit in the current branch that's younger than HEAD and but older than the point of divergence. The idea would be to simplify the situation that often occurs when you have multiple branches to implement a feature in small PRs, and want to add a commit on a branch other than the last one.
+
+</Layout>
