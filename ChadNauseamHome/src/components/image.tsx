@@ -11,7 +11,7 @@ export const CenteredImg = ({ src, to, style, className }) => {
   );
   if (to !== undefined) {
     return (
-      <a href={to} className="shadowed">
+      <a href={to} className="shadowed-1">
         {Img}
       </a>
     );

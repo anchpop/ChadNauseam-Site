@@ -2,6 +2,8 @@
   andre
   subtitle="How Side Effects Work in FP"
   description="An explanation of monads in disguise"
+  about="Haskell"
+  nodisclaimer
 >
 
 When you think about functional programming, you might think of banning mutation, or of functions without side effects. But in my opinion, the fundamental idea of FP is _equational reasoning_. That is, this code:
@@ -25,7 +27,7 @@ Put explicitly: If you write `x = foo()`, that means you should be able to repla
 
 2. If `bar(x)` could mutate `x`, then changing `bar(x)` to `bar(foo())` would change what your program means.
 
-By saying reducing what you can do, we allow a way of reasoning about programs that would otherwise be basically impossible. Math traditionally uses equational reasoning a lot, and not for nothing – it's really useful!
+By reducing what you can do, we allow a way of reasoning about programs that would otherwise be basically impossible. Math traditionally uses equational reasoning a lot, and not for nothing – it's really useful!
 
 ## Can we still have effectful programs?
 

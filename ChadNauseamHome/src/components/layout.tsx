@@ -35,11 +35,13 @@ import "./css/vars.css";
 import "./css/water.css";
 import "./css/custom.css";
 
-const Layout: React.FC<{ subtitle: string; description: string, andre?: boolean }> = ({
+const Layout: React.FC<{ subtitle: string; description: string, andre?: boolean, nodisclaimer?: boolean, about?: string }> = ({
   subtitle,
   description,
   children,
-  andre
+  andre,
+  nodisclaimer,
+  about,
 }) => {
   // Try to avoid using these.
   // You want to do as much in CSS as possible because these are obviously not accessible during server-side rendering
@@ -82,6 +84,20 @@ const Layout: React.FC<{ subtitle: string; description: string, andre?: boolean 
       : <></> // building
   }
 
+  const Discliamer = () => nodisclaimer ? <></> : <div className="shadowed shadowed-2 disclaimer">
+    <h3 className="disclaimer-heading">
+      Disclaimer!
+    </h3>
+    <div className="disclaimer-text">
+      <p>
+        An effective learning strategy is to write about what you're learning. That's why I have this site, and I've made it public in case it can help someone. But I <em>am</em> still learning, so <b>you definitely shouldn't take me as an expert and should double-check everything on this page before trusting it</b>.
+      </p>
+      <p>
+        If something in this page (or any other) is wrong, please <a href="/contact/">let me know</a> and I'll pay you $5.12. That's 10 times Knuth's rate!
+      </p>
+    </div>
+  </div>
+
   return (
     <Location>
       {(locationProps) => <>
@@ -104,6 +120,7 @@ const Layout: React.FC<{ subtitle: string; description: string, andre?: boolean 
               smallScreen,
             }}
           >
+            <Discliamer />
             <main className="main-content fadeIn">
               {children}
             </main>
