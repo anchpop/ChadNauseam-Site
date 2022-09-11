@@ -172,6 +172,8 @@ You were going to have to make a test scene anyway, and hopefully it won't be to
 No more need to hunt through a giant folder of test scenes, most of which are out of date now anyway. 
 (You know they won't be out of date because, if they were, hopefully your assertions would fail.) 
 
+   When you're modifying a different feature, the isolation that ECS provides prevents you from having to change too many tests. Ideally every test just adds the bare-minmum components it needs, and adds them by using "component bundles" with certain components changed from their default. This is the anti-spaghetti property that makes me really love ECS.
+
 3. ECS  makes it much more concise to set up a minimal scene with everything you need. 
 
 
