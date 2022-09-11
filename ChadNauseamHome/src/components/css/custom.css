@@ -31,6 +31,10 @@
   font-size: calc(var(--text-font-size) * 2.1);
 }
 
+video {
+  max-width: 100%;
+}
+
 h3,
 h4 {
   line-height: 1.4;

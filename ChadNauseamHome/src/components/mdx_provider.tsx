@@ -11,6 +11,7 @@ import SubscribeHook from "./subscribe_hook";
 import SectionHeader from "./section_header";
 import _, { CenteredImg } from "./image";
 import CustomCodeBlock from "./custom_code_block"
+import Video from "./video";
 import { StaticImage } from "gatsby-plugin-image"
 
 import { Link } from "gatsby";
@@ -36,6 +37,7 @@ const shortcodes = {
   Minisection,
   CenteredImg,
   StaticImage,
+  Video,
   Graphviz: ({ dot, options }) => (
     <Graphviz
       dot={dot}

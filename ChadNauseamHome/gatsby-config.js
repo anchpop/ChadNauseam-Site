@@ -6,6 +6,7 @@ module.exports = {
     dwebUrl: "nauseam.eth"
   },
   plugins: [
+    `gatsby-transformer-ffmpeg`,
     "gatsby-plugin-netlify-cms",
     "gatsby-plugin-sass",
     {
