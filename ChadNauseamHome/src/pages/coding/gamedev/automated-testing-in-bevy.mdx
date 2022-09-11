@@ -215,6 +215,6 @@ Once I figured out which plugins worked, I added a new PluginGroup to Bevy, `Tes
 The next problem: `RenderPlugin` actually does a lot of useful stuff that doesn't require a GPU, including some stuff that `bevy_rapier` needs! So the next step was to fix `RenderPlugin` so when no GPU is detected it still tries to do as much as possible, and logs an error instead of panicking. 
 Of course, that also got a [PR](https://github.com/bevyengine/bevy/pull/5933).
 
-(FWIW, I'm not sure these PRs will actually get merged. I don't know if the maintainers want to support testing in this way.) 
+(FWIW, I'm not sure these PRs will actually get merged.) 
 
 </Layout>
