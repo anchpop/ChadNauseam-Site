@@ -16,9 +16,8 @@ Why is this? Is testing just less useful in games? Well, kind of.
 
 ### Pros:
 
-1. Games can be tested manually by QA teams, whose time is less expensive than developers', so hiring outside help to playtest games makes some sense. 
-But it isn't strictly superior – the benefit of automated testing is that it scales in O(1) with respect to number of code changes, while playtesting is O(n), so only automated tests can e.g. 
-be included in CI. 
+1. Games can be tested manually by QA teams, whose time is less expensive than developers', so hiring outside help to manually test games makes some sense. 
+But it isn't strictly superior – the benefit of automated testing is that it scales in O(1) with respect to number of code changes, while manually testing is O(n), so only automated tests can e.g. be included in CI. 
 The benefit of this is that, when you make a change that causes a test to fail, you have to waste much less time hunting down the bug because you know it has to be caused by the change you just made. 
 This benefit is no less real in games than anywhere else.
 
@@ -216,5 +215,9 @@ The next problem: `RenderPlugin` actually does a lot of useful stuff that doesn'
 Of course, that also got a [PR](https://github.com/bevyengine/bevy/pull/5933).
 
 (FWIW, I'm not sure these PRs will actually get merged.) 
+
+## Prior Art
+
+[Writing Tests in Bevy, by jroddev](https://blog.jroddev.com/bevy-tests/). A great post that covered many things I wish I'd covered here! 
 
 </Layout>
