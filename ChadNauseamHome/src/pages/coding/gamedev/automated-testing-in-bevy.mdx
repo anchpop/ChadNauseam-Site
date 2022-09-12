@@ -58,7 +58,7 @@ Each entity corresponds to one ontological unit in your game – you probably ha
 For example, the entity that corresponds to your player may have a `Player` component, which stores attributes like the player's current health.
 
 1. **Systems** are functions that you direct the game engine to run every frame (or on startup, etc.) Systems can query for entities that have certain components attached to them, and possibly mutate those components (or do other things that functions can do, like talk to system APIs). 
-For example, you could have a struct that queries for all entities that have a position component and a velocity component, and then iterate over them to modify the position based on the velocity. 
+For example, you could have a system that queries for all entities that have a position component and a velocity component, and then iterate over them to modify the position based on the velocity. 
 In 
 bevy, there are also built-in systems and components that handle things like interacting with the graphics card to display your game to the screen, and other common game needs.
 

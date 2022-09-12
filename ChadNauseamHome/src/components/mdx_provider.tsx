@@ -18,8 +18,6 @@ import { Link } from "gatsby";
 
 import { InlineMath as Im, BlockMath } from "react-katex";
 
-
-
 const shortcodes = {
   Link,
   Layout,
