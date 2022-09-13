@@ -1,6 +1,7 @@
 <Layout
  subtitle="We have decentralized version control, but centralized version management"
- description="How can git be improved?"
+ description="How can git workflows be made more decentalized?"
+ nodisclaimer
 >
 
 ## What Git doesn't do
@@ -43,6 +44,14 @@ If you're not leader, you work on some other branch and wait for emails to come 
 Git may be decentralized version control, but this would be decentralized version *management*. Any one person dying doesn't stop "the project" from being updated, and nobody has any privileged role in the protocol. 
 
 Of course, this is a terrible idea. But it's an idea. 
+
+## Coordination problems
+
+I think programmers sometimes talk a big game about how Microsoft is evil, it's bad to rely on megacorps, etc. But, in practice, not very many of us have tried to come up with an alternative. Are centralizing forces an unavoidable fact of life? I'm not sure, but I think if we want to have a chance in the fight there's a few things we'll need. We'll need better protocols for distributed consensus, we'll need better [ZK-proof](https://en.wikipedia.org/wiki/Zero-knowledge_proof) tech, and we'll need some kind of monetary incentive to reward people for building the open systems we wish we had.
+
+Distributed systems are simpler than centralized ones in some ways, and harder in others. If you can come up with a CRDT that's a good fit for your app, you can support a lot of fun stuff, like offline editing which syncs back up automatically once you reconnect with your peers. On the other hand, making distributed systems that scale is much harder than making centralized systems that scale.
+
+But maybe we can make decentalized systems easier/more profitable to write, and more convenient for users, than centralized ones. Maybe we can make a world where everyone is a king, a priest, a prophet, and a sysadmin. 
 
 </Layout>
 

@@ -36,7 +36,7 @@ const posts = [
     ]
   },
   {
-    section: "politics",
+    section: "Politics",
     posts: [
       {
         title: "Political reasoning style quiz",
