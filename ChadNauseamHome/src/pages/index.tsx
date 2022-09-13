@@ -7,15 +7,17 @@ import "../components/css/frontpage.css";
 
 const posts = [
   {
-    section: "coding",
+    section: "Coding",
     posts: [
       { title: "How side effects work in FP", link: "/coding/random/how-side-effects-work-in-fp/" },
       // { title: "Git-branchless is totally cracked", link: "/coding/random/git-branchless-cracked/" },
+      { title: "I learned to love testing game code", link: "/coding/gamedev/automated-testing-in-bevy" },
+      { title: "Decentralized version control, centralized version management", link: "/coding/random/thinking-about-version-control" },
       { title: "A hacker's case for cryptocurrency", link: "/coding/cryptocurrency/a-hackers-case-for-crypto/" }
     ]
   },
   {
-    section: "economics",
+    section: "Economics",
     posts: [
       {
         title: "Improving the US financial system",
