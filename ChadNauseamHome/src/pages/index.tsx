@@ -13,7 +13,9 @@ const posts = [
       // { title: "Git-branchless is totally cracked", link: "/coding/random/git-branchless-cracked/" },
       { title: "I learned to love testing game code", link: "/coding/gamedev/automated-testing-in-bevy" },
       { title: "Decentralized version control, centralized version management", link: "/coding/random/thinking-about-version-control" },
-      { title: "A hacker's case for cryptocurrency", link: "/coding/cryptocurrency/a-hackers-case-for-crypto/" }
+      { title: "A hacker's case for cryptocurrency", link: "/coding/cryptocurrency/a-hackers-case-for-crypto/" },
+      { title: "Levers in the brain", link: "/coding/random/levers-in-the-brain/" },
+      { title: "My rustfmt.toml", link: "/coding/tips/my-rustfmt-toml/" },
     ]
   },
   {

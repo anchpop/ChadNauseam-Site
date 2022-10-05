@@ -1,0 +1,70 @@
+<Layout
+  andre
+  subtitle="Levers In The Brain"
+  description="A New Principle of UI Design"
+  about="Category Theory"
+  nodisclaimer
+>
+
+There's a principle that I've not seen written down anywhere, but I'd describe it as "the levers in the tool should resemble as closely as possible the levers in the user's brain". What I mean by that is, when we have the choice between a "direct" implementation and an implementation that allows the user to control variables in a more intuitive way, we should choose the second even if it's more complicated. 
+
+### A Shower Analogy
+
+Consider designing a shower. A traditional shower has two faucets, one that controls the the flow of hot water and another that controls the flow of cold water. That's the direct implementation because it directly corresponds to the underlying implementation, of two pipes containing hot and cold water.
+
+We can also imagine some "abstraction layers" on top of the direct implementation:
+
+1. An shower with a dial for temperature and a dial for flow rate, with a control system that uses an internal thermometer to change the flow of hot and cold water to match the user's settings.
+
+2. A shower with a single dial, that controls the flow of hot and cold water by selecting a point along a 2D hilbert curve. (The flow of hot water is controlled by the x position of the selected point, and cold water the y position).
+
+The first abstraction layer is something you can find in many showers, and I find it to be a much nicer user interface than the traditional one. Thankfully, I've never seen the second abstraction layer, and I hope I never will.
+
+I might be belaboring an obvious point, but the fundamental issue with the traditional design is that nobody taking a shower thinks "I wish the flow rate of hot water was higher". They think "I wish the temperature was higher" or "I wish the pressure was higher". And the shower gives them no direct way to control those two levers, instead leaving them to solve this system of equations in their head:
+
+$$
+temp = hot / cold
+pressure = hot + cold
+$$
+
+My strategy when faced with an unfamiliar shower is to get the temprature to a value I like, then try to proportionally turn the hot and cold handles to get the pressure right. You can do worse than this, like my hilbert curve proposal, but it's not easy.
+
+### A Color Analogy
+
+This is a bit simpler and probably what I should have started with. You're probably familiar with the RGB color space. It's a 3D space where each axis represents the intensity of one of the three primary colors. You can think of it as a cube, with each axis representing one of the sides of the cube. 
+
+The problem with RGB is that it's not intuitive. If you want to make a color that's halfway between red and blue, you can't just move the red slider halfway and the blue slider halfway. You'll get *a* color doing that, but it won't look like it's halfway between red and blue.
+
+There's another color space called Oklab that does have this property. It's also a 3D cube (kinda), but the axes are not the same as RGB. Human color perception is complicated, but the gist is that there's no such color as "greenish-red" and there's no such color as "blueish-yellow". This is called the [opponent process model](https://en.wikipedia.org/wiki/Opponent_process), and it's the basis for Oklab. 
+
+Since there's no such thing as greenish-red, you can have one slider (normally called *a*) that takes the color from greenish to reddish, and another (called *b*) that takes the color from blueish to yellowish. Lastly, you have a third slider (called *l*) that takes the color from black to white.
+
+Oklab is a perceptual color space, which means *any two nearby points on the cube will correspond to similar colors*, and *any two similar colors will occupy nearby points on the cube*. 
+
+Note: It's not perfect, because some areas of the cube are [impossible to represent with physical light](https://en.wikipedia.org/wiki/Impossible_color). In fact, the modern shower has this problem too: there are some water pressures that are only achievable at lukewarm temperature, because they correspond to having both hot and cold at max flow. 
+
+I bring up perceptual color spaces because they're a good example what I actually mean when I talk about "levers in the brain" design. If two outputs of the tool feel similar, it should be a small change to get from one to the other. It should also be the same sized-change in either direction!  
+
+## Programming Language Theory
+
+The fundamentally hard part about programming is that you have to do this everywhere. There's the obvious sense, where every API provides you some levers, so writing a good API involves coming up with nice levers. 
+
+But there's also the deeper sense, when writing a large program, of predicting how you'll want to change the program in the future and trying to think of a design that will make your future-changes easy. This is the basic observation behind the must-read article [Programming as Theory-Building](https://pages.cs.wisc.edu/~remzi/Naur.pdf).
+
+When people complain about "spaghetti code", they say that "I have to touch 100 files for every little thing I want to add". They have to make a big change the code to make a small change to the output. They want to increase the pressure, but all they have is a lever for hot and a lever for cold (and likely 98 other levers that need to be adjusted just right). 
+
+This the fundamental problem of programming language theory. What language constructs make it easier to write code that's easy to extend, and hard to write code that's hard to extend? Over the years, we've turned a pretty obtuse interface (machine code) into one that's comparatively a pleasure to use (high-level programming langauges). 
+
+## More Examples
+
+1. Maybe video editing software should represent a video as a linked list of *video clips*. Making a video clip longer or shorter, or inserting a video clip in the middle, should automatically cause the timing of the rest of the clips to be adjusted (so there's no overlap or empty space).
+
+2. NixOS gets this right. You have a text file containing a list of programs you want to have on your machine, and installing or removing a program is as simple as editing that file and running a command. Note that this satisfies the proprety that *changes should be equally easy in both directions*, unlike traditional package managers where it can be difficult to go back to the state before you installed the program.
+
+3. Haskell gets this wrong. A function that returns `a`, and a function that returns `Maybe a`, feel close to one another. But modifying a function to return `Maybe a` can require you to make changes arbitrarily far up the call stack. On the other hand, [Unison](https://www.unison-lang.org/) gets this right (and many other things).
+
+## What's next?
+
+I think we should take the good ideas from programming language theory and apply them to the design of user interfaces, and take the good ideas of user interfaces and apply them to programming language theory. More on this in a future post!
+
+</Layout>
