@@ -45,6 +45,15 @@ const posts = [
         link: "/reasoning-quiz"
       }
     ]
+  },
+  {
+    section: "Thoughts",
+    posts: [
+      {
+        title: "Semaglutide has changed the world",
+        link: "/random/semaglutide-has-changed-the-world/"
+      }
+    ]
   }
 ]
 
