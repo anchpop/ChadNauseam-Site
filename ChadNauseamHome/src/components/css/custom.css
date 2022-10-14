@@ -306,7 +306,7 @@ blockquote .main-content {
   display: flex;
   justify-content: center;
   padding-bottom: 1.5rem;
-  max-width: 60%;
+  max-width: 100%;
 }
 
 .section-header-container {
