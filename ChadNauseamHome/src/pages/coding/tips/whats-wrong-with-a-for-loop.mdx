@@ -52,12 +52,16 @@ But each item in a chain of iterators can usually only do one specific thing.
 4. `collect` can only collect items of an iterator into a single value.
 
 Because they're less powerful than a for loop, it's less conceptual work to figure out what they're doing.
-The total spaace of things they might be doing is much smaller.
+The total space of things they might be doing is much smaller.
 You can also easily comment out one step, like `intersperse`, and have confidence in exactly what you've done.
 
 Also, this code will likely be faster than the for loop you'd be likely to write.
+
 First of all, it'll make fewer memory allocations, because it won't need to allocate a new vector for each item in the chain.
-And second of all, if you decide you only want the first `n` elements, you can just add a `.take(n)` and it'll never do more processessing than is needed.
+
+And second of all, if you decide you only want the first `n` elements, you can just add a `.take(n)` and it'll never do more processessing than is needed. 
+
+(You can do that with a break as well, but if you have multiple for loops running in sequence it gets a bit brittle.)
 
 The main disadvantage of this style is that it's harder to debug in a debugger.
 I tend to stick to printf debugging because rust debuggers are still pretty bad, so that's a wash for me.
