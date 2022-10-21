@@ -16,6 +16,7 @@ const posts = [
       { title: "A hacker's case for cryptocurrency", link: "/coding/cryptocurrency/a-hackers-case-for-crypto/" },
       { title: "Levers in the brain", link: "/coding/random/levers-in-the-brain/" },
       { title: "My rustfmt.toml", link: "/coding/tips/my-rustfmt-toml/" },
+      { title: "What's wrong with a for loop?", link: "/coding/tips/whats-wrong-with-a-for-loop/" },
     ]
   },
   {
