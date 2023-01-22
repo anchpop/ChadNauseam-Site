@@ -1,0 +1,74 @@
+<Layout
+  subtitle="What's wrong with a for loop?"
+  description="You'd be surprised by how many people don't know the answer to this question."
+  nodisclaimer
+>
+
+In a rust project I'm working on, we have some code that looks like this:
+
+```rust
+let items: Vec<TextSection> = inventory
+    .hand
+    .iter()
+    .chain(inventory.belt.iter())
+    .chain(inventory.backpack.iter())
+    .map(|item| {
+        TextSection::new(
+            item,
+            TextStyle {
+                font: asset_server
+                    .load("fonts/FiraCode-Regular.ttf"),
+                font_size: 20.0,
+                color: Color::WHITE,
+            },
+        )
+    })
+    .intersperse(TextSection::new(
+        "\n",
+        TextStyle {
+            font: asset_server.load("fonts/FiraCode-Regular.ttf"),
+            font_size: 20.0,
+            color: Color::WHITE,
+        },
+    ))
+    .collect();
+```
+
+It's a behemoth expression that spans 24 lines. 
+It could easily be rewritten as a for loop, and many developers would prefer it that way. 
+But once you get used to it, writing code in this style is actually much nicer.
+
+The reason why is "the rule of least power". 
+A for loop might do anything.
+But each item in a chain of iterators can usually only do one specific thing.
+
+1. `chain` can only chain iterators together, equivalent to concatenating lists.
+
+2. `map` can only modify elements in a list, never add or remove any. 
+   And if you're not a psychopath, you'll never use `map` in a way where the modification applied to an element depends on anything other than the element itself.
+
+3. `intersperse` can only insert a separator between elements in a list.
+
+4. `collect` can only collect items of an iterator into a single value.
+
+Because they're less powerful than a for loop, it's less conceptual work to figure out what they're doing.
+The total space of things they might be doing is much smaller.
+You can also easily comment out one step, like `intersperse`, and have confidence in exactly what you've done.
+
+Also, this code will likely be faster than the for loop you'd be likely to write.
+
+First of all, it'll make fewer memory allocations, because it won't need to allocate a new vector for each item in the chain.
+
+And second of all, if you decide you only want the first `n` elements, you can just add a `.take(n)` and it'll never do more processessing than is needed. 
+
+(You can do that with a break as well, but if you have multiple for loops running in sequence it gets a bit brittle.)
+
+The main disadvantage of this style is that it's harder to debug in a debugger.
+I tend to stick to printf debugging because rust debuggers are still pretty bad, so that's a wash for me.
+But in languages with good debugger support, I can see how this style might be a bit of a pain.
+
+However, why *should* this be any harder to debug?
+It's more explicit about your intentions than a for loop.
+It'd be nice if debuggers could use this extra information to make the debugging experience better, not worse.
+
+</Layout>

@@ -1,0 +1,50 @@
+<Layout
+  subtitle="My rustfmt.toml"
+  description="My personal preferences"
+  nodisclaimer
+>
+
+You can configure rustfmt a little bit by adding a rustfmt.toml file to your project. The full list of configuration options are [on the rustfmt homepage](https://rust-lang.github.io/rustfmt/), but these are my preferences:
+
+```
+edition = "2021"
+max_width = 80
+comment_width = 80
+wrap_comments = true
+format_strings = true
+group_imports = "StdExternalCrate"
+imports_granularity = "Crate"
+condense_wildcard_suffixes = true
+```
+
+## Why these?
+
+```
+edition = "2021"
+```
+
+This is the latest edition of Rust. If you have a `cargo.toml`, rustfmt will read the edition from there, but sometimes I'm using rustfmt outside of a cargo project, and in that case it's important to configure it to use the right parser.
+
+```
+max_width = 80
+comment_width = 80
+wrap_comments = true
+format_strings = true
+```
+
+I'm a big user of the two-pane view in VSCode, mostly for looking at diffs. That makes it inconvenient to have long lines, so I set `max_width = 80`. The other three options here make sure that nothing slips through. (By default, comments and strings are allowed to extend past the 80-character limit.)
+
+```
+group_imports = "StdExternalCrate"
+imports_granularity = "Crate"
+```
+
+`group_imports = "StdExternalCrate"` requires nightly, but it's so worth it. It organizes your imports so `Std` > `External` > `Crate`, as you'd expect. `imports_granularity = "Crate"` makes rustfmt group imports by crate.
+
+```
+condense_wildcard_suffixes = true
+```
+
+This automatically uses the `..` syntax when destructuring a tuple if you have multiple wildcards at the end. (Think `let (lorem, ipsum, ..) = (1, 2, 3, 4);`.) This happens a lot when writing Bevy code and I think it looks cleaner.
+
+</Layout>

@@ -1,0 +1,223 @@
+import play_your_test from "../../../images/coding/bevy/play_your_test.mp4";
+
+<Layout
+  subtitle="How I learned to love testing game code"
+  description="Using the Bevy game engine!"
+  nodisclaimer
+>
+
+Most videogames don't have much in the way of testing. 
+The only big-budget one I know of that has publicly put a large effort into it is [Sea of Thieves](https://www.youtube.com/watch?v=X673tOi8pU8). 
+My favorite open-source game, [Mindustry](https://github.com/Anuken/Mindustry/), does have some but they're not super prevalent either. 
+
+
+Why is this? Is testing just less useful in games? Well, kind of. 
+
+
+### Pros:
+
+1. Games can be tested manually by QA teams, whose time is less expensive than developers', so hiring outside help to manually test games makes some sense. 
+But it isn't strictly superior – the benefit of automated testing is that it scales in O(1) with respect to number of code changes, while manually testing is O(n), so only automated tests can e.g. be included in CI. 
+The benefit of this is that, when you make a change that causes a test to fail, you have to waste much less time hunting down the bug because you know it has to be caused by the change you just made. 
+This benefit is no less real in games than anywhere else.
+
+1. Test-driven development is more fun. 
+"Having a list of red things, and making them turn green one-at-a-time" describes a good portion of videogames!
+
+### Cons:
+
+1. Games change functionality *a lot*. 
+It's not very useful to write a test for functionality you're going to change next week.
+
+1. Automated tests are the equivalent of a [Poka-Yoke](https://en.wikipedia.org/wiki/Poka-yoke) – once you have an automated test to ensure something works, you're much less likely to unintentionally release a version of your code where that thing doesn't work. 
+Playtesters, being much slower than automated tests, don't always have the luxury of testing every possible problem on every release. 
+So in cases where correctness matters a lot, automated tests have a strong advantage. 
+But in videogames, correctness matters barely at all. 
+Products are routinely released half-broken and still make lots of money. 
+(Sea of Thieves being no exception.) GTA V, one of the most financially successful videogames of all time, had no shortages of technical issues including [a dumb O(n^2) bug that caused the loading screen to take 6 minutes instead of 2 minutes, which was eventually fixed by a modder](https://nee.lv/2021/02/28/How-I-cut-GTA-Online-loading-times-by-70/).
+
+1. It's often not clear how to test game code in a way that doesn't make you want to pull your hair out. 
+I was a professional Unity developer for a while and I still have no idea how. 
+Part of the problem is that most big game engines encourage spaghetti code, which makes testing a huge pain. 
+For example, in Unity, every gameobject has a name, and there's a [`Find`](https://docs.unity3d.com/ScriptReference/GameObject.Find.html) function that takes a string and returns the gameobject with that name. 
+(Don't ask me what happens if there's more than one gameobject with that name – it's not like the Unity docs bother to tell you.) By default the name is just whatever you typed into the inspector, so it's not like it's some global constant defined somewhere in your code. 
+That means if you change the name, you now have to hunt down every test that uses that function and pass it the new string instead!
+
+But recently I started writing a game in the wonderful Rust game engine [Bevy](https://bevyengine.org/), and I missed the strength and certainty of automated testing. 
+Bevy uses the ECS pattern to organize game code, and it occurred to me that ECS substantially alleviates the spaghetti-code problem that makes testing in Unity and Unreal so terrible.
+
+### Quick ECS Primer
+
+With ECS, your code talks to the game engine via three distinct concepts: Entities, Components, and Systems.
+
+1. **Entities** are represented by a unique integer. 
+Each entity corresponds to one ontological unit in your game – you probably have a player entity, an entity for each platform, etc.
+
+1. **Components** are structs that can hold any data you like, and there's a data structure in the game engine that holds a relationship between entities and components. 
+For example, the entity that corresponds to your player may have a `Player` component, which stores attributes like the player's current health.
+
+1. **Systems** are functions that you direct the game engine to run every frame (or on startup, etc.) Systems can query for entities that have certain components attached to them, and possibly mutate those components (or do other things that functions can do, like talk to system APIs). 
+For example, you could have a system that queries for all entities that have a position component and a velocity component, and then iterate over them to modify the position based on the velocity. 
+In 
+bevy, there are also built-in systems and components that handle things like interacting with the graphics card to display your game to the screen, and other common game needs.
+
+   In Bevy, systems' queries are visible in the function's type signature. 
+So just by looking at a system's type, it's clear what components it's might interact with. 
+This is useful for the engine, which has a scheduler that can run systems in parallel if neither requests the ability to modify a component that another may modify or read.
+
+## Testing with ECS
+
+Because of the structure imposed by an ECS, testing started to seem more appealing. 
+Each test can simply create a world, spawn in some entities, attach components to them, and register some systems. 
+Then it can simulate the game for a few frames, and finally assert that the components were modified the way you expected.
+
+So that's exactly what I implemented! Here's a test in the game I'm working on:
+
+```rust
+#[test]
+fn character_moves_horizontally() {
+    use crate::character;
+    Test {
+        setup: |app| {
+            app.add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+                .add_plugin(character::Plugin);
+            // Setup test entities
+            let character_id = app
+                .world
+                .spawn()
+                .insert_bundle(SpatialBundle::default())
+                .insert_bundle(character::Bundle {
+                    input: character::Input {
+                        direction: Vec3::X,
+                        ..character::Input::default()
+                    },
+                    ..character::Bundle::default()
+                })
+                .id();
+            spawn_floor_beneath_capsule(app, character_id);
+            character_id
+        },
+        setup_graphics: default_setup_graphics,
+        frames: 10,
+        check: |app, character_id| {
+            let character =
+                app.world.get::<Transform>(character_id).unwrap();
+            assert_gt!(character.translation.x, 0.0);
+        },
+    }
+    .run()
+}
+```
+
+### So how does this work? 
+
+I have a `Test` struct that looks like this:
+
+```rust
+pub struct Test<A> {
+    pub setup: fn(&mut App) -> A, 
+    pub setup_graphics: fn(&mut App, &A),
+    pub frames: u64,
+    pub check: fn(&App, A),
+}
+
+impl<A> Test<A> {
+    // The `run()` method does all the work of setting up a world, 
+    // passing it to `setup`, simulating for `frames` ticks, 
+    // and running `check`.
+    // It will only enable rendering if you pass the appropriate 
+    // argument to the test binary, so tests run fast by default.
+    pub fn run(self) {
+        // ...
+    }
+
+    // So you can just put your setup code in `setup`, and your assertions in `check`, 
+    // and now you have a test for your game!
+}
+```
+
+See the full code [on my GitHub](https://github.com/anchpop/endless-sea/blob/3b8481f1152293907794d60e920d4cc5a7ca8f40/src/tests/helpers.rs#L69-L83)!
+
+## You can play your tests!
+
+<Video src={play_your_test}/>
+
+A common problem in gamedev is, when adding a new feature that may only be visible e.g. 
+5 minutes into the game, you probably don't want to have to play the game for 5 minutes just to get to the point where you can test the feature. 
+The traditional solution in Bevy (and Unity) is to create a "test scene" that already has everything you need to test the feature, and load that scene instead of the main game when testing. 
+Then, once the feature works, you only need to port it into the main game scene, which should hopefully not be too difficult. 
+
+
+Similarly, when your test fails, it's nice to actually be able to load up the game and see the world that's being tested. 
+That's the cause of the `setup_graphics: default_setup_graphics` line in the test, and the `setup_graphics: fn(&mut App, &A)` field in the struct. 
+This is because I realized an unexpected benefit of testing, that I think completely calculus in favor of testing in games. 
+It only runs when you've indicated to the test runner that you want to actually play the test. 
+(`default_setup_graphics` just sets up a light and a camera so you can see what's going on.) 
+
+So this is the workflow that I discovered: you set up a small test world in `setup`, then get the feature working by running the test. 
+And, if you feel like it, before or after you get it working you can just add some asserts in `check` and you now have a working test, almost for free!
+
+But, if you're doing all that work anyway... 
+why not just drop it in `Test` and add a `check` while you're there? To support this workflow, I played with my `run` function to make it run normally when testing via `cargo test`, but also support loading any particular test world up and playing it like you'd play a normal game.
+
+## How this changes the calculus
+
+I think this alleviates all of the three cons of game testing:
+
+1. Writing tests takes much less additional time. 
+You were going to have to make a test scene anyway, and hopefully it won't be too time-consuming to write a couple additional asserts now that you already have the scene set up.
+
+2. When you inevitably want to modify the feature being tested, you now have a ready-made test scene that sets up everything that feature needs. 
+No more need to hunt through a giant folder of test scenes, most of which are out of date now anyway. 
+(You know they won't be out of date because, if they were, hopefully your assertions would fail.) 
+
+   When you're modifying a different feature, the isolation that ECS provides prevents you from having to change too many tests. Ideally every test just adds the bare-minmum components it needs, and adds them by using "component bundles" with certain components changed from their default. This is the anti-spaghetti property that makes me really love ECS.
+
+3. ECS  makes it much more concise to set up a minimal scene with everything you need. 
+
+
+## Future work
+
+(Note: this section will probably be of interest primarily to Rust developers using Bevy.)
+
+### Test flakiness
+
+I'd like to set up a custom test runner that does something like what [nextest](https://nexte.st/) does, where it runs failing tests `n` times, only failing if it fails every time. 
+The benefit of this is that it raises the probability that the test flakes to the `n`th power. 
+("raise" being a bit of a misnomer here as the probability is actually lowered.) 
+Ideally you would also have some diagnostic that tells you which tests are flaky. 
+
+Also, I'd bevy to focus a bit more on determinism. 
+I'd like a bevy feature that forces you to explicitly order any systems where the behavior may depend on the order.
+
+Related, [Bevy-turborand](https://crates.io/crates/bevy_turborand) makes deterministic random number generation a bit simpler, but it depends on you adding explicit ordering in bevy to any systems that access the same set of `RngComponent`s. 
+
+Credit where credit is due, [Bevy-rapier](https://rapier.rs/docs/user_guides/bevy_plugin/getting_started_bevy/) (the most popular physics engine for Bevy) has a determinism mode that's supposed to give you bit-for-bit identical results on any IEEE 754-2008 compliant platform. 
+
+### Logging
+
+Right now, bevy logs can't be used in tests due to issue [#4934](https://github.com/bevyengine/bevy/issues/4934). 
+
+### A custom test harness
+
+I'd like to make a custom test harness that runs `Test`s in parallel, in headless mode by default, but also allows you to interactively play the scene that's being tested. Ideally, this would be integrated into the bevy editor, should we see it in our lifetimes.
+
+## Some Bragging/Evangelism
+
+This was actually not totally trivial to implement. 
+The problem is that Bevy has two groups of plugins, `DefaultPlugins` and `MinimalPlugins`. 
+`DefaultPlugins` can't be used in tests, because it contains plugins such as `WinitPlugin` and `LogPlugin` which can only be used from the main thread. 
+Other plugins, like `RenderPlugin`, won't work in CI because they panic if there's no GPU.
+
+Once I figured out which plugins worked, I added a new PluginGroup to Bevy, `TestPlugins`, and submitted a [PR](https://github.com/bevyengine/bevy/pull/5932).
+
+The next problem: `RenderPlugin` actually does a lot of useful stuff that doesn't require a GPU, including some stuff that `bevy_rapier` needs! So the next step was to fix `RenderPlugin` so when no GPU is detected it still tries to do as much as possible, and logs an error instead of panicking. 
+Of course, that also got a [PR](https://github.com/bevyengine/bevy/pull/5933).
+
+(FWIW, I'm not sure these PRs will actually get merged.) 
+
+## Prior Art
+
+[Writing Tests in Bevy, by jroddev](https://blog.jroddev.com/bevy-tests/). A great post that covered many things I wish I'd covered here! 
+
+</Layout>

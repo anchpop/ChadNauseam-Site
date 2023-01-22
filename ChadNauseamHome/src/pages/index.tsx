@@ -7,38 +7,59 @@ import "../components/css/frontpage.css";
 
 const posts = [
   {
-    section: "coding",
+    section: "Coding",
     posts: [
-      { title: "How side effects work in FP", link: "/coding/random/how-side-effects-work-in-fp" },
-      { title: "A hacker's case for cryptocurrency", link: "/coding/cryptocurrency/a-hackers-case-for-crypto/" }
+      { title: "How side effects work in FP", link: "/coding/random/how-side-effects-work-in-fp/" },
+      // { title: "Git-branchless is totally cracked", link: "/coding/random/git-branchless-cracked/" },
+      { title: "I learned to love testing game code", link: "/coding/gamedev/automated-testing-in-bevy" },
+      { title: "Decentralized version control, centralized version management", link: "/coding/random/thinking-about-version-control" },
+      { title: "A hacker's case for cryptocurrency", link: "/coding/cryptocurrency/a-hackers-case-for-crypto/" },
+      { title: "Levers in the brain", link: "/coding/random/levers-in-the-brain/" },
+      { title: "My rustfmt.toml", link: "/coding/tips/my-rustfmt-toml/" },
+      { title: "What's wrong with a for loop?", link: "/coding/tips/whats-wrong-with-a-for-loop/" },
     ]
   },
   {
-    section: "economics",
+    section: "Economics",
     posts: [
       {
         title: "Improving the US financial system",
         link: "/economics/solving-macro/"
       },
       {
-        title: "Why a programmer union can save open source",
+        title: "Why a programmer's association can save open source",
         link: "/economics/why-a-programmer-union/"
       }
     ]
   },
   {
-    section: "politics",
+    section: "Advice",
+    posts: [
+      { title: "focusing", link: "/advice/focusing" },
+    ]
+  },
+  {
+    section: "Politics",
     posts: [
       {
         title: "Political reasoning style quiz",
         link: "/reasoning-quiz"
       }
     ]
+  },
+  {
+    section: "Thoughts",
+    posts: [
+      {
+        title: "Semaglutide has changed the world",
+        link: "/random/semaglutide-has-changed-the-world/"
+      }
+    ]
   }
 ]
 
 const IndexPage = () => (
-  <Layout subtitle="General Info" description="Your source for all things Chad">
+  <Layout subtitle="General Info" description="Your source for all things Chad" nodisclaimer>
     <p>
       Your source for all things chad :p
     </p>

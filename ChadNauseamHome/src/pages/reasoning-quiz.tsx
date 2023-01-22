@@ -158,7 +158,7 @@ const allFilled = (userAnswers: { [x: number]: Answer }) => {
 
 const resultsCard = (i: number, userAnswers: { [x: number]: Answer }) => {
   return (
-    <div className="resultCard shadowed" key={i}>
+    <div className="resultCard shadowed-2" key={i}>
       <div className="questionResult">{questions[i][0].question}</div>
       <div className="divider"></div>
       <div className="questionResult">{questions[i][1].question}</div>
@@ -386,6 +386,7 @@ const Quiz = () => {
     <Layout
       subtitle="Political Reasoning Style Quiz"
       description="What kind of thinker are you? How do your beliefs line up?"
+      nodisclaimer
     >
       <ol id="questionList">{questionsC}</ol>
       <div

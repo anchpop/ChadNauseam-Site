@@ -1,14 +1,15 @@
 import quadratic_funding from "../../images/quadratic_funding_prime.png";
 
 <Layout
-  subtitle="A Programmer Union Can Save Open Source"
-  description="I think a programmer union would plausibly be good for everyone">
+  subtitle="A Programmer's Association Can Save Open Source"
+  description="I think a programmer's association would plausibly be good for everyone"
+  nodisclaimer>
 
 Programming is unlike nearly any job, because we can make tools that recursively improve our productivity. We started out with machine code, then we made assembly, then we used assembly to write programming languages, then we used programming languages to write IDEs and LSPs and static analyzers, etc. This has enabled us to become extremely productive, which is part of why we're so well paid.
 
 Things like better programming languages and tooling help everyone. But they're _non-rivalrous_ and<Note numbered>due to the programmer preference for open-source</Note> relatively _non-excludable_. These combine to make programmer tooling a _public good_. (i.e. a good that's consumed by the public). That's the root cause of why programmer tooling is so bad, and why what exists is mostly funded by megacorps.
 
-Luckily, there is a solution. I envision a sectoral union - a union every programmer in the country would belong to. The goal is _not_ to do collective bargaining, it's to use the union mechanism to solve the public goods problem of programmer tooling. These are the four goals I have for this union:
+Luckily, there is a solution. I envision a sectoral association - an qssociation every programmer in the country could belong to. The goal is _not_ to do collective bargaining, it's to solve the public goods problem of programmer tooling. These are the four goals I have for this association:
 
 1. Virtually no bureaucracy or overhead.
 
@@ -16,7 +17,7 @@ Luckily, there is a solution. I envision a sectoral union - a union every progra
 
 3. Increase corporation revenue (via same mechanism as above).
 
-4. Minimal union dues (likely 1% of total compensation).
+4. Minimal dues (likely 1% of total compensation).
 
 ## A Molochian Force
 
@@ -36,19 +37,19 @@ The issue that I am trying to point out is that programmer tooling is incredibly
 
 The counterargument to this is "well, someone should write a tool and sell it, and if it improves programmer productivity then companies will buy it and they'll make lots of money". For whatever reason this doesn't seem to work very well. Many new mainstream languages like Rust and Go are financed by large corporations that felt like they personally had a lot to gain from the creation of the language - and when Mozilla stopped feeling like it was benefitting that much from Rust development, they sacked half the Rust team, even though Rust development was definitely positive for programmers as a whole. <Note>Microsoft probably makes money from Github, and Jetbrains exists, but they're exceptions to the general rule of "programmer tooling isn't a profit center".</Note>
 
-### How Sectoral Unions Can Solve This
+### How Sectoral Association Can Solve This
 
-Here's my suggestion. We make a union. Anyone can tell the union "I'd like to join". <Note>The list of people who have said this is kept secret.</Note> Once over 66% of employees at a company have said they'd like to join, a vote for unionization is automatically triggered. (And it will obviously pass, because you only need 50%+1 votes for the government to force them to unionize.)
+Here's my suggestion. We make an association. Anyone can tell the association "I'd like to join". <Note>The list of people who have said this is kept secret.</Note> Once over 66% of employees at a company have said they'd like to join, a vote to join the association is automatically triggered. (And it will obviously pass, because you only need 50%+1 votes.)
 
-Okay, but what are the consequences of a company unionizing?
+Okay, but what are the consequences of a company's programmers joining the association?
 
-1. All employees are compelled to join the union, which means they pay 1% of their income to the union as dues.
+1. All employees join the association, which means they pay 1% of their income to the association as dues.
 
-2. The company is now able to use code that's been licensed as union-only, if someone for some reason wrote code with that license.
+2. The company is now able to use code that's been licensed as association-only, if someone for some reason wrote code with that license.
 
 Let's set #2 aside for now. How is all the money from dues going to be spent?
 
-Simple. Programmers can donate money, out of their own pockets, to anyone they want. In return, the union will use dues as a subsidy pool, to "match" their donation according to [the quadratic funding mechanism](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3243656):
+Simple. Programmers can donate money, out of their own pockets, to anyone they want. In return, the association will use dues as a subsidy pool, to "match" their donation according to [the quadratic funding mechanism](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3243656):
 
 > Citizens make public goods contributions to projects of value to them. The amount received by the project is (proportional to) the square of the sum of the square roots of contributions received. Under the "standard model" this yields first best public goods provision. Variations [of this design] can limit the cost, help protect against collusion and aid coordination.
 
@@ -56,45 +57,45 @@ Simple. Programmers can donate money, out of their own pockets, to anyone they w
 
 This matching system has several nice properties.
 
-1. It doesn't need any complicated bureaucracy to decide where the money goes. Instead, the union's money goes only to where _each individual programmer_ is willing to put their personal money. I imagine these would likely be programming projects, but they could be whatever you want. (Givewell, the EFF, Blender, etc.)
+1. It doesn't need any complicated bureaucracy to decide where the money goes. Instead, the association's money goes only to where _each individual programmer_ is willing to put their personal money. I imagine these would likely be programming projects, but they could be whatever you want. (Givewell, the EFF, Blender, etc.)
 
-2. It actually does a good job at deciding where the money goes. Because programmers have to spend their own money to have the union fund "match" it, they probably won't donate money trivially. And the peculiar matching algorithm I mentioned has the nice property that it rewards projects in proportion to how big the donations are _and_ how many different people are donating. This rewards tools that many people use, like Log4j and openSSL.
+2. It actually does a good job at deciding where the money goes. Because programmers have to spend their own money to have the association fund "match" it, they probably won't donate money trivially. And the peculiar matching algorithm I mentioned has the nice property that it rewards projects in proportion to how big the donations are _and_ how many different people are donating. This rewards tools that many people use, like Log4j and openSSL.
 
 ### Sounds nice, but how can we actually make it happen?
 
-I actually have a fun design for a positive feedback loop that would lead to wide adoption of the union, once we get it started! Here's how it works:
+I actually have a fun design for a positive feedback loop that would lead to wide adoption of the association, once we get it started! Here's how it works:
 
-I mentioned before that we'd introduce a way to license code as union-only. Specifically, I suggest that we make a new "UGPL" license, which permits anything that would be permitted by the GPL _and_ lets union companies do whatever they want.
+I mentioned before that we'd introduce a way to license code as association-only. Specifically, I suggest that we make a new "UGPL" license, which permits anything that would be permitted by the GPL _and_ lets association companies do whatever they want.
 
-It's obvious that if there's a lot of code licensed under UGPL, companies may benefit from unionizing (so they could use the code without having to follow the GPL's restrictions). How much the benefit is dependent on the amount of UGPL code in existence.
+It's obvious that if there's a lot of code licensed under UGPL, companies may benefit from associating (so they could use the code without having to follow the GPL's restrictions). How much the benefit is dependent on the amount of UGPL code in existence.
 
-Here's the feedback loop: The main subsidy pool may not actually spend all of its money - if it doesn't, we take that extra money and put it in a special pool that's will all go to donations to UGPL-licensed projects. (If there's no money left over, the pool is funded from, say, a 25% slice of union dues.<Note>If you object to your union dues going to this, we should provide the option for you to donate that 25% to Givewell instead.</Note>)
+Here's the feedback loop: The main subsidy pool may not actually spend all of its money - if it doesn't, we take that extra money and put it in a special pool that's will all go to donations to UGPL-licensed projects. (If there's no money left over, the pool is funded from, say, a 25% slice of association dues.<Note>If you object to your association dues going to this, we should provide the option for you to donate that 25% to Givewell instead.</Note>)
 
 Consider what happens if there's initially no UGPL-licensed projects. The first person who writes one and gets a donation would receive the _entire_ subsidy pool. This would create a huge incentive for people to license their code as UGPL. (Which means also licensing it at GPL, since UGPL is a dual-license).
 
-The idea is that this creates a feedback loop - the more companies join the union, the more money goes to UGPL projects. The more money goes to UGPL projects, the more UGPL projects there are. The more UGPL projects there are, the greater the incentive is to join the union.
+The idea is that this creates a feedback loop - the more companies join the association, the more money goes to UGPL projects. The more money goes to UGPL projects, the more UGPL projects there are. The more UGPL projects there are, the greater the incentive is to join the association.
 
-The most elegant part about this is that it would also make the GPL much more attractive. Any popular GPL project can now get a ton of cash from the union, in exchange for granting the union a permissive license. For the first time it may be more profitable to license your code under the GPL than it would be to make it proprietary.
+The most elegant part about this is that it would also make the GPL much more attractive. Any popular GPL project can now get a ton of cash from the association, in exchange for granting the association a permissive license. For the first time it may be more profitable to license your code under the GPL than it would be to make it proprietary.
 
 ### How much bureaucracy?
 
-First of all, we'd need lawyers to enforce the UGPL. But I don't think of this as "bureaucracy" - we can just have the union's legal defense fund be a project that union members can contribute to. Then those contributions would be matched from the subsidy pool the same as any other project.
+First of all, we'd need lawyers to enforce the UGPL. But I don't think of this as "bureaucracy" - we can just have the association's legal defense fund be a project that association members can contribute to. Then those contributions would be matched from the subsidy pool the same as any other project.
 
 It's a similar story for the tooling to automatically record contributions and pay creators from the subsidy pool. Once bootstrapped with some seed money, this could be funded the same way as the legal defense fund.
 
-These are the decisions the union would have to make:
+These are the decisions the association would have to make:
 
-1. Setting union dues.
+1. Setting association dues.
 
-2. Setting the size of the smaller subsidy-pool for union-licensed code.
+2. Setting the size of the smaller subsidy-pool for association-licensed code.
 
 3. Changing the matching algorithm.
 
-Since there's so few decisions to make, you wouldn't need any complicated union leadership election process or anything like that. There could just be an annual vote on each of these.
+Since there's so few decisions to make, you wouldn't need any complicated association leadership election process or anything like that. There could just be an annual vote on each of these.
 
 ### Everyone wins
 
-The best part about this union is that nobody loses. Companies get more productive programmers, programmers get better libraries and tooling, and projects that programmers are interested in get money to finance development. What's not to like?
+The best part about this association is that nobody loses. Companies get more productive programmers, programmers get better libraries and tooling, and projects that programmers are interested in get money to finance development. What's not to like?
 
 If you're interested in this idea, please join my [Discord](/discord) or message me on [Twitter](/twitter).
 
@@ -102,11 +103,11 @@ If you're interested in this idea, please join my [Discord](/discord) or message
 
 ### What about collective bargaining?
 
-I'm trying to solve the free-rider problem for public goods here, and I don't think that a sectoral union should try to do collective bargaining very much. But I'll note that, if that's something you're into, [membership in this union would not be mutually-exclusive with membership in a union that does collective bargaining](https://www.lexology.com/library/detail.aspx?g=2ff6ed66-43d6-4ce5-8c53-3b5b6ca59cab). I consider this to be almost two completely separate issues.
+I'm trying to solve the free-rider problem for public goods here, and I don't think that a sectoral association should try to do collective bargaining very much. But I'll note that, if that's something you're into, [membership in this association would not be mutually-exclusive with membership in a association that does collective bargaining](https://www.lexology.com/library/detail.aspx?g=2ff6ed66-43d6-4ce5-8c53-3b5b6ca59cab). I consider this to be almost two completely separate issues.
 
-### Why use a union, rather than just relying on voluntary donations?
+### Why use a association, rather than just relying on voluntary donations?
 
-If people can voluntarily join, you get the free-rider problem, where nobody has a personal incentive to contribute even though everyone benefits from contributions. Even though everyone wants the program to exist, nobody is personally incentivized to join the program. Unions solve this problem because in the US there's a mechanism were you can hold a vote and if 50% of workers want to join the union, everyone unionizes. Since everyone benefits from the union's existence, everyone is incentivized to vote to join the union.
+If people can voluntarily join, you get the free-rider problem, where nobody has a personal incentive to contribute even though everyone benefits from contributions. Even though everyone wants the program to exist, nobody is personally incentivized to join the program. Associations solve this problem because in the US there's a mechanism were you can hold a vote and if 50% of workers want to join the association, everyone associates. Since everyone benefits from the association's existence, everyone is incentivized to vote to join the association.
 
 ### What about kickbacks and collusion?
 
@@ -118,7 +119,7 @@ Even though it's illegal, people actually do this sometimes. But our matching sc
 
 Okay, but we can imagine a cartel of people, each donating a little, then sharing the gains from the subsidy pool among themselves. This is already getting into the realm of implausibility in my opinion, but sure. This attack can be mitigated with a [pairwise-funding](https://ethresear.ch/t/pairwise-coordination-subsidies-a-new-quadratic-funding-design/5553) system, where two people are assumed to be more "coordinated" the more they donate to the same projects, and the matching coefficient for highly coordinated users is lower. This would require the members of the cartel to donate to lots of projects besides the phony one they all are donating to.
 
-Okay, but in theory you can have many cartels, and each person donates only to a few of them, so that all of the cartels are highly funded but no two people have most of their contributions going to the same projects. (Keep in mind that there are lots of matching programs out there, used for matching campaign contributions and things like that, and none of them have put nearly this much effort into being collusion-resistant.) But fine. We'll also assume that nobody tips off the union to this behavior so the rest can be sued for fraud by the union's legal defense fund.
+Okay, but in theory you can have many cartels, and each person donates only to a few of them, so that all of the cartels are highly funded but no two people have most of their contributions going to the same projects. (Keep in mind that there are lots of matching programs out there, used for matching campaign contributions and things like that, and none of them have put nearly this much effort into being collusion-resistant.) But fine. We'll also assume that nobody tips off the association to this behavior so the rest can be sued for fraud by the association's legal defense fund.
 
 An interesting mitigation for this attack to this is to make contributions anonymous, so you cannot prove that you contributed to a project even if you wanted to. This would mean cartels have no way of knowing who's actually donating, and who's only pretending to donate to get the money. It would be in everyone's incentive to pretend to be part of the cartel but not actually donate, which would make big cartels nearly impossible to sustain.
 
